@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const fs = require("fs");
+const path = require("path");
 
 const app = express();
 
@@ -8,7 +9,15 @@ app.use(cors());
 app.use(express.json());
 
 
-const PORT = 3000;
+// نمایش فایل‌های سایت
+app.use(express.static(__dirname));
+
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "index.html"));
+});
+
+
+const PORT = process.env.PORT || 3000;
 
 const FILE = "./tickets.json";
 
@@ -23,25 +32,18 @@ function getTickets(){
         fs.writeFileSync(FILE, "[]");
     }
 
-
     let data = fs.readFileSync(FILE, "utf8");
-
 
     if(!data){
         return [];
     }
 
-
     try{
-
         return JSON.parse(data);
-
-    }catch(error){
-
-        return [];
-
     }
-
+    catch(error){
+        return [];
+    }
 }
 
 
@@ -76,7 +78,6 @@ app.get("/tickets",(req,res)=>{
 
 
 
-
 // ===============================
 // ساخت تیکت جدید
 // ===============================
@@ -89,44 +90,31 @@ app.post("/tickets",(req,res)=>{
 
     let ticket = {
 
-
         id: Date.now(),
-
 
         name:req.body.name,
 
-
         discord:req.body.discord,
-
 
         age:req.body.age,
 
-
         experience:req.body.experience,
-
 
         reason:req.body.reason,
 
-
         status:"Pending",
-
 
         reply:"در انتظار بررسی فرماندهی",
 
-
         date:new Date().toLocaleString("fa-IR")
 
-
     };
-
 
 
     tickets.push(ticket);
 
 
-
     saveTickets(tickets);
-
 
 
     res.json({
@@ -138,9 +126,7 @@ app.post("/tickets",(req,res)=>{
     });
 
 
-
 });
-
 
 
 
@@ -156,13 +142,9 @@ app.put("/tickets/:id",(req,res)=>{
     let tickets = getTickets();
 
 
-
     let ticket = tickets.find(
-
         t => t.id == req.params.id
-
     );
-
 
 
     if(ticket){
@@ -172,36 +154,27 @@ app.put("/tickets/:id",(req,res)=>{
         req.body.status || ticket.status;
 
 
-
         ticket.reply =
         req.body.reply || ticket.reply;
-
 
 
         saveTickets(tickets);
 
 
-
         res.json({
-
             success:true
-
         });
-
 
 
     }else{
 
 
         res.json({
-
             success:false
-
         });
 
 
     }
-
 
 
 });
@@ -222,25 +195,17 @@ app.delete("/tickets/:id",(req,res)=>{
     let tickets = getTickets();
 
 
-
     tickets = tickets.filter(
-
         t => t.id != req.params.id
-
     );
-
 
 
     saveTickets(tickets);
 
 
-
     res.json({
-
         success:true
-
     });
-
 
 
 });
@@ -250,15 +215,10 @@ app.delete("/tickets/:id",(req,res)=>{
 
 
 
-
 app.listen(PORT,()=>{
 
-
-console.log(
-
-`LSPD Server running on port ${PORT}`
-
-);
-
+    console.log(
+        `LSPD Server running on port ${PORT}`
+    );
 
 });
