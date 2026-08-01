@@ -1,106 +1,129 @@
-const SERVER_URL = "https://lspd-site-2.onrender.com";
+const express = require("express");
+const cors = require("cors");
+
+const app = express();
 
 
-// ارسال تیکت
-async function sendTicket(){
+// فعال کردن CORS برای گوشی و سایت
+app.use(cors({
+    origin: "*"
+}));
 
-    const ticket = {
 
-        name: document.getElementById("name").value,
-        discord: document.getElementById("discord").value,
-        age: document.getElementById("age").value,
-        experience: document.getElementById("experience").value,
-        reason: document.getElementById("reason").value
+// خواندن JSON
+app.use(express.json());
 
-    };
 
+// ذخیره موقت تیکت‌ها
+let tickets = [];
+
+
+// تست آنلاین بودن سرور
+app.get("/", (req, res) => {
+
+    res.json({
+        status: "online",
+        message: "LSPD Server Running"
+    });
+
+});
+
+
+// ارسال تیکت از سایت / گوشی
+app.post("/tickets", (req, res) => {
 
     try {
 
-        let response = await fetch(
-            SERVER_URL + "/tickets",
-            {
-                method: "POST",
+        const ticket = {
 
-                headers: {
-                    "Content-Type": "application/json"
-                },
+            id: Date.now(),
 
-                body: JSON.stringify(ticket)
-            }
-        );
+            name: req.body.name || "",
+            discord: req.body.discord || "",
+            age: req.body.age || "",
+            experience: req.body.experience || "",
+            reason: req.body.reason || "",
 
+            status: "جدید",
 
-        // بررسی جواب سرور
-        if(!response.ok){
+            createdAt: new Date()
 
-            throw new Error(
-                "Server Error: " + response.status
-            );
-
-        }
+        };
 
 
-        let data = await response.json();
+        tickets.push(ticket);
 
 
-        if(data.success){
-
-            alert("تیکت با موفقیت ارسال شد ✅");
+        console.log("New Ticket:", ticket);
 
 
-        }else{
+        res.json({
 
-            alert("ارسال تیکت ناموفق بود ❌");
+            success: true,
+            message: "Ticket created"
 
-        }
+        });
 
 
     } catch(error) {
 
-        console.log(error);
-
-        alert(
-            "خطا در اتصال به سرور ❌\n" + error.message
-        );
-
-    }
-
-}
-
-
-
-// گرفتن تیکت ها برای پنل فرماندهی
-async function loadTickets(){
-
-    try{
-
-        let response = await fetch(
-            SERVER_URL + "/tickets"
-        );
-
-
-        if(!response.ok){
-
-            throw new Error(
-                "Server Error: " + response.status
-            );
-
-        }
-
-
-        let tickets = await response.json();
-
-
-        return tickets;
-
-
-    }catch(error){
 
         console.log(error);
 
-        return [];
+
+        res.status(500).json({
+
+            success:false,
+            message:"Server error"
+
+        });
+
 
     }
 
-}
+});
+
+
+
+// نمایش تیکت‌ها برای پنل فرماندهی
+app.get("/tickets", (req,res)=>{
+
+
+    res.json(tickets);
+
+
+});
+
+
+
+// حذف تیکت
+app.delete("/tickets/:id",(req,res)=>{
+
+
+    tickets = tickets.filter(
+        t => t.id != req.params.id
+    );
+
+
+    res.json({
+
+        success:true
+
+    });
+
+
+});
+
+
+
+// پورت Render
+const PORT = process.env.PORT || 3000;
+
+
+app.listen(PORT,()=>{
+
+    console.log(
+        "LSPD Server running on port " + PORT
+    );
+
+});
