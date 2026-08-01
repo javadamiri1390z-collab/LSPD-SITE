@@ -19,6 +19,7 @@
 <div class="overlay"></div>
 
 
+
 <header class="navbar">
 
 <img src="badge.png" class="badge">
@@ -26,11 +27,16 @@
 
 <div class="nav-title">
 
-<h2>Vanguard LSPD</h2>
+<h2>
+Vanguard LSPD
+</h2>
 
-<span>Command Center</span>
+<span>
+Command Center
+</span>
 
 </div>
+
 
 
 <button class="login-btn" onclick="logoutAdmin()">
@@ -47,6 +53,7 @@
 <main class="hero">
 
 
+
 <div class="dashboard">
 
 
@@ -56,9 +63,8 @@
 </h1>
 
 
-
 <p class="dashboard-sub">
-مدیریت درخواست‌های عضویت نیروها
+مدیریت و بررسی درخواست‌های نیروها
 </p>
 
 
@@ -80,7 +86,6 @@
 </p>
 
 </div>
-
 
 
 
@@ -123,11 +128,10 @@
 
 
 
-
 <input 
 class="search-box"
 id="search"
-placeholder="🔍 جستجو نام یا دیسکورد..."
+placeholder="🔍 جستجو نام یا Discord..."
 >
 
 
@@ -147,6 +151,7 @@ placeholder="🔍 جستجو نام یا دیسکورد..."
 </div>
 
 
+
 </main>
 
 
@@ -154,9 +159,7 @@ placeholder="🔍 جستجو نام یا دیسکورد..."
 
 
 
-
 <script src="script.js"></script>
-
 
 
 <script>
@@ -169,15 +172,11 @@ let allTickets=[];
 
 async function loadTickets(){
 
-
 allTickets = await getTickets();
-
 
 showTickets(allTickets);
 
-
 updateStats();
-
 
 }
 
@@ -193,9 +192,7 @@ document.getElementById("total").innerText =
 allTickets.length;
 
 
-
 document.getElementById("pending").innerText =
-
 allTickets.filter(
 t=>t.status==="Pending"
 ).length;
@@ -203,7 +200,6 @@ t=>t.status==="Pending"
 
 
 document.getElementById("accepted").innerText =
-
 allTickets.filter(
 t=>t.status==="Accepted"
 ).length;
@@ -218,10 +214,7 @@ t=>t.status==="Accepted"
 
 
 
-
-
 function showTickets(tickets){
-
 
 
 let box =
@@ -233,13 +226,12 @@ box.innerHTML="";
 
 
 
-
 if(tickets.length===0){
 
 
 box.innerHTML=`
 
-<div class="ticket empty">
+<div class="ticket-card empty">
 
 <h2>
 📭 تیکتی وجود ندارد
@@ -249,7 +241,6 @@ box.innerHTML=`
 
 `;
 
-
 return;
 
 }
@@ -258,12 +249,10 @@ return;
 
 
 
-
 tickets.forEach(t=>{
 
 
-
-let statusClass = "";
+let statusClass="";
 
 
 if(t.status==="Pending")
@@ -280,8 +269,6 @@ statusClass="rejected-text";
 
 
 
-
-
 box.innerHTML += `
 
 
@@ -290,9 +277,20 @@ box.innerHTML += `
 
 
 
+<div class="ticket-header">
+
 <h2>
 👮 ${t.name}
 </h2>
+
+
+<span class="${statusClass}">
+${t.status}
+</span>
+
+
+</div>
+
 
 
 
@@ -304,10 +302,12 @@ ${t.discord}
 
 
 
+
 <p>
 <b>سن:</b>
 ${t.age}
 </p>
+
 
 
 
@@ -320,8 +320,9 @@ ${t.experience}
 
 
 
+
 <p>
-<b>دلیل:</b>
+<b>دلیل عضویت:</b>
 ${t.reason}
 </p>
 
@@ -329,26 +330,11 @@ ${t.reason}
 
 
 
-<p>
-<b>وضعیت:</b>
 
-<span class="${statusClass}">
-${t.status}
-</span>
-
-</p>
-
-
-
-
-
-
-
-<textarea
+<textarea 
 id="reply-${t._id}"
-placeholder="پاسخ فرماندهی..."
+placeholder="✍️ پاسخ فرماندهی..."
 >${t.reply || ""}</textarea>
-
 
 
 
@@ -364,10 +350,12 @@ ${t.status==="Pending"?"selected":""}>
 </option>
 
 
+
 <option value="Accepted"
 ${t.status==="Accepted"?"selected":""}>
 🟢 تایید شده
 </option>
+
 
 
 
@@ -387,12 +375,11 @@ ${t.status==="Rejected"?"selected":""}>
 <div class="ticket-buttons">
 
 
-
-<button
+<button 
 class="btn primary"
 onclick="saveTicket('${t._id}')">
 
-💾 ذخیره پاسخ
+💾 ذخیره
 
 </button>
 
@@ -400,7 +387,7 @@ onclick="saveTicket('${t._id}')">
 
 
 
-<button
+<button 
 class="btn delete-btn"
 onclick="removeTicket('${t._id}')">
 
@@ -409,8 +396,8 @@ onclick="removeTicket('${t._id}')">
 </button>
 
 
-
 </div>
+
 
 
 
@@ -423,7 +410,6 @@ onclick="removeTicket('${t._id}')">
 
 
 });
-
 
 
 }
@@ -471,7 +457,6 @@ alert(
 loadTickets();
 
 
-
 }
 
 
@@ -485,18 +470,17 @@ loadTickets();
 async function removeTicket(id){
 
 
-
-if(confirm("حذف این تیکت؟")){
+if(confirm(
+"آیا حذف شود؟"
+)){
 
 
 await deleteTicket(id);
 
 
-
 alert(
 "تیکت حذف شد ✅"
 );
-
 
 
 loadTickets();
@@ -506,6 +490,7 @@ loadTickets();
 
 
 }
+
 
 
 
@@ -530,7 +515,7 @@ let result =
 allTickets.filter(t=>
 
 
-(t.name||"")
+(t.name || "")
 .toLowerCase()
 .includes(value)
 
@@ -538,7 +523,7 @@ allTickets.filter(t=>
 
 ||
 
-(t.discord||"")
+(t.discord || "")
 .toLowerCase()
 .includes(value)
 
@@ -559,12 +544,12 @@ showTickets(result);
 
 
 
+
 loadTickets();
 
 
 
 </script>
-
 
 
 </body>
