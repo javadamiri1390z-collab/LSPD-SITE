@@ -1,129 +1,245 @@
-const express = require("express");
-const cors = require("cors");
-
-const app = express();
+// آدرس سرور Render
+const SERVER_URL = "https://lspd-site-7.onrender.com";
 
 
-// فعال کردن CORS برای گوشی و سایت
-app.use(cors({
-    origin: "*"
-}));
+
+// ===============================
+// ارسال تیکت
+// ===============================
+
+async function sendTicket(){
 
 
-// خواندن JSON
-app.use(express.json());
+    const ticket = {
 
 
-// ذخیره موقت تیکت‌ها
-let tickets = [];
+        name: document.getElementById("name").value,
+
+        discord: document.getElementById("discord").value,
+
+        age: document.getElementById("age").value,
+
+        experience: document.getElementById("experience").value,
+
+        reason: document.getElementById("reason").value
 
 
-// تست آنلاین بودن سرور
-app.get("/", (req, res) => {
-
-    res.json({
-        status: "online",
-        message: "LSPD Server Running"
-    });
-
-});
+    };
 
 
-// ارسال تیکت از سایت / گوشی
-app.post("/tickets", (req, res) => {
 
-    try {
+    // چک خالی بودن فرم
 
-        const ticket = {
+    if(
+        !ticket.name ||
+        !ticket.discord ||
+        !ticket.age ||
+        !ticket.experience ||
+        !ticket.reason
+    ){
 
-            id: Date.now(),
+        alert("لطفاً تمام فیلدها را پر کنید ❌");
 
-            name: req.body.name || "",
-            discord: req.body.discord || "",
-            age: req.body.age || "",
-            experience: req.body.experience || "",
-            reason: req.body.reason || "",
+        return;
 
-            status: "جدید",
-
-            createdAt: new Date()
-
-        };
+    }
 
 
-        tickets.push(ticket);
 
 
-        console.log("New Ticket:", ticket);
+    try{
 
 
-        res.json({
+        let response = await fetch(
 
-            success: true,
-            message: "Ticket created"
+            SERVER_URL + "/tickets",
 
-        });
+            {
+
+                method:"POST",
+
+                headers:{
+
+                    "Content-Type":"application/json"
+
+                },
 
 
-    } catch(error) {
+                body:JSON.stringify(ticket)
+
+            }
+
+        );
+
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "Server Error " + response.status
+            );
+
+        }
+
+
+
+        let data = await response.json();
+
+
+
+        if(data.success){
+
+
+            alert(
+                "تیکت با موفقیت ارسال شد ✅"
+            );
+
+
+            // پاک کردن فرم
+
+            document.getElementById("name").value="";
+            document.getElementById("discord").value="";
+            document.getElementById("age").value="";
+            document.getElementById("experience").value="";
+            document.getElementById("reason").value="";
+
+
+
+        }else{
+
+
+            alert(
+                "ارسال تیکت ناموفق بود ❌"
+            );
+
+
+        }
+
+
+
+    }catch(error){
 
 
         console.log(error);
 
 
-        res.status(500).json({
+        alert(
 
-            success:false,
-            message:"Server error"
+            "خطا در اتصال به سرور ❌\n" +
+            error.message
 
-        });
+        );
 
 
     }
 
-});
+
+
+}
 
 
 
-// نمایش تیکت‌ها برای پنل فرماندهی
-app.get("/tickets", (req,res)=>{
-
-
-    res.json(tickets);
-
-
-});
 
 
 
-// حذف تیکت
-app.delete("/tickets/:id",(req,res)=>{
+// ===============================
+// دریافت تیکت ها برای پنل فرماندهی
+// ===============================
 
 
-    tickets = tickets.filter(
-        t => t.id != req.params.id
-    );
+async function loadTickets(){
 
 
-    res.json({
-
-        success:true
-
-    });
+    try{
 
 
-});
+        let response = await fetch(
+
+            SERVER_URL + "/tickets"
+
+        );
 
 
 
-// پورت Render
-const PORT = process.env.PORT || 3000;
+        if(!response.ok){
+
+            throw new Error(
+                "Server Error " + response.status
+            );
+
+        }
 
 
-app.listen(PORT,()=>{
 
-    console.log(
-        "LSPD Server running on port " + PORT
-    );
+        let tickets = await response.json();
 
-});
+
+
+        return tickets;
+
+
+
+    }catch(error){
+
+
+        console.log(error);
+
+
+        return [];
+
+
+    }
+
+
+}
+
+
+
+
+
+
+// ===============================
+// تست اتصال سرور
+// ===============================
+
+
+async function checkServer(){
+
+
+    try{
+
+
+        let response = await fetch(
+
+            SERVER_URL + "/status"
+
+        );
+
+
+        let data = await response.json();
+
+
+        console.log(
+            "Server:",
+            data.message
+        );
+
+
+
+    }catch(error){
+
+
+        console.log(
+            "Server Offline"
+        );
+
+
+    }
+
+
+}
+
+
+// اجرای تست هنگام باز شدن سایت
+
+checkServer();
