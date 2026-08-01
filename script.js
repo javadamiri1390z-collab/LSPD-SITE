@@ -5,7 +5,8 @@
 // ===================================
 
 
-const API_URL = "http://localhost:3000";
+const API_URL = "https://lspd-site-11.onrender.com";
+
 
 
 
@@ -18,6 +19,7 @@ window.addEventListener("load",()=>{
     document.body.classList.add("loaded");
 
 });
+
 
 
 
@@ -59,8 +61,10 @@ btn.style.transform="translateY(0)";
 
 
 
+
+
 // ===============================
-// CREATE TICKET (SERVER)
+// CREATE TICKET
 // ===============================
 
 
@@ -92,12 +96,22 @@ body:JSON.stringify(data)
 
 
 
-let result =
-await response.json();
+let result = await response.json();
 
 
+
+if(result.success){
 
 return result.id;
+
+}
+else{
+
+alert("ارسال تیکت ناموفق بود ❌");
+
+return null;
+
+}
 
 
 
@@ -113,7 +127,7 @@ error
 
 
 alert(
-"خطا در اتصال به سرور"
+"خطا در اتصال به سرور ❌"
 );
 
 
@@ -124,6 +138,8 @@ return null;
 
 
 }
+
+
 
 
 
@@ -142,8 +158,7 @@ async function getTickets(){
 try{
 
 
-let response =
-await fetch(
+let response = await fetch(
 
 API_URL + "/tickets"
 
@@ -151,8 +166,7 @@ API_URL + "/tickets"
 
 
 
-let data =
-await response.json();
+let data = await response.json();
 
 
 
@@ -184,6 +198,8 @@ return [];
 
 
 
+
+
 // ===============================
 // DELETE TICKET
 // ===============================
@@ -195,10 +211,9 @@ async function deleteTicket(id){
 try{
 
 
-await fetch(
+let response = await fetch(
 
-API_URL +
-"/tickets/" + id,
+API_URL + "/tickets/" + id,
 
 {
 
@@ -228,7 +243,6 @@ return false;
 }
 
 
-
 }
 
 
@@ -238,8 +252,9 @@ return false;
 
 
 
+
 // ===============================
-// UPDATE TICKET STATUS
+// UPDATE TICKET
 // ===============================
 
 
@@ -251,8 +266,7 @@ try{
 
 await fetch(
 
-API_URL+
-"/tickets/"+id,
+API_URL + "/tickets/" + id,
 
 {
 
@@ -271,7 +285,6 @@ status:status,
 reply:reply
 
 })
-
 
 }
 
@@ -296,8 +309,8 @@ return false;
 }
 
 
-
 }
+
 
 
 
@@ -338,13 +351,15 @@ window.location.href =
 
 
 
+
+
+
 // ===============================
 // ADMIN LOGOUT
 // ===============================
 
 
 function logoutAdmin(){
-
 
 
 localStorage.removeItem(
@@ -355,7 +370,6 @@ localStorage.removeItem(
 
 window.location.href =
 "login.html";
-
 
 
 }
