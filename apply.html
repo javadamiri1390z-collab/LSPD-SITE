@@ -40,6 +40,7 @@
 
 
 
+
 <main class="hero">
 
 
@@ -58,6 +59,7 @@
 
 
 
+
 <form id="applicationForm">
 
 
@@ -69,11 +71,13 @@ required>
 
 
 
+
 <input 
 type="text"
 id="discord"
 placeholder="Discord"
 required>
+
 
 
 
@@ -85,10 +89,12 @@ required>
 
 
 
+
 <textarea
 id="experience"
 placeholder="سابقه رول پلی و تجربه شما"
 required></textarea>
+
 
 
 
@@ -100,7 +106,8 @@ required></textarea>
 
 
 
-<button class="btn primary">
+
+<button class="btn primary" type="submit">
 
 ارسال درخواست
 
@@ -108,6 +115,7 @@ required></textarea>
 
 
 </form>
+
 
 
 
@@ -125,11 +133,12 @@ required></textarea>
 
 
 
+
 <script src="script.js"></script>
 
 
-
 <script>
+
 
 
 document
@@ -138,6 +147,7 @@ document
 
 
 e.preventDefault();
+
 
 
 
@@ -170,6 +180,7 @@ document.getElementById("reason").value
 
 
 
+
 let id = await createTicket(data);
 
 
@@ -179,28 +190,41 @@ let id = await createTicket(data);
 if(id){
 
 
-document.getElementById("result").innerHTML =
+document.getElementById("result").innerHTML = `
 
-`
+
+<div class="ticket">
+
 
 <h3>
 درخواست شما ثبت شد ✅
 </h3>
 
 
+
 <p>
-شماره درخواست:
+کد پیگیری شما:
 </p>
 
 
-<b>
+<h2>
 ${id}
-</b>
+</h2>
+
 
 
 <p>
-این کد را برای پیگیری نگه دارید.
+این کد را ذخیره کنید و برای پیگیری درخواست استفاده کنید.
 </p>
+
+
+<a href="ticket.html" class="btn">
+پیگیری درخواست
+</a>
+
+
+</div>
+
 
 `;
 
@@ -209,11 +233,14 @@ ${id}
 this.reset();
 
 
+
 }
 
 
 
 });
+
+
 
 
 
