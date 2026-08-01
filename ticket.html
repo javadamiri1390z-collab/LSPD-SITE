@@ -42,6 +42,8 @@
 
 
 
+
+
 <main class="hero">
 
 
@@ -54,7 +56,7 @@
 
 
 <p>
-شماره درخواست خود را وارد کنید.
+کد پیگیری درخواست خود را وارد کنید.
 </p>
 
 
@@ -62,7 +64,9 @@
 <input 
 type="text"
 id="ticketID"
-placeholder="مثال: LSPD-1234">
+placeholder="کد پیگیری MongoDB را وارد کنید">
+
+
 
 
 
@@ -73,6 +77,7 @@ onclick="checkTicket()">
 بررسی درخواست
 
 </button>
+
 
 
 
@@ -88,27 +93,35 @@ onclick="checkTicket()">
 
 
 
-<script src="script.js"></script>
 
 
 <script>
 
 
-function checkTicket(){
+const API_URL = "https://lspd-site-11.onrender.com";
+
+
+
+
+
+async function checkTicket(){
 
 
 let id =
-document.getElementById("ticketID").value;
+document.getElementById("ticketID").value.trim();
 
 
 
-let tickets =
-JSON.parse(localStorage.getItem("lspdTickets")) || [];
+
+if(!id){
+
+alert("کد پیگیری را وارد کنید");
+
+return;
+
+}
 
 
-
-let ticket =
-tickets.find(t => t.id === id);
 
 
 
@@ -117,28 +130,64 @@ document.getElementById("ticketResult");
 
 
 
+result.innerHTML =
+"در حال بررسی...";
+
+
+
+
+try{
+
+
+let response =
+await fetch(API_URL + "/tickets");
+
+
+
+let tickets =
+await response.json();
+
+
+
+
+let ticket =
+tickets.find(t => 
+t._id === id
+);
+
+
+
+
+
 if(ticket){
 
 
 result.innerHTML = `
 
+
 <hr>
+
 
 <h3>
 وضعیت درخواست
 </h3>
 
 
+
 <p>
-شماره:
-${ticket.id}
+نام:
+${ticket.name}
 </p>
+
 
 
 <p>
 وضعیت:
-<b>${ticket.status}</b>
+<b>
+${ticket.status}
+</b>
 </p>
+
 
 
 <p>
@@ -148,10 +197,12 @@ ${ticket.reply}
 </p>
 
 
+
 <p>
-تاریخ:
-${ticket.date}
+تاریخ ثبت:
+${new Date(ticket.createdAt).toLocaleString("fa-IR")}
 </p>
+
 
 
 `;
@@ -161,21 +212,52 @@ ${ticket.date}
 }else{
 
 
+
+result.innerHTML = `
+
+
+<p style="color:red">
+
+درخواستی با این کد پیدا نشد ❌
+
+</p>
+
+
+`;
+
+
+
+}
+
+
+
+}
+
+catch(error){
+
+
+console.error(error);
+
+
+
 result.innerHTML = `
 
 <p style="color:red">
 
-درخواستی با این شماره پیدا نشد
+خطا در اتصال به سرور ❌
 
 </p>
 
 `;
 
+
+
 }
 
 
 
 }
+
 
 
 
