@@ -13,29 +13,48 @@
 </head>
 
 
-<body>
+
+<body class="command-page">
+
 
 
 <div class="overlay"></div>
 
 
+
+
+
 <header class="navbar">
+
 
 <img src="badge.png" class="badge">
 
 
+
 <div class="nav-title">
 
-<h2>Vanguard LSPD</h2>
+<h2>
+Vanguard LSPD
+</h2>
 
-<span>Command Access</span>
+
+<span>
+Command Access
+</span>
+
 
 </div>
 
 
+
+
 <a href="index.html" class="login-btn">
+
 بازگشت
+
 </a>
+
+
 
 
 </header>
@@ -43,10 +62,30 @@
 
 
 
+
+
+
+
 <main class="hero">
 
 
-<div class="form-box">
+
+
+
+<div class="login-card">
+
+
+
+
+
+
+<img 
+src="badge.png"
+class="login-badge">
+
+
+
+
 
 
 <h1>
@@ -54,9 +93,23 @@
 </h1>
 
 
+
+
+<h3>
+LSPD Command Center
+</h3>
+
+
+
+
 <p>
 فقط اعضای مجاز LSPD دسترسی دارند.
 </p>
+
+
+
+
+
 
 
 
@@ -67,6 +120,9 @@ placeholder="نام کاربری">
 
 
 
+
+
+
 <input 
 type="password"
 id="password"
@@ -74,13 +130,22 @@ placeholder="رمز عبور">
 
 
 
+
+
+
+
+
 <button 
-class="btn primary"
+class="btn primary login-button"
 onclick="loginCommand()">
 
-ورود
+ورود به پنل
 
 </button>
+
+
+
+
 
 
 
@@ -88,7 +153,26 @@ onclick="loginCommand()">
 
 
 
+
+
+
+<a href="index.html" class="back-link">
+
+بازگشت به لابی
+
+</a>
+
+
+
+
+
+
+
 </div>
+
+
+
+
 
 
 </main>
@@ -96,17 +180,27 @@ onclick="loginCommand()">
 
 
 
+
+
+
+
+
 <script src="script.js"></script>
+
+
 
 
 <script>
 
 
+
 function loginCommand(){
+
 
 
 let user =
 document.getElementById("username").value;
+
 
 
 let pass =
@@ -114,9 +208,13 @@ document.getElementById("password").value;
 
 
 
-// اطلاعات تستی فرمانده
 
-if(user === "LSPD" && pass === "LSPD00078"){
+
+
+if(
+user === "LSPD" &&
+pass === "LSPD00078"
+){
 
 
 
@@ -127,19 +225,23 @@ localStorage.setItem(
 
 
 
+
 window.location.href =
 "admin.html";
+
+
 
 
 
 }else{
 
 
+
 document.getElementById("loginResult").innerHTML =
 
 `
 <p style="color:red">
-نام کاربری یا رمز اشتباه است
+❌ نام کاربری یا رمز عبور اشتباه است
 </p>
 `;
 
@@ -152,7 +254,11 @@ document.getElementById("loginResult").innerHTML =
 }
 
 
+
+
 </script>
+
+
 
 
 
