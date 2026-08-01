@@ -1,99 +1,127 @@
 const express = require("express");
 const cors = require("cors");
+const fs = require("fs");
 const path = require("path");
 
 const app = express();
 
-
-// اجازه اتصال سایت و گوشی
 app.use(cors());
-
-
-// خواندن JSON
 app.use(express.json());
 
 
-// فعال کردن فایل های سایت
-app.use(express.static(path.join(__dirname, "public")));
+// نمایش فایل‌های سایت
+app.use(express.static(__dirname));
 
-
-// ذخیره تیکت ها
-let tickets = [];
-
-
-
-// صفحه اصلی سایت
 app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "index.html"));
+});
 
-    res.sendFile(
-        path.join(__dirname, "public", "index.html")
+
+const PORT = process.env.PORT || 3000;
+
+const FILE = "./tickets.json";
+
+
+// ===============================
+// خواندن تیکت ها
+// ===============================
+
+function getTickets(){
+
+    if(!fs.existsSync(FILE)){
+        fs.writeFileSync(FILE, "[]");
+    }
+
+    let data = fs.readFileSync(FILE, "utf8");
+
+    if(!data){
+        return [];
+    }
+
+    try{
+        return JSON.parse(data);
+    }
+    catch(error){
+        return [];
+    }
+}
+
+
+
+// ===============================
+// ذخیره تیکت ها
+// ===============================
+
+function saveTickets(data){
+
+    fs.writeFileSync(
+        FILE,
+        JSON.stringify(data,null,2)
+    );
+
+}
+
+
+
+// ===============================
+// دریافت همه تیکت ها
+// ===============================
+
+app.get("/tickets",(req,res)=>{
+
+    res.json(
+        getTickets()
     );
 
 });
 
 
 
-// تست سرور
-app.get("/status", (req, res) => {
 
-    res.json({
+// ===============================
+// ساخت تیکت جدید
+// ===============================
 
-        status: "online",
-
-        message: "LSPD Server Running"
-
-    });
-
-});
+app.post("/tickets",(req,res)=>{
 
 
+    let tickets = getTickets();
 
 
-// ارسال تیکت
-app.post("/tickets", (req, res) => {
-
-
-    const newTicket = {
-
+    let ticket = {
 
         id: Date.now(),
 
-        name: req.body.name || "",
+        name:req.body.name,
 
-        discord: req.body.discord || "",
+        discord:req.body.discord,
 
-        age: req.body.age || "",
+        age:req.body.age,
 
-        experience: req.body.experience || "",
+        experience:req.body.experience,
 
-        reason: req.body.reason || "",
+        reason:req.body.reason,
 
+        status:"Pending",
 
-        status: "جدید",
+        reply:"در انتظار بررسی فرماندهی",
 
-        time: new Date()
-
+        date:new Date().toLocaleString("fa-IR")
 
     };
 
 
-
-    tickets.push(newTicket);
-
+    tickets.push(ticket);
 
 
-    console.log(
-        "New Ticket:",
-        newTicket
-    );
-
+    saveTickets(tickets);
 
 
     res.json({
 
-        success: true,
+        success:true,
 
-        message: "Ticket Saved"
+        id:ticket.id
 
     });
 
@@ -103,11 +131,50 @@ app.post("/tickets", (req, res) => {
 
 
 
-// نمایش تیکت ها برای پنل فرماندهی
-app.get("/tickets", (req,res)=>{
+
+// ===============================
+// تغییر وضعیت و پاسخ فرمانده
+// ===============================
+
+app.put("/tickets/:id",(req,res)=>{
 
 
-    res.json(tickets);
+    let tickets = getTickets();
+
+
+    let ticket = tickets.find(
+        t => t.id == req.params.id
+    );
+
+
+    if(ticket){
+
+
+        ticket.status =
+        req.body.status || ticket.status;
+
+
+        ticket.reply =
+        req.body.reply || ticket.reply;
+
+
+        saveTickets(tickets);
+
+
+        res.json({
+            success:true
+        });
+
+
+    }else{
+
+
+        res.json({
+            success:false
+        });
+
+
+    }
 
 
 });
@@ -115,21 +182,29 @@ app.get("/tickets", (req,res)=>{
 
 
 
+
+
+
+// ===============================
 // حذف تیکت
+// ===============================
+
 app.delete("/tickets/:id",(req,res)=>{
 
 
+    let tickets = getTickets();
+
+
     tickets = tickets.filter(
-
         t => t.id != req.params.id
-
     );
 
 
+    saveTickets(tickets);
+
+
     res.json({
-
         success:true
-
     });
 
 
@@ -137,21 +212,13 @@ app.delete("/tickets/:id",(req,res)=>{
 
 
 
-
-
-// پورت Render
-const PORT = process.env.PORT || 3000;
 
 
 
 app.listen(PORT,()=>{
 
-
     console.log(
-
-        "LSPD Server running on port " + PORT
-
+        `LSPD Server running on port ${PORT}`
     );
-
 
 });
