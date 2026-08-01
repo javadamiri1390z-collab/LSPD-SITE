@@ -1,6 +1,6 @@
 /* =====================================
-   VANGUARD LSPD SYSTEM CSS
-   FINAL VERSION
+   VANGUARD LSPD SYSTEM
+   FINAL CSS
 ===================================== */
 
 
@@ -15,34 +15,27 @@
 body{
 
     min-height:100vh;
-
     color:white;
-
     overflow-x:hidden;
 
     background-size:cover;
-
     background-position:center;
-
     background-attachment:fixed;
 
 }
 
 
-
-/* =====================================
-   BACKGROUNDS
-===================================== */
+/* ================= BACKGROUND ================= */
 
 
 .lobby-page{
 
-    background-image:
-    linear-gradient(
-        rgba(0,0,0,.65),
-        rgba(0,0,0,.65)
-    ),
-    url("bg.png");
+background:
+linear-gradient(
+rgba(0,0,0,.65),
+rgba(0,0,0,.65)
+),
+url("bg.png");
 
 }
 
@@ -50,12 +43,12 @@ body{
 
 .command-page{
 
-    background-image:
-    linear-gradient(
-        rgba(0,0,0,.75),
-        rgba(0,0,0,.75)
-    ),
-    url("lspd-bg.png");
+background:
+linear-gradient(
+rgba(0,0,0,.75),
+rgba(0,0,0,.75)
+),
+url("lspd-bg.png");
 
 }
 
@@ -63,45 +56,40 @@ body{
 
 .overlay{
 
-    position:fixed;
+position:fixed;
+inset:0;
 
-    inset:0;
+background:rgba(0,0,0,.15);
 
-    background:rgba(0,0,0,.15);
-
-    z-index:-1;
+z-index:-1;
 
 }
 
 
 
-/* =====================================
-   NAVBAR
-===================================== */
+/* ================= NAVBAR ================= */
 
 
 .navbar{
 
-    width:100%;
+width:100%;
 
-    padding:20px 50px;
+padding:20px 50px;
 
-    display:flex;
+display:flex;
 
-    align-items:center;
+align-items:center;
 
-    justify-content:space-between;
-
-
-    background:
-    rgba(0,0,0,.45);
+justify-content:space-between;
 
 
-    backdrop-filter:blur(15px);
+background:rgba(0,0,0,.45);
+
+backdrop-filter:blur(15px);
 
 
-    border-bottom:
-    1px solid rgba(255,255,255,.15);
+border-bottom:
+1px solid rgba(255,255,255,.15);
 
 }
 
@@ -109,14 +97,13 @@ body{
 
 .badge{
 
-    width:60px;
+width:60px;
+height:60px;
 
-    height:60px;
+object-fit:contain;
 
-    object-fit:contain;
-
-    filter:
-    drop-shadow(0 0 15px #168cff);
+filter:
+drop-shadow(0 0 15px #168cff);
 
 }
 
@@ -124,17 +111,16 @@ body{
 
 .nav-title{
 
-    text-align:center;
+text-align:center;
 
 }
 
 
-
 .nav-title h2{
 
-    color:#4da6ff;
+color:#4da6ff;
 
-    font-size:26px;
+font-size:26px;
 
 }
 
@@ -142,9 +128,9 @@ body{
 
 .nav-title span{
 
-    color:#ddd;
+color:#ddd;
 
-    font-size:14px;
+font-size:14px;
 
 }
 
@@ -152,17 +138,17 @@ body{
 
 .login-btn{
 
-    text-decoration:none;
+text-decoration:none;
 
-    color:white;
+color:white;
 
-    background:#006eff;
+background:#006eff;
 
-    padding:12px 25px;
+padding:12px 25px;
 
-    border-radius:10px;
+border-radius:10px;
 
-    transition:.3s;
+transition:.3s;
 
 }
 
@@ -170,34 +156,32 @@ body{
 
 .login-btn:hover{
 
-    background:#004bb8;
+background:#004bb8;
 
-    transform:translateY(-3px);
+transform:translateY(-3px);
 
 }
 
 
 
-/* =====================================
-   HERO
-===================================== */
+/* ================= HERO ================= */
 
 
 .hero{
 
-    min-height:80vh;
+min-height:80vh;
 
-    display:flex;
+display:flex;
 
-    justify-content:center;
+justify-content:center;
 
-    align-items:center;
+align-items:center;
 
-    flex-direction:column;
+flex-direction:column;
 
-    text-align:center;
+text-align:center;
 
-    padding:25px;
+padding:25px;
 
 }
 
@@ -205,9 +189,12 @@ body{
 
 .main-badge{
 
-    width:160px;
+width:160px;
 
-    margin-bottom:25px;
+margin-bottom:25px;
+
+filter:
+drop-shadow(0 0 20px #168cff);
 
 }
 
@@ -215,9 +202,9 @@ body{
 
 .hero h1{
 
-    font-size:38px;
+font-size:38px;
 
-    margin-bottom:20px;
+margin-bottom:20px;
 
 }
 
@@ -225,30 +212,28 @@ body{
 
 .hero p{
 
-    color:#ddd;
+color:#ddd;
 
-    font-size:18px;
+font-size:18px;
 
-    margin-bottom:35px;
+margin-bottom:35px;
 
 }
 
 
 
-/* =====================================
-   BUTTONS
-===================================== */
+/* ================= BUTTONS ================= */
 
 
 .buttons{
 
-    display:flex;
+display:flex;
 
-    gap:20px;
+gap:20px;
 
-    flex-wrap:wrap;
+flex-wrap:wrap;
 
-    justify-content:center;
+justify-content:center;
 
 }
 
@@ -256,34 +241,25 @@ body{
 
 .btn{
 
-    display:inline-block;
+display:inline-block;
 
-    text-decoration:none;
+padding:15px 35px;
 
-    color:white;
+border-radius:12px;
 
+color:white;
 
-    padding:15px 35px;
+text-decoration:none;
 
+cursor:pointer;
 
-    border-radius:12px;
+background:
+rgba(255,255,255,.12);
 
+border:
+1px solid rgba(255,255,255,.25);
 
-    background:
-    rgba(255,255,255,.12);
-
-
-    border:
-    1px solid rgba(255,255,255,.25);
-
-
-    backdrop-filter:blur(10px);
-
-
-    cursor:pointer;
-
-
-    transition:.3s;
+transition:.3s;
 
 }
 
@@ -291,10 +267,10 @@ body{
 
 .btn:hover{
 
-    transform:translateY(-5px);
+transform:translateY(-5px);
 
-    background:
-    rgba(255,255,255,.25);
+background:
+rgba(255,255,255,.25);
 
 }
 
@@ -302,9 +278,9 @@ body{
 
 .primary{
 
-    background:#006eff;
+background:#006eff;
 
-    border:none;
+border:none;
 
 }
 
@@ -312,43 +288,96 @@ body{
 
 .primary:hover{
 
-    background:#004fc4;
+background:#004fc4;
 
 }
 
 
 
-/* =====================================
-   FORM BOX
-===================================== */
+.delete-btn{
+
+background:#a00000!important;
+
+}
+
+
+
+.delete-btn:hover{
+
+background:#df0000!important;
+
+}
+
+
+
+/* ================= LOBBY ================= */
+
+
+.lobby-box{
+
+
+background:
+rgba(0,0,0,.45);
+
+
+backdrop-filter:blur(18px);
+
+
+padding:45px;
+
+
+border-radius:25px;
+
+
+max-width:850px;
+
+
+border:
+1px solid rgba(255,255,255,.15);
+
+
+box-shadow:
+0 0 40px rgba(0,110,255,.25);
+
+
+}
+
+
+
+.lobby-box .btn{
+
+min-width:220px;
+
+}
+
+
+
+/* ================= FORM ================= */
 
 
 .form-box{
 
-    width:450px;
 
-    max-width:95%;
+width:450px;
 
-
-    padding:40px;
+max-width:95%;
 
 
-    background:
-    rgba(0,0,0,.60);
+padding:40px;
 
 
-    backdrop-filter:blur(18px);
+background:
+rgba(0,0,0,.60);
 
 
-    border-radius:22px;
+backdrop-filter:blur(18px);
 
 
-    border:
-    1px solid rgba(255,255,255,.2);
+border-radius:22px;
 
 
-    box-shadow:
-    0 0 40px rgba(0,110,255,.25);
+border:
+1px solid rgba(255,255,255,.2);
 
 
 }
@@ -357,19 +386,7 @@ body{
 
 .form-box h1{
 
-    color:#4da6ff;
-
-    margin-bottom:15px;
-
-}
-
-
-
-.form-box p{
-
-    color:#ccc;
-
-    margin-bottom:25px;
+color:#4da6ff;
 
 }
 
@@ -379,30 +396,25 @@ body{
 .form-box textarea{
 
 
-    width:100%;
+width:100%;
+
+padding:15px;
+
+margin-top:15px;
 
 
-    padding:15px;
+background:
+rgba(255,255,255,.1);
 
 
-    margin-top:15px;
+color:white;
 
 
-    background:
-    rgba(255,255,255,.1);
+border-radius:10px;
 
 
-    color:white;
-
-
-    border-radius:10px;
-
-
-    border:
-    1px solid rgba(255,255,255,.2);
-
-
-    outline:none;
+border:
+1px solid rgba(255,255,255,.2);
 
 }
 
@@ -410,65 +422,369 @@ body{
 
 .form-box textarea{
 
-    height:100px;
+height:100px;
 
-    resize:none;
-
-}
-
-
-
-.form-box input:focus,
-.form-box textarea:focus{
-
-    border-color:#168cff;
-
-    box-shadow:
-    0 0 10px #168cff;
-
-}/* ===== LOBBY BOX ===== */
-
-.lobby-box {
-
-    background: rgba(0,0,0,0.45);
-
-    backdrop-filter: blur(15px);
-
-    padding:45px;
-
-    border-radius:25px;
-
-    border:1px solid rgba(255,255,255,.15);
-
-    box-shadow:
-    0 0 40px rgba(0,110,255,.25);
-
-    max-width:850px;
-
-}
-
-
-/* دکمه های صفحه اصلی */
-
-.lobby-box .buttons {
-
-    justify-content:center;
-
-    margin-top:30px;
-
-    flex-wrap:wrap;
+resize:none;
 
 }
 
 
 
-.lobby-box .btn {
+/* ================= COMMAND PANEL ================= */
 
-    min-width:220px;
 
-    text-align:center;
+.dashboard{
+
+
+width:1100px;
+
+max-width:95%;
+
+
+padding:40px;
+
+
+background:
+rgba(0,0,0,.55);
+
+
+backdrop-filter:blur(20px);
+
+
+border-radius:25px;
+
+
+border:
+1px solid rgba(255,255,255,.15);
+
+
+box-shadow:
+0 0 50px rgba(0,110,255,.25);
+
 
 }
 
 
-ادامه CSS را در پیام بعدی می‌فرستم.
+
+.dashboard-sub{
+
+color:#aaa;
+
+margin-bottom:30px;
+
+}
+
+
+
+/* ================= STATS ================= */
+
+
+.stats{
+
+display:flex;
+
+gap:20px;
+
+justify-content:center;
+
+flex-wrap:wrap;
+
+margin-bottom:30px;
+
+}
+
+
+
+.card{
+
+
+min-width:220px;
+
+
+padding:25px;
+
+
+border-radius:18px;
+
+
+background:
+rgba(255,255,255,.08);
+
+
+border:
+1px solid rgba(255,255,255,.15);
+
+
+}
+
+
+
+.card h2{
+
+font-size:40px;
+
+color:#4da6ff;
+
+}
+
+
+
+.stat-pending h2{
+
+color:#ffaa00;
+
+}
+
+
+
+.stat-accepted h2{
+
+color:#00ff88;
+
+}
+
+
+
+/* ================= SEARCH ================= */
+
+
+.search-box{
+
+
+width:100%;
+
+
+padding:15px;
+
+
+margin-bottom:25px;
+
+
+border-radius:12px;
+
+
+background:
+rgba(255,255,255,.1);
+
+
+color:white;
+
+
+border:
+1px solid rgba(255,255,255,.2);
+
+
+}
+
+
+
+/* ================= TICKETS ================= */
+
+
+.ticket-card{
+
+
+background:
+rgba(255,255,255,.08);
+
+
+padding:25px;
+
+
+margin-top:20px;
+
+
+border-radius:18px;
+
+
+border:
+1px solid rgba(255,255,255,.15);
+
+
+}
+
+
+
+.ticket-card h2{
+
+color:#4da6ff;
+
+margin-bottom:15px;
+
+}
+
+
+
+.ticket-card p{
+
+margin:10px 0;
+
+color:#ddd;
+
+}
+
+
+
+.ticket-header{
+
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+}
+
+
+
+.ticket-card textarea,
+.ticket-card select{
+
+
+width:100%;
+
+
+padding:14px;
+
+
+margin-top:15px;
+
+
+background:
+rgba(0,0,0,.45);
+
+
+color:white;
+
+
+border-radius:10px;
+
+
+border:
+1px solid rgba(255,255,255,.2);
+
+
+}
+
+
+
+.ticket-buttons{
+
+
+display:flex;
+
+gap:15px;
+
+margin-top:15px;
+
+
+}
+
+
+
+.pending-text{
+
+color:#ffaa00;
+
+font-weight:bold;
+
+}
+
+
+.approved-text{
+
+color:#00ff88;
+
+font-weight:bold;
+
+}
+
+
+.rejected-text{
+
+color:#ff3333;
+
+font-weight:bold;
+
+}
+
+
+
+
+/* ================= FOOTER ================= */
+
+
+footer{
+
+text-align:center;
+
+padding:20px;
+
+color:#aaa;
+
+}
+
+
+
+/* ================= MOBILE ================= */
+
+
+@media(max-width:700px){
+
+
+.navbar{
+
+padding:15px;
+
+}
+
+
+.dashboard{
+
+padding:20px;
+
+}
+
+
+.stats{
+
+flex-direction:column;
+
+}
+
+
+.card{
+
+width:100%;
+
+}
+
+
+
+.ticket-header{
+
+flex-direction:column;
+
+gap:10px;
+
+}
+
+
+
+.ticket-buttons{
+
+flex-direction:column;
+
+}
+
+
+
+.btn{
+
+width:100%;
+
+}
+
+
+}
