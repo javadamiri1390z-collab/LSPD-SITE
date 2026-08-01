@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Vanguard LSPD | Member Profile</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+
+<div class="overlay"></div>
+
+
+<header class="navbar">
+
+<img src="badge.png" class="badge">
+
+
+<div class="nav-title">
+
+<h2>Vanguard LSPD</h2>
+
+<span>Member Profile</span>
+
+</div>
+
+
+<a href="index.html" class="login-btn">
+بازگشت
+</a>
+
+
+</header>
+
+
+
+
+<main class="hero">
+
+
+<div class="profile-card">
+
+
+<img src="badge.png" class="profile-badge">
+
+
+
+<h1 id="memberName">
+نام عضو
+</h1>
+
+
+
+<div class="rank-box">
+
+
+<h3>
+Rank
+</h3>
+
+
+<p id="memberRank">
+Officer
+</p>
+
+
+</div>
+
+
+
+
+<div class="info-box">
+
+
+<p>
+🎖 واحد:
+<span id="department">
+LSPD Patrol
+</span>
+</p>
+
+
+
+<p>
+📅 تاریخ عضویت:
+<span id="joinDate">
+2026
+</span>
+</p>
+
+
+
+<p>
+⭐ سطح دسترسی:
+<span id="access">
+Officer
+</span>
+</p>
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+</main>
+
+
+
+
+<script>
+
+
+// اطلاعات تست عضو
+
+
+let member = {
+
+
+name:"Javad Amiri",
+
+rank:"Captain",
+
+department:"LSPD Command",
+
+joinDate:"01/08/2026"
+
+
+};
+
+
+
+
+document.getElementById("memberName").innerHTML =
+member.name;
+
+
+document.getElementById("memberRank").innerHTML =
+member.rank;
+
+
+document.getElementById("department").innerHTML =
+member.department;
+
+
+document.getElementById("joinDate").innerHTML =
+member.joinDate;
+
+
+document.getElementById("access").innerHTML =
+member.rank;
+
+
+
+</script>
+
+
+
+</body>
+
+</html>

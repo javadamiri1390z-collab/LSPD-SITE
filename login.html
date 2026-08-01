@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Vanguard LSPD | Command Login</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+
+<div class="overlay"></div>
+
+
+<header class="navbar">
+
+<img src="badge.png" class="badge">
+
+
+<div class="nav-title">
+
+<h2>Vanguard LSPD</h2>
+
+<span>Command Access</span>
+
+</div>
+
+
+<a href="index.html" class="login-btn">
+بازگشت
+</a>
+
+
+</header>
+
+
+
+
+<main class="hero">
+
+
+<div class="form-box">
+
+
+<h1>
+ورود فرماندهی
+</h1>
+
+
+<p>
+فقط اعضای مجاز LSPD دسترسی دارند.
+</p>
+
+
+
+<input 
+type="text"
+id="username"
+placeholder="نام کاربری">
+
+
+
+<input 
+type="password"
+id="password"
+placeholder="رمز عبور">
+
+
+
+<button 
+class="btn primary"
+onclick="loginCommand()">
+
+ورود
+
+</button>
+
+
+
+<div id="loginResult"></div>
+
+
+
+</div>
+
+
+</main>
+
+
+
+
+<script src="script.js"></script>
+
+
+<script>
+
+
+function loginCommand(){
+
+
+let user =
+document.getElementById("username").value;
+
+
+let pass =
+document.getElementById("password").value;
+
+
+
+// اطلاعات تستی فرمانده
+
+if(user === "LSPD" && pass === "LSPD00078"){
+
+
+
+localStorage.setItem(
+"lspdAdmin",
+"true"
+);
+
+
+
+window.location.href =
+"admin.html";
+
+
+
+}else{
+
+
+document.getElementById("loginResult").innerHTML =
+
+`
+<p style="color:red">
+نام کاربری یا رمز اشتباه است
+</p>
+`;
+
+
+
+}
+
+
+
+}
+
+
+</script>
+
+
+
+</body>
+
+</html>

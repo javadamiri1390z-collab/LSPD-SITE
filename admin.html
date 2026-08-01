@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Vanguard LSPD | Command Dashboard</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+
+<div class="overlay"></div>
+
+
+<header class="navbar">
+
+<img src="badge.png" class="badge">
+
+
+<div class="nav-title">
+
+<h2>Vanguard LSPD</h2>
+
+<span>Command Dashboard</span>
+
+</div>
+
+
+<button class="login-btn" onclick="logoutAdmin()">
+خروج
+</button>
+
+
+</header>
+
+
+
+
+
+<main class="hero">
+
+
+<div class="dashboard">
+
+
+
+<h1>
+پنل فرماندهی LSPD
+</h1>
+
+
+
+<div class="stats">
+
+
+<div class="card">
+
+<h2 id="total">
+0
+</h2>
+
+<p>
+کل درخواست‌ها
+</p>
+
+</div>
+
+
+
+<div class="card">
+
+<h2 id="pending">
+0
+</h2>
+
+<p>
+در انتظار بررسی
+</p>
+
+</div>
+
+
+
+<div class="card">
+
+<h2 id="accepted">
+0
+</h2>
+
+<p>
+تایید شده
+</p>
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+<input 
+id="search"
+placeholder="جستجو بین درخواست‌ها..."
+>
+
+
+
+<div id="tickets">
+
+</div>
+
+
+
+</div>
+
+
+</main>
+
+
+
+
+
+
+<script src="script.js"></script>
+
+
+<script>
+
+
+let allTickets=[];
+
+
+
+async function loadTickets(){
+
+
+allTickets = await getTickets();
+
+
+showTickets(allTickets);
+
+
+updateStats();
+
+
+}
+
+
+
+
+function updateStats(){
+
+
+document.getElementById("total").innerHTML =
+allTickets.length;
+
+
+
+document.getElementById("pending").innerHTML =
+
+allTickets.filter(
+t=>t.status==="Pending"
+).length;
+
+
+
+document.getElementById("accepted").innerHTML =
+
+allTickets.filter(
+t=>t.status==="Accepted"
+).length;
+
+
+
+}
+
+
+
+
+
+
+
+function showTickets(tickets){
+
+
+let box =
+document.getElementById("tickets");
+
+
+box.innerHTML="";
+
+
+
+tickets.forEach(t=>{
+
+
+box.innerHTML +=
+
+`
+
+<div class="ticket">
+
+
+<h2>
+${t.name}
+</h2>
+
+
+<p>
+Discord:
+${t.discord}
+</p>
+
+
+<p>
+سن:
+${t.age}
+</p>
+
+
+<p>
+تجربه:
+${t.experience}
+</p>
+
+
+<p>
+دلیل:
+${t.reason}
+</p>
+
+
+
+<p>
+وضعیت:
+<b>
+${t.status}
+</b>
+</p>
+
+
+
+<textarea id="reply-${t.id}" placeholder="پاسخ فرمانده">${t.reply || ""}</textarea>
+
+
+
+<select id="status-${t.id}">
+
+<option value="Pending">
+در انتظار
+</option>
+
+
+<option value="Accepted">
+تایید شده
+</option>
+
+
+<option value="Rejected">
+رد شده
+</option>
+
+
+</select>
+
+
+
+<button class="btn primary"
+onclick="saveTicket('${t.id}')">
+
+ذخیره
+
+</button>
+
+
+
+<button class="btn danger"
+onclick="removeTicket('${t.id}')">
+
+حذف
+
+</button>
+
+
+
+</div>
+
+
+`;
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+async function saveTicket(id){
+
+
+let status =
+document.getElementById(
+"status-"+id
+).value;
+
+
+
+let reply =
+document.getElementById(
+"reply-"+id
+).value;
+
+
+
+await updateTicket(
+id,
+status,
+reply
+);
+
+
+
+loadTickets();
+
+
+}
+
+
+
+
+
+
+
+async function removeTicket(id){
+
+
+if(confirm("حذف شود؟")){
+
+
+await deleteTicket(id);
+
+
+loadTickets();
+
+
+}
+
+
+}
+
+
+
+
+
+
+
+document
+.getElementById("search")
+.addEventListener(
+"input",
+function(){
+
+
+let value =
+this.value.toLowerCase();
+
+
+
+let result =
+allTickets.filter(t=>
+
+t.name.toLowerCase().includes(value)
+||
+t.discord.toLowerCase().includes(value)
+
+);
+
+
+
+showTickets(result);
+
+
+
+});
+
+
+
+
+
+
+loadTickets();
+
+
+</script>
+
+
+
+</body>
+
+</html>

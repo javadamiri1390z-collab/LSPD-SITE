@@ -1,0 +1,1078 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+
+body {
+    min-height: 100vh;
+    background: url("lspd-bg.png") center/cover no-repeat;
+    color: white;
+    overflow-x: hidden;
+}
+
+
+/* لایه تاریک روی عکس */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    z-index: -1;
+}
+
+
+/* نوار بالا */
+.navbar {
+    width: 100%;
+    padding: 20px 50px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(10px);
+
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+
+
+.badge {
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
+}
+
+
+.nav-title {
+    text-align: center;
+}
+
+
+.nav-title h2 {
+    color: #4da6ff;
+    font-size: 25px;
+}
+
+
+.nav-title span {
+    font-size: 13px;
+    color: #ddd;
+}
+
+
+
+.login-btn {
+
+    text-decoration: none;
+    color: white;
+
+    padding: 12px 25px;
+
+    border-radius: 8px;
+
+    background: #0b5cff;
+
+    transition: .3s;
+}
+
+
+.login-btn:hover {
+    background: #003bb5;
+}
+
+
+
+/* بخش اصلی */
+.hero {
+
+    min-height: 75vh;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+
+    padding: 20px;
+
+}
+
+
+.main-badge {
+
+    width: 150px;
+
+    margin-bottom: 25px;
+
+    filter: drop-shadow(0 0 20px #168cff);
+
+}
+
+
+
+.hero h1 {
+
+    font-size: 38px;
+
+    margin-bottom: 15px;
+
+}
+
+
+.hero p {
+
+    color: #ddd;
+
+    font-size: 18px;
+
+    margin-bottom: 35px;
+
+}
+
+
+
+/* دکمه ها */
+
+.buttons {
+
+    display: flex;
+
+    gap: 20px;
+
+}
+
+
+.btn {
+
+    text-decoration: none;
+
+    color: white;
+
+    padding: 15px 35px;
+
+    border-radius: 10px;
+
+    background: rgba(255,255,255,0.12);
+
+    border: 1px solid rgba(255,255,255,0.3);
+
+    backdrop-filter: blur(8px);
+
+    transition: .3s;
+
+}
+
+
+
+.btn:hover {
+
+    transform: translateY(-5px);
+
+    background: rgba(255,255,255,0.25);
+
+}
+
+
+
+.primary {
+
+    background: #006eff;
+
+    border: none;
+
+}
+
+
+
+.primary:hover {
+
+    background: #0050bb;
+
+}
+
+
+
+/* پایین صفحه */
+
+footer {
+
+    text-align: center;
+
+    padding: 20px;
+
+    color: #aaa;
+
+    font-size: 14px;
+
+}/* ===== Application Form ===== */
+
+.form-box {
+
+    width: 450px;
+    max-width: 90%;
+
+    padding: 35px;
+
+    background: rgba(0,0,0,0.55);
+
+    backdrop-filter: blur(12px);
+
+    border-radius: 15px;
+
+    border: 1px solid rgba(255,255,255,0.2);
+
+    box-shadow: 0 0 30px rgba(0,110,255,0.3);
+
+}
+
+
+
+.form-box h1 {
+
+    color: #4da6ff;
+
+    margin-bottom: 15px;
+
+}
+
+
+
+.form-box p {
+
+    color: #ccc;
+
+    margin-bottom: 25px;
+
+}
+
+
+
+#applicationForm {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+
+}
+
+
+
+#applicationForm input,
+#applicationForm textarea {
+
+
+    width: 100%;
+
+    padding: 15px;
+
+
+    background: rgba(255,255,255,0.1);
+
+
+    color: white;
+
+
+    border: 1px solid rgba(255,255,255,0.25);
+
+
+    border-radius: 8px;
+
+
+    outline: none;
+
+
+    font-size: 15px;
+
+
+}
+
+
+
+#applicationForm textarea {
+
+    height: 100px;
+
+    resize: none;
+
+}
+
+
+
+#applicationForm input::placeholder,
+#applicationForm textarea::placeholder {
+
+    color: #aaa;
+
+}
+
+
+
+#applicationForm input:focus,
+#applicationForm textarea:focus {
+
+    border-color: #168cff;
+
+    box-shadow: 0 0 10px #168cff;
+
+}
+
+
+
+#result {
+
+    margin-top: 20px;
+
+    text-align: center;
+
+    color: #4dff88;
+
+}/* ===== Command Login Style ===== */
+
+.form-box input {
+
+    display: block;
+
+    margin: 15px auto;
+
+}
+
+
+
+.form-box .btn {
+
+    width: 100%;
+
+    margin-top: 15px;
+
+}
+
+
+
+#loginResult {
+
+    margin-top: 20px;
+
+    text-align: center;
+
+}
+
+
+
+.form-box {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+}
+
+
+
+.form-box h1,
+.form-box p {
+
+    width: 100%;
+
+    text-align: center;
+
+}
+
+
+
+.form-box input,
+.form-box textarea {
+
+    width: 100%;
+
+}/* Admin Panel */
+
+
+.admin-box {
+
+width: 800px;
+max-width: 95%;
+
+padding: 30px;
+
+background: rgba(0,0,0,.6);
+
+backdrop-filter: blur(15px);
+
+border-radius: 15px;
+
+}
+
+
+
+.ticket-card {
+
+
+background: rgba(255,255,255,.08);
+
+padding: 20px;
+
+margin-top: 20px;
+
+border-radius: 12px;
+
+border:1px solid rgba(255,255,255,.2);
+
+
+}
+
+
+
+.ticket-card textarea {
+
+
+width:100%;
+
+height:80px;
+
+margin:15px 0;
+
+padding:10px;
+
+background:rgba(0,0,0,.4);
+
+color:white;
+
+border-radius:8px;
+
+
+}
+
+
+
+.ticket-card .btn {
+
+margin:5px;
+
+}.delete-btn {
+
+background:#b30000 !important;
+
+border:none;
+
+}
+
+
+
+.delete-btn:hover {
+
+background:#ff0000 !important;
+
+}/* ===== COMMAND LOGIN ===== */
+
+
+.login-container {
+
+height:100vh;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+}
+
+
+
+.login-card {
+
+
+width:420px;
+
+padding:40px;
+
+
+background:rgba(0,0,0,.65);
+
+
+backdrop-filter:blur(15px);
+
+
+border-radius:20px;
+
+
+border:1px solid rgba(255,255,255,.2);
+
+
+text-align:center;
+
+
+box-shadow:0 0 40px rgba(0,110,255,.4);
+
+
+}
+
+
+
+.login-badge {
+
+
+width:120px;
+
+margin-bottom:20px;
+
+
+filter:drop-shadow(0 0 20px #168cff);
+
+
+}
+
+
+
+.login-card h1 {
+
+
+color:#4da6ff;
+
+font-size:32px;
+
+
+}
+
+
+
+.login-card h3 {
+
+
+color:white;
+
+margin:10px;
+
+
+}
+
+
+
+.login-card p {
+
+
+color:#bbb;
+
+}
+
+
+
+.login-card input {
+
+
+width:100%;
+
+padding:15px;
+
+margin-top:15px;
+
+
+background:rgba(255,255,255,.1);
+
+
+border:1px solid rgba(255,255,255,.2);
+
+
+border-radius:10px;
+
+
+color:white;
+
+
+outline:none;
+
+
+}
+
+
+
+.login-button {
+
+
+width:100%;
+
+margin-top:25px;
+
+
+}
+
+
+
+.back-link {
+
+
+display:block;
+
+margin-top:20px;
+
+color:#aaa;
+
+text-decoration:none;
+
+
+}
+
+
+.back-link:hover {
+
+
+color:white;
+
+
+}/* ===== LSPD ADMIN DASHBOARD ===== */
+
+
+.admin-box {
+
+    width: 1000px;
+    max-width: 95%;
+
+    padding: 35px;
+
+    background: rgba(0,0,0,0.60);
+
+    backdrop-filter: blur(15px);
+
+    border-radius: 20px;
+
+    border: 1px solid rgba(255,255,255,0.15);
+
+}
+
+
+
+.search-box {
+
+    width:100%;
+
+    padding:15px;
+
+    margin:25px 0;
+
+    border-radius:12px;
+
+    background:rgba(255,255,255,0.1);
+
+    border:1px solid rgba(255,255,255,0.2);
+
+    color:white;
+
+    outline:none;
+
+    font-size:16px;
+
+}
+
+
+
+.search-box::placeholder {
+
+    color:#aaa;
+
+}
+
+
+
+/* کارت های آمار */
+
+.stats-container {
+
+    display:flex;
+
+    gap:15px;
+
+    justify-content:center;
+
+    flex-wrap:wrap;
+
+    margin-bottom:30px;
+
+}
+
+
+
+.stat-card {
+
+
+    min-width:180px;
+
+    padding:20px;
+
+
+    background:rgba(255,255,255,0.08);
+
+
+    border-radius:15px;
+
+
+    text-align:center;
+
+
+    border:1px solid rgba(255,255,255,.15);
+
+
+}
+
+
+
+.stat-card h3 {
+
+
+    color:#ccc;
+
+    margin-bottom:10px;
+
+
+}
+
+
+
+.stat-card span {
+
+
+    font-size:35px;
+
+    font-weight:bold;
+
+
+    color:white;
+
+
+}
+
+
+
+/* وضعیت ها */
+
+
+.stat-card.pending {
+
+    border-top:4px solid #ffaa00;
+
+}
+
+
+
+.stat-card.approved {
+
+    border-top:4px solid #00ff88;
+
+}
+
+
+
+.stat-card.rejected {
+
+    border-top:4px solid #ff3333;
+
+}
+
+
+
+
+.pending-text {
+
+    color:#ffaa00;
+
+    font-weight:bold;
+
+}
+
+
+
+.approved-text {
+
+    color:#00ff88;
+
+    font-weight:bold;
+
+}
+
+
+
+.rejected-text {
+
+    color:#ff3333;
+
+    font-weight:bold;
+
+}
+
+
+
+
+/* کارت درخواست */
+
+
+.ticket-card {
+
+
+    background:rgba(255,255,255,.07);
+
+
+    padding:25px;
+
+
+    margin-top:20px;
+
+
+    border-radius:15px;
+
+
+    border:1px solid rgba(255,255,255,.15);
+
+
+    transition:.3s;
+
+
+}
+
+
+
+.ticket-card:hover {
+
+
+    transform:translateY(-3px);
+
+
+    background:rgba(255,255,255,.12);
+
+
+}
+
+
+
+.ticket-card h2 {
+
+
+    color:#4da6ff;
+
+    margin-bottom:15px;
+
+
+}
+
+
+
+.ticket-card p {
+
+
+    margin:8px 0;
+
+    color:#ddd;
+
+
+}
+
+
+
+.ticket-card textarea {
+
+
+    width:100%;
+
+
+    height:90px;
+
+
+    margin:15px 0;
+
+
+    padding:12px;
+
+
+    border-radius:10px;
+
+
+    resize:none;
+
+
+    background:rgba(0,0,0,.4);
+
+
+    color:white;
+
+
+    border:1px solid rgba(255,255,255,.2);
+
+
+}
+
+
+
+/* دکمه حذف */
+
+
+.delete-btn {
+
+
+    background:#9b0000 !important;
+
+
+}
+
+
+
+.delete-btn:hover {
+
+
+    background:#d00000 !important;
+
+
+}
+
+
+
+/* موبایل */
+
+
+@media(max-width:700px){
+
+
+.stats-container{
+
+flex-direction:column;
+
+}
+
+
+
+.stat-card{
+
+width:100%;
+
+}
+
+
+
+.admin-box{
+
+padding:20px;
+
+}
+
+
+}/* ===== MEMBER PROFILE ===== */
+
+
+.profile-card {
+
+width:450px;
+
+max-width:90%;
+
+padding:35px;
+
+background:rgba(0,0,0,.6);
+
+backdrop-filter:blur(15px);
+
+border-radius:20px;
+
+text-align:center;
+
+border:1px solid rgba(255,255,255,.2);
+
+}
+
+
+
+.profile-badge {
+
+width:120px;
+
+filter:drop-shadow(0 0 20px #168cff);
+
+margin-bottom:20px;
+
+}
+
+
+
+.profile-card h1 {
+
+color:#4da6ff;
+
+}
+
+
+
+.rank-box {
+
+margin:25px 0;
+
+padding:15px;
+
+background:rgba(0,110,255,.2);
+
+border-radius:12px;
+
+}
+
+
+
+.rank-box p {
+
+font-size:28px;
+
+font-weight:bold;
+
+color:#00ff88;
+
+}
+
+
+
+.info-box {
+
+text-align:right;
+
+background:rgba(255,255,255,.08);
+
+padding:20px;
+
+border-radius:12px;
+
+}
+
+
+
+.info-box p {
+
+margin:12px 0;
+
+color:#ddd;
+
+}/* Rank Management */
+
+
+#members select {
+
+
+width:100%;
+
+padding:12px;
+
+margin:10px 0;
+
+
+background:#111;
+
+color:white;
+
+
+border-radius:8px;
+
+
+border:1px solid rgba(255,255,255,.2);
+
+
+}

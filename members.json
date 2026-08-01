@@ -1,0 +1,15 @@
+[
+    {
+        "id":1,
+        "name":"SEDJAVAD",
+        "rank":"Chief",
+        "department":"LSPD Command"
+    },
+
+    {
+        "id":2,
+        "name":"John Doe",
+        "rank":"Officer",
+        "department":"Patrol Division"
+    }
+]

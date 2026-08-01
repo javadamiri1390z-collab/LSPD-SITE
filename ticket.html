@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Vanguard LSPD | Ticket</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+
+<div class="overlay"></div>
+
+
+<header class="navbar">
+
+<img src="badge.png" class="badge">
+
+
+<div class="nav-title">
+
+<h2>Vanguard LSPD</h2>
+
+<span>Application Tracking</span>
+
+</div>
+
+
+<a href="index.html" class="login-btn">
+بازگشت
+</a>
+
+
+</header>
+
+
+
+<main class="hero">
+
+
+<div class="form-box">
+
+
+<h1>
+پیگیری درخواست
+</h1>
+
+
+<p>
+شماره درخواست خود را وارد کنید.
+</p>
+
+
+
+<input 
+type="text"
+id="ticketID"
+placeholder="مثال: LSPD-1234">
+
+
+
+<button 
+class="btn primary"
+onclick="checkTicket()">
+
+بررسی درخواست
+
+</button>
+
+
+
+<div id="ticketResult"></div>
+
+
+
+</div>
+
+
+</main>
+
+
+
+
+<script src="script.js"></script>
+
+
+<script>
+
+
+function checkTicket(){
+
+
+let id =
+document.getElementById("ticketID").value;
+
+
+
+let tickets =
+JSON.parse(localStorage.getItem("lspdTickets")) || [];
+
+
+
+let ticket =
+tickets.find(t => t.id === id);
+
+
+
+let result =
+document.getElementById("ticketResult");
+
+
+
+if(ticket){
+
+
+result.innerHTML = `
+
+<hr>
+
+<h3>
+وضعیت درخواست
+</h3>
+
+
+<p>
+شماره:
+${ticket.id}
+</p>
+
+
+<p>
+وضعیت:
+<b>${ticket.status}</b>
+</p>
+
+
+<p>
+پاسخ فرماندهی:
+<br>
+${ticket.reply}
+</p>
+
+
+<p>
+تاریخ:
+${ticket.date}
+</p>
+
+
+`;
+
+
+
+}else{
+
+
+result.innerHTML = `
+
+<p style="color:red">
+
+درخواستی با این شماره پیدا نشد
+
+</p>
+
+`;
+
+}
+
+
+
+}
+
+
+
+</script>
+
+
+
+</body>
+
+</html>
