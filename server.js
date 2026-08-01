@@ -1,76 +1,32 @@
+// ===================================
+// Vanguard LSPD System
+// MongoDB Ticket Server
+// ===================================
+
+
 const express = require("express");
 const cors = require("cors");
-const fs = require("fs");
 const path = require("path");
+const { MongoClient, ObjectId } = require("mongodb");
+
 
 const app = express();
 
+
 app.use(cors());
+
 app.use(express.json());
 
 
-// نمایش فایل‌های سایت
+// فایل های سایت
 app.use(express.static(__dirname));
 
-app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "index.html"));
-});
 
 
-const PORT = process.env.PORT || 3000;
+app.get("/", (req,res)=>{
 
-const FILE = "./tickets.json";
-
-
-// ===============================
-// خواندن تیکت ها
-// ===============================
-
-function getTickets(){
-
-    if(!fs.existsSync(FILE)){
-        fs.writeFileSync(FILE, "[]");
-    }
-
-    let data = fs.readFileSync(FILE, "utf8");
-
-    if(!data){
-        return [];
-    }
-
-    try{
-        return JSON.parse(data);
-    }
-    catch(error){
-        return [];
-    }
-}
-
-
-
-// ===============================
-// ذخیره تیکت ها
-// ===============================
-
-function saveTickets(data){
-
-    fs.writeFileSync(
-        FILE,
-        JSON.stringify(data,null,2)
-    );
-
-}
-
-
-
-// ===============================
-// دریافت همه تیکت ها
-// ===============================
-
-app.get("/tickets",(req,res)=>{
-
-    res.json(
-        getTickets()
+    res.sendFile(
+        path.join(__dirname,"index.html")
     );
 
 });
@@ -78,147 +34,211 @@ app.get("/tickets",(req,res)=>{
 
 
 
-// ===============================
-// ساخت تیکت جدید
-// ===============================
+// MongoDB Connection
 
-app.post("/tickets",(req,res)=>{
+const MONGO_URI = process.env.MONGODB_URI;
 
 
-    let tickets = getTickets();
+const client = new MongoClient(MONGO_URI);
 
 
-    let ticket = {
 
-        id: Date.now(),
-
-        name:req.body.name,
-
-        discord:req.body.discord,
-
-        age:req.body.age,
-
-        experience:req.body.experience,
-
-        reason:req.body.reason,
-
-        status:"Pending",
-
-        reply:"در انتظار بررسی فرماندهی",
-
-        date:new Date().toLocaleString("fa-IR")
-
-    };
+let tickets;
 
 
-    tickets.push(ticket);
+
+async function startServer(){
 
 
-    saveTickets(tickets);
+    await client.connect();
 
 
-    res.json({
+    console.log("MongoDB Connected ✅");
 
-        success:true,
 
-        id:ticket.id
+
+    const database = client.db("LSPD");
+
+
+    tickets = database.collection("tickets");
+
+
+
+
+
+    // گرفتن همه تیکت ها
+
+    app.get("/tickets", async(req,res)=>{
+
+
+        const data = await tickets
+        .find({})
+        .sort({createdAt:-1})
+        .toArray();
+
+
+        res.json(data);
+
 
     });
 
 
-});
 
 
 
 
+    // ساخت تیکت جدید
 
-// ===============================
-// تغییر وضعیت و پاسخ فرمانده
-// ===============================
-
-app.put("/tickets/:id",(req,res)=>{
+    app.post("/tickets", async(req,res)=>{
 
 
-    let tickets = getTickets();
+        const ticket = {
 
 
-    let ticket = tickets.find(
-        t => t.id == req.params.id
-    );
+            name:req.body.name || "",
+
+            discord:req.body.discord || "",
+
+            age:req.body.age || "",
+
+            experience:req.body.experience || "",
+
+            reason:req.body.reason || "",
 
 
-    if(ticket){
+            status:"Pending",
+
+            reply:"در انتظار پاسخ فرماندهی",
 
 
-        ticket.status =
-        req.body.status || ticket.status;
+            createdAt:new Date()
 
 
-        ticket.reply =
-        req.body.reply || ticket.reply;
+
+        };
 
 
-        saveTickets(tickets);
+
+        const result =
+        await tickets.insertOne(ticket);
+
 
 
         res.json({
+
+            success:true,
+
+            id:result.insertedId
+
+
+        });
+
+
+
+    });
+
+
+
+
+
+
+
+
+    // تغییر وضعیت تیکت
+
+    app.put("/tickets/:id", async(req,res)=>{
+
+
+        await tickets.updateOne(
+
+
+            {
+                _id:new ObjectId(req.params.id)
+            },
+
+
+            {
+
+                $set:{
+
+                    status:req.body.status,
+
+                    reply:req.body.reply
+
+                }
+
+            }
+
+
+        );
+
+
+
+        res.json({
+
             success:true
+
         });
 
 
-    }else{
-
-
-        res.json({
-            success:false
-        });
-
-
-    }
-
-
-});
-
-
-
-
-
-
-
-// ===============================
-// حذف تیکت
-// ===============================
-
-app.delete("/tickets/:id",(req,res)=>{
-
-
-    let tickets = getTickets();
-
-
-    tickets = tickets.filter(
-        t => t.id != req.params.id
-    );
-
-
-    saveTickets(tickets);
-
-
-    res.json({
-        success:true
     });
 
 
-});
 
 
 
 
 
 
-app.listen(PORT,()=>{
+    // حذف تیکت
 
-    console.log(
-        `LSPD Server running on port ${PORT}`
-    );
+    app.delete("/tickets/:id", async(req,res)=>{
 
-});
+
+        await tickets.deleteOne({
+
+
+            _id:new ObjectId(req.params.id)
+
+
+        });
+
+
+
+        res.json({
+
+            success:true
+
+        });
+
+
+
+    });
+
+
+
+
+
+
+
+    const PORT = process.env.PORT || 3000;
+
+
+
+    app.listen(PORT,()=>{
+
+
+        console.log(
+            "LSPD Server running on port " + PORT
+        );
+
+
+    });
+
+
+
+}
+
+
+
+startServer();
