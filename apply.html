@@ -13,7 +13,7 @@
 </head>
 
 
-<body>
+<body class="form-page">
 
 
 <div class="overlay"></div>
@@ -25,8 +25,15 @@
 
 
 <div class="nav-title">
-<h2>Vanguard LSPD</h2>
-<span>Recruitment Application</span>
+
+<h2>
+Vanguard LSPD
+</h2>
+
+<span>
+Recruitment Application
+</span>
+
 </div>
 
 
@@ -40,16 +47,25 @@
 
 
 
-
 <main class="hero">
 
 
 <div class="form-box">
 
 
+
+<img 
+src="badge.png"
+class="form-badge"
+>
+
+
+
+
 <h1>
 فرم درخواست عضویت LSPD
 </h1>
+
 
 
 <p>
@@ -63,29 +79,33 @@
 <form id="applicationForm">
 
 
-<input 
+
+<input
 type="text"
 id="name"
 placeholder="نام IC"
-required>
+required
+>
 
 
 
 
-<input 
+<input
 type="text"
 id="discord"
 placeholder="Discord"
-required>
+required
+>
 
 
 
 
-<input 
+<input
 type="number"
 id="age"
 placeholder="سن"
-required>
+required
+>
 
 
 
@@ -107,11 +127,12 @@ required></textarea>
 
 
 
-<button class="btn primary" type="submit">
+<button class="btn primary">
 
-ارسال درخواست
+🚔 ارسال درخواست
 
 </button>
+
 
 
 </form>
@@ -127,6 +148,7 @@ required></textarea>
 </div>
 
 
+
 </main>
 
 
@@ -140,14 +162,12 @@ required></textarea>
 <script>
 
 
-
 document
 .getElementById("applicationForm")
 .addEventListener("submit", async function(e){
 
 
 e.preventDefault();
-
 
 
 
@@ -180,9 +200,7 @@ document.getElementById("reason").value
 
 
 
-
 let id = await createTicket(data);
-
 
 
 
@@ -193,37 +211,24 @@ if(id){
 document.getElementById("result").innerHTML = `
 
 
-<div class="ticket">
-
-
 <h3>
 درخواست شما ثبت شد ✅
 </h3>
 
 
-
 <p>
-کد پیگیری شما:
+کد پیگیری:
 </p>
 
 
-<h2>
+<b>
 ${id}
-</h2>
-
+</b>
 
 
 <p>
-این کد را ذخیره کنید و برای پیگیری درخواست استفاده کنید.
+این کد را نگه دارید.
 </p>
-
-
-<a href="ticket.html" class="btn">
-پیگیری درخواست
-</a>
-
-
-</div>
 
 
 `;
@@ -233,14 +238,11 @@ ${id}
 this.reset();
 
 
-
 }
 
 
 
 });
-
-
 
 
 
