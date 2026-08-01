@@ -1,224 +1,90 @@
-const express = require("express");
-const cors = require("cors");
-const fs = require("fs");
-const path = require("path");
-
-const app = express();
-
-app.use(cors());
-app.use(express.json());
+const SERVER_URL = "https://lspd-site-2.onrender.com";
 
 
-// نمایش فایل‌های سایت
-app.use(express.static(__dirname));
+// ارسال تیکت
+async function sendTicket(){
 
-app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "index.html"));
-});
+    const ticket = {
 
+        name: document.getElementById("name").value,
 
-const PORT = process.env.PORT || 3000;
+        discord: document.getElementById("discord").value,
 
-const FILE = "./tickets.json";
+        age: document.getElementById("age").value,
 
+        experience: document.getElementById("experience").value,
 
-// ===============================
-// خواندن تیکت ها
-// ===============================
-
-function getTickets(){
-
-    if(!fs.existsSync(FILE)){
-        fs.writeFileSync(FILE, "[]");
-    }
-
-    let data = fs.readFileSync(FILE, "utf8");
-
-    if(!data){
-        return [];
-    }
-
-    try{
-        return JSON.parse(data);
-    }
-    catch(error){
-        return [];
-    }
-}
-
-
-
-// ===============================
-// ذخیره تیکت ها
-// ===============================
-
-function saveTickets(data){
-
-    fs.writeFileSync(
-        FILE,
-        JSON.stringify(data,null,2)
-    );
-
-}
-
-
-
-// ===============================
-// دریافت همه تیکت ها
-// ===============================
-
-app.get("/tickets",(req,res)=>{
-
-    res.json(
-        getTickets()
-    );
-
-});
-
-
-
-
-// ===============================
-// ساخت تیکت جدید
-// ===============================
-
-app.post("/tickets",(req,res)=>{
-
-
-    let tickets = getTickets();
-
-
-    let ticket = {
-
-        id: Date.now(),
-
-        name:req.body.name,
-
-        discord:req.body.discord,
-
-        age:req.body.age,
-
-        experience:req.body.experience,
-
-        reason:req.body.reason,
-
-        status:"Pending",
-
-        reply:"در انتظار بررسی فرماندهی",
-
-        date:new Date().toLocaleString("fa-IR")
+        reason: document.getElementById("reason").value
 
     };
 
 
-    tickets.push(ticket);
+    try{
+
+        let response = await fetch(
+            SERVER_URL + "/tickets",
+            {
+
+                method:"POST",
+
+                headers:{
+                    "Content-Type":"application/json"
+                },
+
+                body: JSON.stringify(ticket)
+
+            }
+        );
 
 
-    saveTickets(tickets);
+        let data = await response.json();
 
 
-    res.json({
+        if(data.success){
 
-        success:true,
+            alert("تیکت با موفقیت ارسال شد ✅");
 
-        id:ticket.id
+        }else{
 
-    });
+            alert("ارسال تیکت ناموفق بود ❌");
 
-
-});
-
+        }
 
 
+    }catch(error){
 
+        console.log(error);
 
-// ===============================
-// تغییر وضعیت و پاسخ فرمانده
-// ===============================
-
-app.put("/tickets/:id",(req,res)=>{
-
-
-    let tickets = getTickets();
-
-
-    let ticket = tickets.find(
-        t => t.id == req.params.id
-    );
-
-
-    if(ticket){
-
-
-        ticket.status =
-        req.body.status || ticket.status;
-
-
-        ticket.reply =
-        req.body.reply || ticket.reply;
-
-
-        saveTickets(tickets);
-
-
-        res.json({
-            success:true
-        });
-
-
-    }else{
-
-
-        res.json({
-            success:false
-        });
-
+        alert("خطا در اتصال به سرور ❌");
 
     }
 
-
-});
-
+}
 
 
 
+// گرفتن تیکت ها برای پنل ادمین
+async function loadTickets(){
+
+    try{
+
+        let response = await fetch(
+            SERVER_URL + "/tickets"
+        );
 
 
-
-// ===============================
-// حذف تیکت
-// ===============================
-
-app.delete("/tickets/:id",(req,res)=>{
+        let tickets = await response.json();
 
 
-    let tickets = getTickets();
+        return tickets;
 
 
-    tickets = tickets.filter(
-        t => t.id != req.params.id
-    );
+    }catch(error){
 
+        console.log(error);
 
-    saveTickets(tickets);
+        return [];
 
+    }
 
-    res.json({
-        success:true
-    });
-
-
-});
-
-
-
-
-
-
-app.listen(PORT,()=>{
-
-    console.log(
-        `LSPD Server running on port ${PORT}`
-    );
-
-});
+}
