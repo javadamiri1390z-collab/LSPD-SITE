@@ -6,14 +6,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Vanguard LSPD | Command Dashboard</title>
+<title>Vanguard LSPD | Command Center</title>
 
 <link rel="stylesheet" href="style.css">
 
 </head>
 
 
-<body>
+<body class="command-page">
 
 
 <div class="overlay"></div>
@@ -28,7 +28,7 @@
 
 <h2>Vanguard LSPD</h2>
 
-<span>Command Dashboard</span>
+<span>Command Center</span>
 
 </div>
 
@@ -50,9 +50,17 @@
 <div class="dashboard">
 
 
+
 <h1>
-پنل فرماندهی LSPD
+🚔 پنل فرماندهی LSPD
 </h1>
+
+
+
+<p class="dashboard-sub">
+مدیریت درخواست‌های عضویت نیروها
+</p>
+
 
 
 
@@ -60,49 +68,78 @@
 <div class="stats">
 
 
-<div class="card">
 
-<h2 id="total">0</h2>
+<div class="card stat-total">
 
-<p>کل درخواست‌ها</p>
+<h2 id="total">
+0
+</h2>
 
-</div>
-
-
-<div class="card">
-
-<h2 id="pending">0</h2>
-
-<p>در انتظار بررسی</p>
+<p>
+کل درخواست‌ها
+</p>
 
 </div>
 
 
-<div class="card">
 
-<h2 id="accepted">0</h2>
 
-<p>تایید شده</p>
+
+<div class="card stat-pending">
+
+<h2 id="pending">
+0
+</h2>
+
+<p>
+در انتظار بررسی
+</p>
 
 </div>
 
 
+
+
+
+<div class="card stat-accepted">
+
+<h2 id="accepted">
+0
+</h2>
+
+<p>
+تایید شده
+</p>
+
 </div>
+
+
+
+</div>
+
+
+
 
 
 
 
 
 <input 
+class="search-box"
 id="search"
-placeholder="جستجو بین درخواست‌ها..."
+placeholder="🔍 جستجو نام یا دیسکورد..."
 >
 
 
 
 
 
-<div id="tickets"></div>
+
+
+<div id="tickets">
+
+</div>
+
 
 
 
@@ -115,18 +152,20 @@ placeholder="جستجو بین درخواست‌ها..."
 
 
 
+
+
+
 <script src="script.js"></script>
+
 
 
 <script>
 
 
-let allTickets = [];
+let allTickets=[];
 
 
 
-
-// گرفتن تیکت ها
 
 async function loadTickets(){
 
@@ -157,21 +196,23 @@ allTickets.length;
 
 document.getElementById("pending").innerText =
 
-allTickets.filter(t =>
-t.status === "Pending"
+allTickets.filter(
+t=>t.status==="Pending"
 ).length;
 
 
 
 document.getElementById("accepted").innerText =
 
-allTickets.filter(t =>
-t.status === "Accepted"
+allTickets.filter(
+t=>t.status==="Accepted"
 ).length;
 
 
 
 }
+
+
 
 
 
@@ -182,18 +223,32 @@ t.status === "Accepted"
 function showTickets(tickets){
 
 
+
 let box =
 document.getElementById("tickets");
 
 
-box.innerHTML = "";
+box.innerHTML="";
 
 
 
-if(tickets.length === 0){
 
-box.innerHTML =
-"<h3>تیکتی وجود ندارد</h3>";
+
+if(tickets.length===0){
+
+
+box.innerHTML=`
+
+<div class="ticket empty">
+
+<h2>
+📭 تیکتی وجود ندارد
+</h2>
+
+</div>
+
+`;
+
 
 return;
 
@@ -202,61 +257,99 @@ return;
 
 
 
+
+
 tickets.forEach(t=>{
+
+
+
+let statusClass = "";
+
+
+if(t.status==="Pending")
+statusClass="pending-text";
+
+
+if(t.status==="Accepted")
+statusClass="approved-text";
+
+
+if(t.status==="Rejected")
+statusClass="rejected-text";
+
+
+
+
 
 
 box.innerHTML += `
 
 
 
-<div class="ticket">
+<div class="ticket-card">
+
 
 
 <h2>
-${t.name}
+👮 ${t.name}
 </h2>
 
 
 
+
 <p>
-Discord:
+<b>Discord:</b>
 ${t.discord}
 </p>
 
 
+
 <p>
-سن:
+<b>سن:</b>
 ${t.age}
 </p>
 
 
+
+
 <p>
-تجربه:
+<b>تجربه:</b>
 ${t.experience}
 </p>
 
 
+
+
 <p>
-دلیل:
+<b>دلیل:</b>
 ${t.reason}
 </p>
 
 
 
+
+
 <p>
-وضعیت فعلی:
-<b>
+<b>وضعیت:</b>
+
+<span class="${statusClass}">
 ${t.status}
-</b>
+</span>
+
 </p>
 
 
 
 
-<textarea 
+
+
+
+<textarea
 id="reply-${t._id}"
-placeholder="پاسخ فرمانده"
+placeholder="پاسخ فرماندهی..."
 >${t.reply || ""}</textarea>
+
+
 
 
 
@@ -267,22 +360,20 @@ placeholder="پاسخ فرمانده"
 
 <option value="Pending"
 ${t.status==="Pending"?"selected":""}>
-در انتظار
+🟡 در انتظار
 </option>
-
 
 
 <option value="Accepted"
 ${t.status==="Accepted"?"selected":""}>
-تایید شده
+🟢 تایید شده
 </option>
-
 
 
 
 <option value="Rejected"
 ${t.status==="Rejected"?"selected":""}>
-رد شده
+🔴 رد شده
 </option>
 
 
@@ -292,11 +383,16 @@ ${t.status==="Rejected"?"selected":""}>
 
 
 
-<button 
+
+<div class="ticket-buttons">
+
+
+
+<button
 class="btn primary"
 onclick="saveTicket('${t._id}')">
 
-ذخیره پاسخ
+💾 ذخیره پاسخ
 
 </button>
 
@@ -304,13 +400,17 @@ onclick="saveTicket('${t._id}')">
 
 
 
-<button 
-class="btn danger"
+<button
+class="btn delete-btn"
 onclick="removeTicket('${t._id}')">
 
-حذف تیکت
+🗑 حذف
 
 </button>
+
+
+
+</div>
 
 
 
@@ -323,6 +423,7 @@ onclick="removeTicket('${t._id}')">
 
 
 });
+
 
 
 }
@@ -338,12 +439,10 @@ onclick="removeTicket('${t._id}')">
 async function saveTicket(id){
 
 
-
 let status =
 document.getElementById(
 "status-"+id
 ).value;
-
 
 
 
@@ -355,8 +454,6 @@ document.getElementById(
 
 
 
-
-let result =
 await updateTicket(
 id,
 status,
@@ -365,12 +462,9 @@ reply
 
 
 
-
-if(result){
-
-alert("تیکت بروزرسانی شد ✅");
-
-}
+alert(
+"تیکت بروزرسانی شد ✅"
+);
 
 
 
@@ -379,7 +473,6 @@ loadTickets();
 
 
 }
-
 
 
 
@@ -393,14 +486,16 @@ async function removeTicket(id){
 
 
 
-if(confirm("آیا از حذف این تیکت مطمئن هستید؟")){
+if(confirm("حذف این تیکت؟")){
 
 
 await deleteTicket(id);
 
 
 
-alert("تیکت حذف شد ✅");
+alert(
+"تیکت حذف شد ✅"
+);
 
 
 
@@ -410,9 +505,7 @@ loadTickets();
 }
 
 
-
 }
-
 
 
 
@@ -428,7 +521,6 @@ document
 function(){
 
 
-
 let value =
 this.value.toLowerCase();
 
@@ -438,7 +530,7 @@ let result =
 allTickets.filter(t=>
 
 
-(t.name || "")
+(t.name||"")
 .toLowerCase()
 .includes(value)
 
@@ -446,7 +538,7 @@ allTickets.filter(t=>
 
 ||
 
-(t.discord || "")
+(t.discord||"")
 .toLowerCase()
 .includes(value)
 
