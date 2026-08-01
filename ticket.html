@@ -6,36 +6,54 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Vanguard LSPD | Ticket</title>
+<title>Vanguard LSPD | Tracking</title>
 
 <link rel="stylesheet" href="style.css">
 
 </head>
 
 
-<body>
+
+<body class="lobby-page">
+
 
 
 <div class="overlay"></div>
 
 
+
+
+
 <header class="navbar">
+
 
 <img src="badge.png" class="badge">
 
 
+
 <div class="nav-title">
 
-<h2>Vanguard LSPD</h2>
+<h2>
+Vanguard LSPD
+</h2>
 
-<span>Application Tracking</span>
+
+<span>
+Application Tracking
+</span>
+
 
 </div>
 
 
+
+
 <a href="index.html" class="login-btn">
+
 بازگشت
+
 </a>
+
 
 
 </header>
@@ -44,34 +62,60 @@
 
 
 
+
+
+
 <main class="hero">
+
+
+
 
 
 <div class="form-box">
 
 
+
+
+
+
 <h1>
-پیگیری درخواست
+📄 پیگیری درخواست
 </h1>
 
 
+
+
+
 <p>
-کد پیگیری درخواست خود را وارد کنید.
+کد پیگیری MongoDB خود را وارد کنید.
 </p>
 
 
 
-<input 
+
+
+
+
+<input
+
 type="text"
+
 id="ticketID"
-placeholder="کد پیگیری MongoDB را وارد کنید">
+
+placeholder="مثال: 65f8a12..."
+
+>
 
 
 
 
 
-<button 
+
+
+<button
+
 class="btn primary"
+
 onclick="checkTicket()">
 
 بررسی درخواست
@@ -81,11 +125,23 @@ onclick="checkTicket()">
 
 
 
+
+
+
 <div id="ticketResult"></div>
 
 
 
+
+
+
+
 </div>
+
+
+
+
+
 
 
 </main>
@@ -95,10 +151,17 @@ onclick="checkTicket()">
 
 
 
+
+
+
 <script>
 
 
-const API_URL = "https://lspd-site-11.onrender.com";
+
+const API_URL =
+"https://lspd-site-11.onrender.com";
+
+
 
 
 
@@ -107,20 +170,12 @@ const API_URL = "https://lspd-site-11.onrender.com";
 async function checkTicket(){
 
 
+
 let id =
-document.getElementById("ticketID").value.trim();
-
-
-
-
-if(!id){
-
-alert("کد پیگیری را وارد کنید");
-
-return;
-
-}
-
+document
+.getElementById("ticketID")
+.value
+.trim();
 
 
 
@@ -130,8 +185,33 @@ document.getElementById("ticketResult");
 
 
 
+
+
+if(!id){
+
+
+result.innerHTML = `
+
+<p style="color:#ffaa00">
+
+کد پیگیری را وارد کنید
+
+</p>
+
+`;
+
+return;
+
+}
+
+
+
+
+
 result.innerHTML =
-"در حال بررسی...";
+"⏳ در حال بررسی...";
+
+
 
 
 
@@ -139,8 +219,12 @@ result.innerHTML =
 try{
 
 
+
 let response =
-await fetch(API_URL + "/tickets");
+await fetch(
+API_URL + "/tickets"
+);
+
 
 
 
@@ -150,10 +234,14 @@ await response.json();
 
 
 
+
+
 let ticket =
-tickets.find(t => 
-t._id === id
+tickets.find(
+t => String(t._id) === String(id)
 );
+
+
 
 
 
@@ -162,50 +250,94 @@ t._id === id
 if(ticket){
 
 
+
+let color =
+"#ffaa00";
+
+
+if(ticket.status==="Accepted")
+color="#00ff88";
+
+
+if(ticket.status==="Rejected")
+color="#ff3333";
+
+
+
+
+
+
 result.innerHTML = `
 
 
-<hr>
+
+<div class="ticket-result">
 
 
-<h3>
-وضعیت درخواست
-</h3>
+
+<h2>
+✅ درخواست پیدا شد
+</h2>
+
 
 
 
 <p>
-نام:
+<b>نام:</b>
 ${ticket.name}
 </p>
 
 
 
+
+
 <p>
-وضعیت:
-<b>
+<b>وضعیت:</b>
+
+<span style="color:${color}">
 ${ticket.status}
-</b>
+</span>
+
 </p>
 
 
 
+
+
+
 <p>
-پاسخ فرماندهی:
+<b>پاسخ فرماندهی:</b>
+
 <br>
-${ticket.reply}
+
+${ticket.reply || "بدون پاسخ"}
+
 </p>
+
+
+
 
 
 
 <p>
-تاریخ ثبت:
-${new Date(ticket.createdAt).toLocaleString("fa-IR")}
+
+<b>تاریخ ثبت:</b>
+
+${new Date(ticket.createdAt)
+.toLocaleString("fa-IR")}
+
 </p>
+
+
+
+
+
+</div>
 
 
 
 `;
+
 
 
 
@@ -218,7 +350,7 @@ result.innerHTML = `
 
 <p style="color:red">
 
-درخواستی با این کد پیدا نشد ❌
+❌ درخواستی با این کد پیدا نشد
 
 </p>
 
@@ -228,6 +360,7 @@ result.innerHTML = `
 
 
 }
+
 
 
 
@@ -236,17 +369,20 @@ result.innerHTML = `
 catch(error){
 
 
-console.error(error);
+
+console.log(error);
 
 
 
 result.innerHTML = `
 
+
 <p style="color:red">
 
-خطا در اتصال به سرور ❌
+❌ خطا در اتصال به سرور
 
 </p>
+
 
 `;
 
@@ -256,12 +392,15 @@ result.innerHTML = `
 
 
 
+
 }
 
 
 
-
 </script>
+
+
+
 
 
 
