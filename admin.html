@@ -50,10 +50,10 @@
 <div class="dashboard">
 
 
-
 <h1>
 پنل فرماندهی LSPD
 </h1>
+
 
 
 
@@ -62,44 +62,29 @@
 
 <div class="card">
 
-<h2 id="total">
-0
-</h2>
+<h2 id="total">0</h2>
 
-<p>
-کل درخواست‌ها
-</p>
+<p>کل درخواست‌ها</p>
 
 </div>
-
 
 
 <div class="card">
 
-<h2 id="pending">
-0
-</h2>
+<h2 id="pending">0</h2>
 
-<p>
-در انتظار بررسی
-</p>
+<p>در انتظار بررسی</p>
 
 </div>
-
 
 
 <div class="card">
 
-<h2 id="accepted">
-0
-</h2>
+<h2 id="accepted">0</h2>
 
-<p>
-تایید شده
-</p>
+<p>تایید شده</p>
 
 </div>
-
 
 
 </div>
@@ -115,9 +100,10 @@ placeholder="جستجو بین درخواست‌ها..."
 
 
 
-<div id="tickets">
 
-</div>
+
+<div id="tickets"></div>
+
 
 
 
@@ -129,17 +115,18 @@ placeholder="جستجو بین درخواست‌ها..."
 
 
 
-
-
 <script src="script.js"></script>
 
 
 <script>
 
 
-let allTickets=[];
+let allTickets = [];
 
 
+
+
+// گرفتن تیکت ها
 
 async function loadTickets(){
 
@@ -158,26 +145,28 @@ updateStats();
 
 
 
+
+
 function updateStats(){
 
 
-document.getElementById("total").innerHTML =
+document.getElementById("total").innerText =
 allTickets.length;
 
 
 
-document.getElementById("pending").innerHTML =
+document.getElementById("pending").innerText =
 
-allTickets.filter(
-t=>t.status==="Pending"
+allTickets.filter(t =>
+t.status === "Pending"
 ).length;
 
 
 
-document.getElementById("accepted").innerHTML =
+document.getElementById("accepted").innerText =
 
-allTickets.filter(
-t=>t.status==="Accepted"
+allTickets.filter(t =>
+t.status === "Accepted"
 ).length;
 
 
@@ -197,16 +186,28 @@ let box =
 document.getElementById("tickets");
 
 
-box.innerHTML="";
+box.innerHTML = "";
+
+
+
+if(tickets.length === 0){
+
+box.innerHTML =
+"<h3>تیکتی وجود ندارد</h3>";
+
+return;
+
+}
+
 
 
 
 tickets.forEach(t=>{
 
 
-box.innerHTML +=
+box.innerHTML += `
 
-`
+
 
 <div class="ticket">
 
@@ -214,6 +215,7 @@ box.innerHTML +=
 <h2>
 ${t.name}
 </h2>
+
 
 
 <p>
@@ -242,7 +244,7 @@ ${t.reason}
 
 
 <p>
-وضعیت:
+وضعیت فعلی:
 <b>
 ${t.status}
 </b>
@@ -250,23 +252,36 @@ ${t.status}
 
 
 
-<textarea id="reply-${t.id}" placeholder="پاسخ فرمانده">${t.reply || ""}</textarea>
+
+<textarea 
+id="reply-${t._id}"
+placeholder="پاسخ فرمانده"
+>${t.reply || ""}</textarea>
 
 
 
-<select id="status-${t.id}">
 
-<option value="Pending">
+
+<select id="status-${t._id}">
+
+
+<option value="Pending"
+${t.status==="Pending"?"selected":""}>
 در انتظار
 </option>
 
 
-<option value="Accepted">
+
+<option value="Accepted"
+${t.status==="Accepted"?"selected":""}>
 تایید شده
 </option>
 
 
-<option value="Rejected">
+
+
+<option value="Rejected"
+${t.status==="Rejected"?"selected":""}>
 رد شده
 </option>
 
@@ -275,19 +290,25 @@ ${t.status}
 
 
 
-<button class="btn primary"
-onclick="saveTicket('${t.id}')">
 
-ذخیره
+
+<button 
+class="btn primary"
+onclick="saveTicket('${t._id}')">
+
+ذخیره پاسخ
 
 </button>
 
 
 
-<button class="btn danger"
-onclick="removeTicket('${t.id}')">
 
-حذف
+
+<button 
+class="btn danger"
+onclick="removeTicket('${t._id}')">
+
+حذف تیکت
 
 </button>
 
@@ -296,7 +317,9 @@ onclick="removeTicket('${t.id}')">
 </div>
 
 
+
 `;
+
 
 
 });
@@ -310,13 +333,17 @@ onclick="removeTicket('${t.id}')">
 
 
 
+
+
 async function saveTicket(id){
+
 
 
 let status =
 document.getElementById(
 "status-"+id
 ).value;
+
 
 
 
@@ -327,6 +354,9 @@ document.getElementById(
 
 
 
+
+
+let result =
 await updateTicket(
 id,
 status,
@@ -335,10 +365,23 @@ reply
 
 
 
+
+if(result){
+
+alert("تیکت بروزرسانی شد ✅");
+
+}
+
+
+
 loadTickets();
 
 
+
 }
+
+
+
 
 
 
@@ -349,10 +392,16 @@ loadTickets();
 async function removeTicket(id){
 
 
-if(confirm("حذف شود؟")){
+
+if(confirm("آیا از حذف این تیکت مطمئن هستید؟")){
 
 
 await deleteTicket(id);
+
+
+
+alert("تیکت حذف شد ✅");
+
 
 
 loadTickets();
@@ -361,7 +410,10 @@ loadTickets();
 }
 
 
+
 }
+
+
 
 
 
@@ -376,6 +428,7 @@ document
 function(){
 
 
+
 let value =
 this.value.toLowerCase();
 
@@ -384,9 +437,20 @@ this.value.toLowerCase();
 let result =
 allTickets.filter(t=>
 
-t.name.toLowerCase().includes(value)
+
+(t.name || "")
+.toLowerCase()
+.includes(value)
+
+
+
 ||
-t.discord.toLowerCase().includes(value)
+
+(t.discord || "")
+.toLowerCase()
+.includes(value)
+
+
 
 );
 
@@ -404,6 +468,7 @@ showTickets(result);
 
 
 loadTickets();
+
 
 
 </script>
