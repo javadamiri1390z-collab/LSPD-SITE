@@ -191,12 +191,12 @@ async function startServer() {
 
 
                     // -------------------------
-                    // CMX
+                    // Phine number
                     // -------------------------
 
                     cmx:
                         String(
-                            req.body.cmx || ""
+                            req.body.number || ""
                         ).trim(),
 
 
