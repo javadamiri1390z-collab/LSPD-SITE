@@ -13,22 +13,19 @@
 </head>
 
 
-
 <body class="lobby-page">
-
 
 
 <div class="overlay"></div>
 
 
-
-
-
 <header class="navbar">
 
-
-<img src="badge.png" class="badge">
-
+<img
+src="badge.png"
+class="badge"
+alt="Vanguard LSPD"
+>
 
 
 <div class="nav-title">
@@ -37,45 +34,37 @@
 Vanguard LSPD
 </h2>
 
-
 <span>
 Application Tracking
 </span>
 
-
 </div>
 
 
-
-
-<a href="index.html" class="login-btn">
+<a
+href="index.html"
+class="login-btn"
+>
 
 بازگشت
 
 </a>
 
-
-
 </header>
-
-
-
-
-
 
 
 
 <main class="hero">
 
 
-
-
-
 <div class="form-box">
 
 
-
-
+<img
+src="badge.png"
+class="form-badge"
+alt="LSPD Badge"
+>
 
 
 <h1>
@@ -83,325 +72,455 @@ Application Tracking
 </h1>
 
 
-
-
-
 <p>
-کد پیگیری MongoDB خود را وارد کنید.
+کد پیگیری درخواست خود را وارد کنید.
 </p>
 
 
 
-
-
-
-
 <input
-
 type="text"
-
 id="ticketID"
-
-placeholder="مثال: 65f8a12..."
-
+placeholder="کد پیگیری را وارد کنید..."
+autocomplete="off"
 >
 
 
-
-
-
-
-
 <button
-
+type="button"
 class="btn primary"
+onclick="checkTicket()"
+>
 
-onclick="checkTicket()">
-
-بررسی درخواست
+🔍 بررسی درخواست
 
 </button>
-
-
-
-
 
 
 
 <div id="ticketResult"></div>
 
 
-
-
-
-
-
 </div>
-
-
-
-
-
 
 
 </main>
 
 
 
-
-
-
-
-
-
 <script>
-
-
 
 const API_URL =
 "https://lspd-site-11.onrender.com";
 
 
+// ===================================
+// تبدیل نوع درخواست به فارسی
+// ===================================
+
+function getRequestType(type) {
+
+    switch (type) {
+
+        case "membership":
+            return "🚔 درخواست عضویت";
+
+        case "division":
+            return "🎖️ درخواست دیویژن";
+
+        case "resignation":
+            return "📤 درخواست استعفا";
+
+        case "rankup":
+            return "⬆️ درخواست Rankup";
+
+        default:
+            return "📄 درخواست";
+
+    }
+
+}
+
+
+// ===================================
+// رنگ وضعیت
+// ===================================
+
+function getStatusColor(status) {
+
+    if (status === "Accepted") {
+        return "#00ff88";
+    }
+
+    if (status === "Rejected") {
+        return "#ff3333";
+    }
+
+    return "#ffaa00";
+
+}
+
+
+// ===================================
+// نمایش وضعیت فارسی
+// ===================================
+
+function getStatusText(status) {
+
+    if (status === "Accepted") {
+        return "🟢 تایید شده";
+    }
+
+    if (status === "Rejected") {
+        return "🔴 رد شده";
+    }
+
+    return "🟡 در انتظار بررسی";
+
+}
+
+
+// ===================================
+// نمایش مقدار
+// ===================================
+
+function valueOrDash(value) {
+
+    if (
+        value === undefined ||
+        value === null ||
+        String(value).trim() === ""
+    ) {
+
+        return "—";
+
+    }
+
+    return String(value);
+
+}
+
+
+// ===================================
+// پیگیری تیکت
+// ===================================
+
+async function checkTicket() {
+
+
+    const id =
+        document
+        .getElementById("ticketID")
+        .value
+        .trim();
+
+
+    const result =
+        document
+        .getElementById("ticketResult");
+
+
+    if (!id) {
+
+        result.innerHTML = `
+
+            <p style="
+                color:#ffaa00;
+                margin-top:20px;
+            ">
+
+                ⚠️ لطفاً کد پیگیری را وارد کنید.
+
+            </p>
+
+        `;
+
+        return;
+
+    }
+
+
+    result.innerHTML = `
+
+        <div style="
+            margin-top:20px;
+            color:#ddd;
+        ">
+
+            ⏳ در حال بررسی درخواست...
+
+        </div>
+
+    `;
+
+
+    try {
+
+
+        const response =
+            await fetch(
+                API_URL + "/tickets"
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Server Error"
+            );
+
+        }
+
+
+        const tickets =
+            await response.json();
+
+
+        const ticket =
+            tickets.find(
+                t =>
+                String(t._id) ===
+                String(id)
+            );
+
+
+        if (!ticket) {
+
+
+            result.innerHTML = `
+
+                <div
+                class="ticket-result"
+                style="margin-top:20px;"
+                >
+
+                    <h3 style="color:#ff3333;">
+                        ❌ درخواست پیدا نشد
+                    </h3>
+
+                    <p>
+                        کد پیگیری وارد شده صحیح نیست.
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
 
 
 
+        const color =
+            getStatusColor(
+                ticket.status
+            );
 
 
-async function checkTicket(){
+        const statusText =
+            getStatusText(
+                ticket.status
+            );
+
+
+        const requestType =
+            getRequestType(
+                ticket.requestType
+            );
 
 
 
-let id =
+        result.innerHTML = `
+
+            <div
+            class="ticket-result"
+            style="margin-top:25px;"
+            >
+
+
+                <h2>
+                    ✅ درخواست پیدا شد
+                </h2>
+
+
+                <p>
+
+                    <b>
+                        نوع درخواست:
+                    </b>
+
+                    ${requestType}
+
+                </p>
+
+
+                <p>
+
+                    <b>
+                        IC Name:
+                    </b>
+
+                    ${valueOrDash(
+                        ticket.icName ||
+                        ticket.name
+                    )}
+
+                </p>
+
+
+                <p>
+
+                    <b>
+                        OOC Name:
+                    </b>
+
+                    ${valueOrDash(
+                        ticket.oocName ||
+                        ticket.ocName
+                    )}
+
+                </p>
+
+
+                <p>
+
+                    <b>
+                        Discord:
+                    </b>
+
+                    ${valueOrDash(
+                        ticket.discordId ||
+                        ticket.discord
+                    )}
+
+                </p>
+
+
+                <p>
+
+                    <b>
+                        وضعیت:
+                    </b>
+
+                    <span style="
+                        color:${color};
+                        font-weight:bold;
+                    ">
+
+                        ${statusText}
+
+                    </span>
+
+                </p>
+
+
+                <p>
+
+                    <b>
+                        پاسخ فرماندهی:
+                    </b>
+
+                    <br>
+
+                    <span style="
+                        display:block;
+                        margin-top:8px;
+                        white-space:pre-wrap;
+                    ">
+
+                        ${valueOrDash(
+                            ticket.reply
+                        )}
+
+                    </span>
+
+                </p>
+
+
+                <p>
+
+                    <b>
+                        تاریخ ثبت:
+                    </b>
+
+                    ${ticket.createdAt
+                        ? new Date(
+                            ticket.createdAt
+                          ).toLocaleString(
+                            "fa-IR"
+                          )
+                        : "—"
+                    }
+
+                </p>
+
+
+            </div>
+
+        `;
+
+
+    } catch (error) {
+
+
+        console.error(
+            "Tracking Error:",
+            error
+        );
+
+
+        result.innerHTML = `
+
+            <div
+            class="ticket-result"
+            style="margin-top:20px;"
+            >
+
+                <p style="color:#ff3333;">
+
+                    ❌ خطا در اتصال به سرور.
+
+                </p>
+
+                <p style="
+                    color:#aaa;
+                    font-size:13px;
+                ">
+
+                    لطفاً چند لحظه بعد دوباره امتحان کنید.
+
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+// ===================================
+// Enter برای جستجو
+// ===================================
+
 document
 .getElementById("ticketID")
-.value
-.trim();
+.addEventListener(
+    "keydown",
+    function(event) {
 
+        if (event.key === "Enter") {
 
+            checkTicket();
 
+        }
 
-let result =
-document.getElementById("ticketResult");
-
-
-
-
-
-if(!id){
-
-
-result.innerHTML = `
-
-<p style="color:#ffaa00">
-
-کد پیگیری را وارد کنید
-
-</p>
-
-`;
-
-return;
-
-}
-
-
-
-
-
-result.innerHTML =
-"⏳ در حال بررسی...";
-
-
-
-
-
-
-try{
-
-
-
-let response =
-await fetch(
-API_URL + "/tickets"
+    }
 );
-
-
-
-
-let tickets =
-await response.json();
-
-
-
-
-
-
-let ticket =
-tickets.find(
-t => String(t._id) === String(id)
-);
-
-
-
-
-
-
-
-if(ticket){
-
-
-
-let color =
-"#ffaa00";
-
-
-if(ticket.status==="Accepted")
-color="#00ff88";
-
-
-if(ticket.status==="Rejected")
-color="#ff3333";
-
-
-
-
-
-
-result.innerHTML = `
-
-
-
-<div class="ticket-result">
-
-
-
-<h2>
-✅ درخواست پیدا شد
-</h2>
-
-
-
-
-<p>
-<b>نام:</b>
-${ticket.name}
-</p>
-
-
-
-
-
-<p>
-<b>وضعیت:</b>
-
-<span style="color:${color}">
-${ticket.status}
-</span>
-
-</p>
-
-
-
-
-
-
-<p>
-<b>پاسخ فرماندهی:</b>
-
-<br>
-
-${ticket.reply || "بدون پاسخ"}
-
-</p>
-
-
-
-
-
-
-<p>
-
-<b>تاریخ ثبت:</b>
-
-${new Date(ticket.createdAt)
-.toLocaleString("fa-IR")}
-
-</p>
-
-
-
-
-
-</div>
-
-
-
-`;
-
-
-
-
-}else{
-
-
-
-result.innerHTML = `
-
-
-<p style="color:red">
-
-❌ درخواستی با این کد پیدا نشد
-
-</p>
-
-
-`;
-
-
-
-}
-
-
-
-
-}
-
-catch(error){
-
-
-
-console.log(error);
-
-
-
-result.innerHTML = `
-
-
-<p style="color:red">
-
-❌ خطا در اتصال به سرور
-
-</p>
-
-
-`;
-
-
-
-}
-
-
-
-
-}
-
-
 
 </script>
-
-
-
-
 
 
 </body>
