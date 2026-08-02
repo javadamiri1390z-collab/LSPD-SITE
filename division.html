@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Vanguard LSPD | Division Request</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="form-page">
+
+<div class="overlay"></div>
+
+<header class="navbar">
+
+    <img
+        src="badge.png"
+        class="badge"
+        alt="Vanguard LSPD"
+    >
+
+    <div class="nav-title">
+
+        <h2>Vanguard LSPD</h2>
+
+        <span>
+            Division Request
+        </span>
+
+    </div>
+
+    <a
+        href="index.html"
+        class="login-btn"
+    >
+        بازگشت
+    </a>
+
+</header>
+
+
+<main class="hero">
+
+<div class="form-box">
+
+    <img
+        src="badge.png"
+        class="form-badge"
+        alt="LSPD Badge"
+    >
+
+    <h1>
+        🎖️ درخواست دیویژن
+    </h1>
+
+    <p>
+        اطلاعات خود را برای درخواست انتقال به دیویژن وارد کنید.
+    </p>
+
+
+    <form id="divisionForm">
+
+
+        <input
+            type="text"
+            id="icName"
+            placeholder="IC Name"
+            required
+        >
+
+
+        <input
+            type="text"
+            id="oocName"
+            placeholder="OOC Name"
+            required
+        >
+
+
+        <input
+            type="text"
+            id="discordId"
+            placeholder="Discord ID"
+            required
+        >
+
+
+        <input
+            type="text"
+            id="steamHex"
+            placeholder="Steam Hex"
+        >
+
+
+        <input
+            type="text"
+            id="rank"
+            placeholder="Rank"
+            required
+        >
+
+
+        <input
+            type="text"
+            id="callSign"
+            placeholder="Call Sign"
+        >
+
+
+        <input
+            type="text"
+            id="currentDivision"
+            placeholder="Current Division"
+            required
+        >
+
+
+        <input
+            type="text"
+            id="requestedDivision"
+            placeholder="Requested Division"
+            required
+        >
+
+
+        <textarea
+            id="reasonForRequest"
+            placeholder="Reason for Request"
+            required
+        ></textarea>
+
+
+        <textarea
+            id="previousDivisionExperience"
+            placeholder="Previous Division Experience"
+        ></textarea>
+
+
+        <textarea
+            id="additionalInformation"
+            placeholder="Additional Information"
+        ></textarea>
+
+
+        <button
+            type="submit"
+            class="btn primary"
+        >
+            🎖️ ارسال درخواست دیویژن
+        </button>
+
+    </form>
+
+
+    <div id="result"></div>
+
+</div>
+
+</main>
+
+
+<script>
+
+const API_URL =
+"https://lspd-site-11.onrender.com";
+
+
+document
+.getElementById("divisionForm")
+.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+
+        const result =
+            document.getElementById("result");
+
+
+        result.innerHTML =
+            "<p>⏳ در حال ارسال درخواست...</p>";
+
+
+        const data = {
+
+            requestType:
+                "division",
+
+            icName:
+                document.getElementById(
+                    "icName"
+                ).value.trim(),
+
+            oocName:
+                document.getElementById(
+                    "oocName"
+                ).value.trim(),
+
+            discordId:
+                document.getElementById(
+                    "discordId"
+                ).value.trim(),
+
+            steamHex:
+                document.getElementById(
+                    "steamHex"
+                ).value.trim(),
+
+            rank:
+                document.getElementById(
+                    "rank"
+                ).value.trim(),
+
+            callSign:
+                document.getElementById(
+                    "callSign"
+                ).value.trim(),
+
+            currentDivision:
+                document.getElementById(
+                    "currentDivision"
+                ).value.trim(),
+
+            requestedDivision:
+                document.getElementById(
+                    "requestedDivision"
+                ).value.trim(),
+
+            reasonForRequest:
+                document.getElementById(
+                    "reasonForRequest"
+                ).value.trim(),
+
+            previousDivisionExperience:
+                document.getElementById(
+                    "previousDivisionExperience"
+                ).value.trim(),
+
+            additionalInformation:
+                document.getElementById(
+                    "additionalInformation"
+                ).value.trim()
+
+        };
+
+
+        try {
+
+            const response =
+                await fetch(
+                    API_URL + "/tickets",
+                    {
+
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify(data)
+
+                    }
+                );
+
+
+            const responseData =
+                await response.json();
+
+
+            if (
+                !response.ok ||
+                !responseData.success
+            ) {
+
+                throw new Error(
+                    "Request failed"
+                );
+
+            }
+
+
+            result.innerHTML = `
+
+                <div
+                    class="ticket-result"
+                    style="margin-top:20px;"
+                >
+
+                    <h3>
+                        ✅ درخواست دیویژن ثبت شد
+                    </h3>
+
+                    <p>
+                        کد پیگیری شما:
+                    </p>
+
+                    <strong>
+                        ${responseData.id}
+                    </strong>
+
+                    <p>
+                        این کد را برای پیگیری نگه دارید.
+                    </p>
+
+                </div>
+
+            `;
+
+
+            document
+            .getElementById(
+                "divisionForm"
+            )
+            .reset();
+
+
+        } catch (error) {
+
+            console.error(error);
+
+
+            result.innerHTML = `
+
+                <p
+                    style="
+                        color:#ff3333;
+                        margin-top:20px;
+                    "
+                >
+
+                    ❌ خطا در ارسال درخواست.
+                    لطفاً دوباره امتحان کنید.
+
+                </p>
+
+            `;
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+
+</html>
