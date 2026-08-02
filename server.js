@@ -16,9 +16,7 @@ const app = express();
 // ===================================
 
 app.use(cors());
-
 app.use(express.json());
-
 app.use(express.static(__dirname));
 
 
@@ -27,11 +25,7 @@ app.use(express.static(__dirname));
 // ===================================
 
 app.get("/", (req, res) => {
-
-    res.sendFile(
-        path.join(__dirname, "index.html")
-    );
-
+    res.sendFile(path.join(__dirname, "index.html"));
 });
 
 
@@ -42,19 +36,30 @@ app.get("/", (req, res) => {
 const MONGO_URI = process.env.MONGODB_URI;
 
 if (!MONGO_URI) {
-
     console.error(
         "❌ MONGODB_URI در Environment Variables تنظیم نشده است."
     );
-
     process.exit(1);
-
 }
-
 
 const client = new MongoClient(MONGO_URI);
 
 let tickets;
+
+
+// ===================================
+// HELPERS
+// ===================================
+
+function text(value) {
+    return String(value ?? "").trim();
+}
+
+function safeObjectId(id) {
+    return ObjectId.isValid(id)
+        ? new ObjectId(id)
+        : null;
+}
 
 
 // ===================================
@@ -69,14 +74,9 @@ async function startServer() {
 
         console.log("MongoDB Connected ✅");
 
+        const database = client.db("LSPD");
 
-        const database =
-            client.db("LSPD");
-
-
-        tickets =
-            database.collection("tickets");
-
+        tickets = database.collection("tickets");
 
 
         // ===================================
@@ -87,15 +87,12 @@ async function startServer() {
 
             try {
 
-                const data =
-                    await tickets
-                        .find({})
-                        .sort({ createdAt: -1 })
-                        .toArray();
-
+                const data = await tickets
+                    .find({})
+                    .sort({ createdAt: -1 })
+                    .toArray();
 
                 res.json(data);
-
 
             } catch (error) {
 
@@ -103,7 +100,6 @@ async function startServer() {
                     "GET /tickets Error:",
                     error
                 );
-
 
                 res.status(500).json({
 
@@ -119,7 +115,6 @@ async function startServer() {
         });
 
 
-
         // ===================================
         // CREATE NEW TICKET
         // ===================================
@@ -128,132 +123,199 @@ async function startServer() {
 
             try {
 
+                const body = req.body || {};
+
+
+                /*
+                    requestType:
+
+                    membership
+                    division
+                    resignation
+                    rankup
+                */
+
+
+                const requestType =
+                    text(
+                        body.requestType ||
+                        body.type ||
+                        "membership"
+                    );
+
 
                 const ticket = {
 
 
-                    // -------------------------
-                    // OC NAME
-                    // -------------------------
+                    // ===================================
+                    // نوع درخواست
+                    // ===================================
+
+                    requestType:
+                        requestType,
+
+
+                    // ===================================
+                    // اطلاعات مشترک
+                    // ===================================
 
                     ocName:
-                        String(
-                            req.body.ocName || ""
-                        ).trim(),
+                        text(body.ocName),
 
-
-
-                    // -------------------------
-                    // IC NAME
-                    // -------------------------
 
                     icName:
-                        String(
-                            req.body.icName || ""
-                        ).trim(),
+                        text(
+                            body.icName ||
+                            body.name
+                        ),
 
-
-
-                    // -------------------------
-                    // OLD NAME
-                    // برای سازگاری با سیستم قبلی
-                    // -------------------------
 
                     name:
-                        String(
-                            req.body.icName ||
-                            req.body.name ||
-                            ""
-                        ).trim(),
+                        text(
+                            body.icName ||
+                            body.name
+                        ),
 
-
-
-                    // -------------------------
-                    // DISCORD
-                    // -------------------------
 
                     discord:
-                        String(
-                            req.body.discord || ""
-                        ).trim(),
+                        text(
+                            body.discord ||
+                            body.discordId
+                        ),
 
 
+                    discordId:
+                        text(
+                            body.discordId ||
+                            body.discord
+                        ),
 
-                    // -------------------------
-                    // STEAM HEX
-                    // -------------------------
 
                     steamHex:
-                        String(
-                            req.body.steamHex || ""
-                        ).trim(),
+                        text(body.steamHex),
 
-
-
-                    // -------------------------
-                    // CMX
-                    // -------------------------
 
                     cmx:
-                        String(
-                            req.body.cmx || ""
-                        ).trim(),
+                        text(body.cmx),
 
-
-
-                    // -------------------------
-                    // AGE
-                    // -------------------------
 
                     age:
-                        String(
-                            req.body.age || ""
-                        ).trim(),
+                        text(body.age),
 
 
 
-                    // -------------------------
-                    // EXPERIENCE
-                    // -------------------------
+                    // ===================================
+                    // درخواست عضویت
+                    // ===================================
 
                     experience:
-                        String(
-                            req.body.experience || ""
-                        ).trim(),
+                        text(body.experience),
 
-
-
-                    // -------------------------
-                    // REASON
-                    // -------------------------
 
                     reason:
-                        String(
-                            req.body.reason || ""
-                        ).trim(),
+                        text(body.reason),
 
 
 
-                    // -------------------------
-                    // STATUS
-                    // -------------------------
+                    // ===================================
+                    // درخواست دیویژن
+                    // ===================================
 
-                    status: "Pending",
+                    currentDivision:
+                        text(
+                            body.currentDivision
+                        ),
+
+
+                    requestedDivision:
+                        text(
+                            body.requestedDivision
+                        ),
+
+
+                    reasonForRequest:
+                        text(
+                            body.reasonForRequest
+                        ),
+
+
+                    previousDivisionExperience:
+                        text(
+                            body.previousDivisionExperience
+                        ),
+
+
+                    additionalInformation:
+                        text(
+                            body.additionalInformation
+                        ),
 
 
 
-                    // -------------------------
-                    // REPLY
-                    // -------------------------
+                    // ===================================
+                    // درخواست استعفا
+                    // ===================================
+
+                    oocName:
+                        text(body.oocName),
+
+
+                    rank:
+                        text(body.rank),
+
+
+                    callSign:
+                        text(body.callSign),
+
+
+                    resignationReason:
+                        text(
+                            body.resignationReason ||
+                            body.reason
+                        ),
+
+
+
+                    // ===================================
+                    // درخواست Rank Up
+                    // ===================================
+
+                    requestRank:
+                        text(body.requestRank),
+
+
+                    currentRankTimeplay:
+                        text(
+                            body.currentRankTimeplay
+                        ),
+
+
+                    note:
+                        text(body.note),
+
+
+
+                    // ===================================
+                    // وضعیت
+                    // ===================================
+
+                    status:
+                        "Pending",
+
+
+
+                    // ===================================
+                    // پاسخ فرماندهی
+                    // ===================================
 
                     reply:
                         "در انتظار پاسخ فرماندهی",
 
 
 
-                    // -------------------------
-                    // DATE
-                    // -------------------------
+                    // ===================================
+                    // تاریخ ثبت
+                    // ===================================
 
                     createdAt:
                         new Date()
@@ -268,8 +330,15 @@ async function startServer() {
 
 
                 console.log(
+
                     "New Ticket:",
-                    result.insertedId.toString()
+
+                    result.insertedId.toString(),
+
+                    "| Type:",
+
+                    requestType
+
                 );
 
 
@@ -316,13 +385,12 @@ async function startServer() {
 
             try {
 
-
                 const id =
-                    req.params.id;
+                    safeObjectId(req.params.id);
 
 
 
-                if (!ObjectId.isValid(id)) {
+                if (!id) {
 
                     return res.status(400).json({
 
@@ -338,47 +406,51 @@ async function startServer() {
 
 
                 const status =
-                    String(
-                        req.body.status || "Pending"
-                    );
+                    text(
+                        req.body.status
+                    ) || "Pending";
+
 
 
                 const reply =
-                    String(
-                        req.body.reply || ""
+                    text(
+                        req.body.reply
                     );
 
 
 
-                await tickets.updateOne(
+                const result =
+                    await tickets.updateOne(
 
-                    {
-                        _id:
-                            new ObjectId(id)
-                    },
+                        {
+                            _id: id
+                        },
 
-                    {
+                        {
 
-                        $set: {
+                            $set: {
 
-                            status: status,
+                                status:
+                                    status,
 
-                            reply: reply,
+                                reply:
+                                    reply,
 
-                            updatedAt:
-                                new Date()
+                                updatedAt:
+                                    new Date()
+
+                            }
 
                         }
 
-                    }
-
-                );
+                    );
 
 
 
                 res.json({
 
-                    success: true
+                    success:
+                        result.matchedCount > 0
 
                 });
 
@@ -415,13 +487,12 @@ async function startServer() {
 
             try {
 
-
                 const id =
-                    req.params.id;
+                    safeObjectId(req.params.id);
 
 
 
-                if (!ObjectId.isValid(id)) {
+                if (!id) {
 
                     return res.status(400).json({
 
@@ -439,8 +510,7 @@ async function startServer() {
                 const result =
                     await tickets.deleteOne({
 
-                        _id:
-                            new ObjectId(id)
+                        _id: id
 
                     });
 
@@ -490,7 +560,9 @@ async function startServer() {
         app.listen(PORT, () => {
 
             console.log(
+
                 `🚔 Vanguard LSPD Server running on port ${PORT}`
+
             );
 
         });
@@ -500,8 +572,11 @@ async function startServer() {
 
 
         console.error(
+
             "❌ MongoDB Connection Error:",
+
             error
+
         );
 
 
@@ -511,5 +586,9 @@ async function startServer() {
 
 }
 
+
+// ===================================
+// RUN
+// ===================================
 
 startServer();
