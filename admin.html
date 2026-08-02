@@ -22,7 +22,11 @@
 
 <header class="navbar">
 
-<img src="badge.png" class="badge">
+<img
+src="badge.png"
+class="badge"
+alt="LSPD Badge"
+>
 
 
 <div class="nav-title">
@@ -39,8 +43,13 @@ Command Center
 
 
 
-<button class="login-btn" onclick="logoutAdmin()">
+<button
+class="login-btn"
+onclick="logoutAdmin()"
+>
+
 خروج
+
 </button>
 
 
@@ -128,10 +137,11 @@ Command Center
 
 
 
-<input 
+<input
 class="search-box"
 id="search"
-placeholder="🔍 جستجو نام یا Discord..."
+type="text"
+placeholder="🔍 جستجو OC Name، IC Name یا Discord..."
 >
 
 
@@ -165,395 +175,552 @@ placeholder="🔍 جستجو نام یا Discord..."
 <script>
 
 
-let allTickets=[];
+let allTickets = [];
 
 
+
+/* =========================
+   LOAD TICKETS
+========================= */
 
 
 async function loadTickets(){
 
-allTickets = await getTickets();
+    try {
 
-showTickets(allTickets);
+        allTickets = await getTickets();
 
-updateStats();
+        if(!Array.isArray(allTickets)){
+            allTickets = [];
+        }
+
+        showTickets(allTickets);
+
+        updateStats();
+
+    } catch(error) {
+
+        console.error(error);
+
+        document.getElementById("tickets").innerHTML = `
+
+            <div class="ticket-card empty">
+
+                <h2>
+                    ❌ خطا در دریافت درخواست‌ها
+                </h2>
+
+                <p>
+                    اتصال به سرور برقرار نشد.
+                </p>
+
+            </div>
+
+        `;
+
+    }
 
 }
 
 
 
-
+/* =========================
+   UPDATE STATS
+========================= */
 
 
 function updateStats(){
 
-
-document.getElementById("total").innerText =
-allTickets.length;
-
-
-document.getElementById("pending").innerText =
-allTickets.filter(
-t=>t.status==="Pending"
-).length;
+    document.getElementById("total").innerText =
+        allTickets.length;
 
 
+    document.getElementById("pending").innerText =
+        allTickets.filter(
+            t => t.status === "Pending"
+        ).length;
 
-document.getElementById("accepted").innerText =
-allTickets.filter(
-t=>t.status==="Accepted"
-).length;
 
-
+    document.getElementById("accepted").innerText =
+        allTickets.filter(
+            t => t.status === "Accepted"
+        ).length;
 
 }
 
 
 
-
-
+/* =========================
+   SHOW TICKETS
+========================= */
 
 
 function showTickets(tickets){
 
+    let box =
+        document.getElementById("tickets");
 
-let box =
-document.getElementById("tickets");
 
-
-box.innerHTML="";
-
+    box.innerHTML = "";
 
 
 
-if(tickets.length===0){
+    if(!tickets || tickets.length === 0){
+
+        box.innerHTML = `
+
+            <div class="ticket-card empty">
+
+                <h2>
+                    📭 درخواستی وجود ندارد
+                </h2>
+
+                <p>
+                    هنوز درخواست عضویتی ثبت نشده است.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
 
 
-box.innerHTML=`
 
-<div class="ticket-card empty">
 
-<h2>
-📭 تیکتی وجود ندارد
-</h2>
+    tickets.forEach(t => {
 
-</div>
 
-`;
+        let statusClass = "";
 
-return;
+
+        if(t.status === "Pending")
+            statusClass = "pending-text";
+
+
+        if(t.status === "Accepted")
+            statusClass = "approved-text";
+
+
+        if(t.status === "Rejected")
+            statusClass = "rejected-text";
+
+
+
+
+        box.innerHTML += `
+
+        <div class="ticket-card">
+
+
+            <!-- HEADER -->
+
+            <div class="ticket-header">
+
+                <h2>
+                    👮 ${escapeHTML(t.icName || t.name || "بدون نام")}
+                </h2>
+
+
+                <span class="${statusClass}">
+                    ${escapeHTML(t.status || "Pending")}
+                </span>
+
+            </div>
+
+
+
+            <!-- OC NAME -->
+
+            <p>
+                <b>🎭 OC Name:</b>
+                ${escapeHTML(t.ocName || "-")}
+            </p>
+
+
+
+            <!-- IC NAME -->
+
+            <p>
+                <b>👤 IC Name:</b>
+                ${escapeHTML(t.icName || t.name || "-")}
+            </p>
+
+
+
+            <!-- DISCORD -->
+
+            <p>
+                <b>💬 Discord:</b>
+                ${escapeHTML(t.discord || "-")}
+            </p>
+
+
+
+            <!-- STEAM HEX -->
+
+            <p>
+                <b>🎮 Steam Hex:</b>
+                ${escapeHTML(t.steamHex || "-")}
+            </p>
+
+
+
+            <!-- CMX -->
+
+            <p>
+                <b>🆔 CMX:</b>
+                ${escapeHTML(t.cmx || "-")}
+            </p>
+
+
+
+            <!-- AGE -->
+
+            <p>
+                <b>🎂 سن:</b>
+                ${escapeHTML(t.age || "-")}
+            </p>
+
+
+
+            <!-- EXPERIENCE -->
+
+            <p>
+                <b>🚔 تجربه رول‌پلی:</b>
+                ${escapeHTML(t.experience || "-")}
+            </p>
+
+
+
+            <!-- REASON -->
+
+            <p>
+                <b>📄 دلیل عضویت:</b>
+                ${escapeHTML(t.reason || "-")}
+            </p>
+
+
+
+            <!-- CREATED DATE -->
+
+            <p>
+                <b>🕒 تاریخ ثبت:</b>
+                ${
+                    t.createdAt
+                    ?
+                    new Date(t.createdAt).toLocaleString("fa-IR")
+                    :
+                    "-"
+                }
+            </p>
+
+
+
+            <!-- REPLY -->
+
+            <textarea
+                id="reply-${t._id}"
+                placeholder="✍️ پاسخ فرماندهی..."
+            >${escapeHTML(t.reply || "")}</textarea>
+
+
+
+            <!-- STATUS -->
+
+            <select
+                id="status-${t._id}"
+            >
+
+
+                <option
+                    value="Pending"
+                    ${t.status === "Pending" ? "selected" : ""}
+                >
+                    🟡 در انتظار
+                </option>
+
+
+
+                <option
+                    value="Accepted"
+                    ${t.status === "Accepted" ? "selected" : ""}
+                >
+                    🟢 تایید شده
+                </option>
+
+
+
+                <option
+                    value="Rejected"
+                    ${t.status === "Rejected" ? "selected" : ""}
+                >
+                    🔴 رد شده
+                </option>
+
+
+            </select>
+
+
+
+            <!-- BUTTONS -->
+
+            <div class="ticket-buttons">
+
+
+                <button
+                    class="btn primary"
+                    onclick="saveTicket('${t._id}')"
+                >
+
+                    💾 ذخیره
+
+                </button>
+
+
+
+                <button
+                    class="btn delete-btn"
+                    onclick="removeTicket('${t._id}')"
+                >
+
+                    🗑 حذف
+
+                </button>
+
+
+            </div>
+
+
+
+        </div>
+
+        `;
+
+    });
 
 }
 
 
 
-
-
-tickets.forEach(t=>{
-
-
-let statusClass="";
-
-
-if(t.status==="Pending")
-statusClass="pending-text";
-
-
-if(t.status==="Accepted")
-statusClass="approved-text";
-
-
-if(t.status==="Rejected")
-statusClass="rejected-text";
-
-
-
-
-box.innerHTML += `
-
-
-
-<div class="ticket-card">
-
-
-
-<div class="ticket-header">
-
-<h2>
-👮 ${t.name}
-</h2>
-
-
-<span class="${statusClass}">
-${t.status}
-</span>
-
-
-</div>
-
-
-
-
-
-<p>
-<b>Discord:</b>
-${t.discord}
-</p>
-
-
-
-<p>
-<b>Steam Hex:</b>
-${t.discord}
-</p>
-
-
-
-
-<p>
-<b>سن:</b>
-${t.age}
-</p>
-
-
-
-
-
-<p>
-<b>تجربه:</b>
-${t.experience}
-</p>
-
-
-
-
-
-<p>
-<b>دلیل عضویت:</b>
-${t.reason}
-</p>
-
-
-
-
-
-
-<textarea 
-id="reply-${t._id}"
-placeholder="✍️ پاسخ فرماندهی..."
->${t.reply || ""}</textarea>
-
-
-
-
-
-
-<select id="status-${t._id}">
-
-
-<option value="Pending"
-${t.status==="Pending"?"selected":""}>
-🟡 در انتظار
-</option>
-
-
-
-<option value="Accepted"
-${t.status==="Accepted"?"selected":""}>
-🟢 تایید شده
-</option>
-
-
-
-
-<option value="Rejected"
-${t.status==="Rejected"?"selected":""}>
-🔴 رد شده
-</option>
-
-
-</select>
-
-
-
-
-
-
-<div class="ticket-buttons">
-
-
-<button 
-class="btn primary"
-onclick="saveTicket('${t._id}')">
-
-💾 ذخیره
-
-</button>
-
-
-
-
-
-<button 
-class="btn delete-btn"
-onclick="removeTicket('${t._id}')">
-
-🗑 حذف
-
-</button>
-
-
-</div>
-
-
-
-
-</div>
-
-
-
-`;
-
-
-
-});
-
-
-}
-
-
-
-
-
-
-
+/* =========================
+   SAVE TICKET
+========================= */
 
 
 async function saveTicket(id){
 
-
-let status =
-document.getElementById(
-"status-"+id
-).value;
+    try {
 
 
-
-let reply =
-document.getElementById(
-"reply-"+id
-).value;
+        let status =
+            document.getElementById(
+                "status-" + id
+            ).value;
 
 
 
-
-await updateTicket(
-id,
-status,
-reply
-);
+        let reply =
+            document.getElementById(
+                "reply-" + id
+            ).value;
 
 
 
-alert(
-"تیکت بروزرسانی شد ✅"
-);
+        let result =
+            await updateTicket(
+                id,
+                status,
+                reply
+            );
 
 
 
-loadTickets();
+        if(result){
 
+            alert(
+                "تیکت با موفقیت بروزرسانی شد ✅"
+            );
+
+        }
+
+
+
+        await loadTickets();
+
+
+    } catch(error) {
+
+
+        console.error(error);
+
+
+        alert(
+            "خطا در بروزرسانی تیکت ❌"
+        );
+
+    }
 
 }
 
 
 
-
-
-
-
+/* =========================
+   DELETE TICKET
+========================= */
 
 
 async function removeTicket(id){
 
+    if(!confirm(
+        "آیا از حذف این درخواست مطمئن هستید؟"
+    )){
 
-if(confirm(
-"آیا حذف شود؟"
-)){
+        return;
 
-
-await deleteTicket(id);
-
-
-alert(
-"تیکت حذف شد ✅"
-);
+    }
 
 
-loadTickets();
 
+    try {
+
+
+        await deleteTicket(id);
+
+
+        alert(
+            "تیکت حذف شد ✅"
+        );
+
+
+        await loadTickets();
+
+
+    } catch(error) {
+
+
+        console.error(error);
+
+
+        alert(
+            "خطا در حذف تیکت ❌"
+        );
+
+    }
 
 }
 
 
-}
 
-
-
-
-
-
-
+/* =========================
+   SEARCH
+========================= */
 
 
 document
 .getElementById("search")
 .addEventListener(
-"input",
-function(){
+    "input",
+    function(){
 
-
-let value =
-this.value.toLowerCase();
-
-
-
-let result =
-allTickets.filter(t=>
-
-
-(t.name || "")
-.toLowerCase()
-.includes(value)
+        let value =
+            this.value
+            .toLowerCase()
+            .trim();
 
 
 
-||
-
-(t.discord || "")
-.toLowerCase()
-.includes(value)
+        let result =
+            allTickets.filter(t => {
 
 
+                let ocName =
+                    (t.ocName || "")
+                    .toLowerCase();
+
+
+                let icName =
+                    (t.icName || t.name || "")
+                    .toLowerCase();
+
+
+                let discord =
+                    (t.discord || "")
+                    .toLowerCase();
+
+
+                let steamHex =
+                    (t.steamHex || "")
+                    .toLowerCase();
+
+
+                let cmx =
+                    (t.cmx || "")
+                    .toLowerCase();
+
+
+
+                return (
+
+                    ocName.includes(value)
+
+                    ||
+
+                    icName.includes(value)
+
+                    ||
+
+                    discord.includes(value)
+
+                    ||
+
+                    steamHex.includes(value)
+
+                    ||
+
+                    cmx.includes(value)
+
+                );
+
+            });
+
+
+
+        showTickets(result);
+
+    }
 
 );
 
 
 
-showTickets(result);
+/* =========================
+   SECURITY
+   جلوگیری از HTML Injection
+========================= */
+
+
+function escapeHTML(value){
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
 
 
 
-});
-
-
-
-
-
+/* =========================
+   START
+========================= */
 
 
 loadTickets();
-
 
 
 </script>
