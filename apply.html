@@ -53,19 +53,16 @@ Recruitment Application
 <div class="form-box">
 
 
-
-<img 
+<img
 src="badge.png"
 class="form-badge"
+alt="LSPD Badge"
 >
-
-
 
 
 <h1>
 فرم درخواست عضویت LSPD
 </h1>
-
 
 
 <p>
@@ -80,35 +77,74 @@ class="form-badge"
 
 
 
+<!-- OC NAME -->
+
 <input
 type="text"
-id="name"
-placeholder="نام IC"
+id="ocName"
+placeholder="OC Name"
 required
 >
 
 
 
+<!-- IC NAME -->
+
+<input
+type="text"
+id="icName"
+placeholder="IC Name"
+required
+>
+
+
+
+<!-- DISCORD -->
 
 <input
 type="text"
 id="discord"
-placeholder="Discord"
+placeholder="Discord ID"
 required
 >
 
 
 
+<!-- STEAM HEX -->
+
+<input
+type="text"
+id="steamHex"
+placeholder="Steam Hex : steam:110000..."
+required
+>
+
+
+
+<!-- CMX -->
+
+<input
+type="text"
+id="cmx"
+placeholder="CMX"
+required
+>
+
+
+
+<!-- AGE -->
 
 <input
 type="number"
 id="age"
 placeholder="سن"
+min="1"
 required
 >
 
 
 
+<!-- EXPERIENCE -->
 
 <textarea
 id="experience"
@@ -117,6 +153,7 @@ required></textarea>
 
 
 
+<!-- REASON -->
 
 <textarea
 id="reason"
@@ -126,8 +163,10 @@ required></textarea>
 
 
 
-
-<button class="btn primary">
+<button
+type="submit"
+class="btn primary"
+>
 
 🚔 ارسال درخواست
 
@@ -171,15 +210,28 @@ e.preventDefault();
 
 
 
+
 let data = {
 
 
-name:
-document.getElementById("name").value,
+ocName:
+document.getElementById("ocName").value.trim(),
+
+
+icName:
+document.getElementById("icName").value.trim(),
 
 
 discord:
-document.getElementById("discord").value,
+document.getElementById("discord").value.trim(),
+
+
+steamHex:
+document.getElementById("steamHex").value.trim(),
+
+
+cmx:
+document.getElementById("cmx").value.trim(),
 
 
 age:
@@ -187,11 +239,11 @@ document.getElementById("age").value,
 
 
 experience:
-document.getElementById("experience").value,
+document.getElementById("experience").value.trim(),
 
 
 reason:
-document.getElementById("reason").value
+document.getElementById("reason").value.trim()
 
 
 };
@@ -200,7 +252,9 @@ document.getElementById("reason").value
 
 
 
+
 let id = await createTicket(data);
+
 
 
 
@@ -243,7 +297,6 @@ this.reset();
 
 
 });
-
 
 
 </script>
