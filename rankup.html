@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Vanguard LSPD | Rank Up Request</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="form-page">
+
+<div class="overlay"></div>
+
+<header class="navbar">
+
+    <img
+        src="badge.png"
+        class="badge"
+        alt="Vanguard LSPD"
+    >
+
+    <div class="nav-title">
+
+        <h2>Vanguard LSPD</h2>
+
+        <span>
+            Rank Up Request
+        </span>
+
+    </div>
+
+    <a
+        href="index.html"
+        class="login-btn"
+    >
+        بازگشت
+    </a>
+
+</header>
+
+
+<main class="hero">
+
+<div class="form-box">
+
+    <img
+        src="badge.png"
+        class="form-badge"
+        alt="LSPD Badge"
+    >
+
+    <h1>
+        ⬆️ Request Rankup
+    </h1>
+
+    <p>
+        اطلاعات درخواست ارتقای رنک خود را وارد کنید.
+    </p>
+
+
+    <form id="rankupForm">
+
+
+        <input
+            type="text"
+            id="icName"
+            placeholder="IC Name:"
+            required
+        >
+
+
+        <input
+            type="text"
+            id="oocName"
+            placeholder="OOC Name:"
+            required
+        >
+
+
+        <input
+            type="text"
+            id="discordId"
+            placeholder="Discord ID:"
+            required
+        >
+
+
+        <input
+            type="text"
+            id="rank"
+            placeholder="Rank:"
+            required
+        >
+
+
+        <input
+            type="text"
+            id="requestRank"
+            placeholder="Request Rank:"
+            required
+        >
+
+
+        <input
+            type="text"
+            id="currentRankTimeplay"
+            placeholder="Current Rank Timeplay:"
+            required
+        >
+
+
+        <textarea
+            id="note"
+            placeholder="Note:"
+        ></textarea>
+
+
+        <button
+            type="submit"
+            class="btn primary"
+        >
+            ⬆️ ارسال درخواست Rankup
+        </button>
+
+    </form>
+
+
+    <div id="result"></div>
+
+</div>
+
+</main>
+
+
+<script>
+
+const API_URL =
+"https://lspd-site-11.onrender.com";
+
+
+document
+.getElementById("rankupForm")
+.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+
+        const result =
+            document.getElementById("result");
+
+
+        result.innerHTML =
+            "<p>⏳ در حال ارسال درخواست...</p>";
+
+
+        const data = {
+
+            requestType:
+                "rankup",
+
+            icName:
+                document.getElementById(
+                    "icName"
+                ).value.trim(),
+
+            oocName:
+                document.getElementById(
+                    "oocName"
+                ).value.trim(),
+
+            discordId:
+                document.getElementById(
+                    "discordId"
+                ).value.trim(),
+
+            rank:
+                document.getElementById(
+                    "rank"
+                ).value.trim(),
+
+            requestRank:
+                document.getElementById(
+                    "requestRank"
+                ).value.trim(),
+
+            currentRankTimeplay:
+                document.getElementById(
+                    "currentRankTimeplay"
+                ).value.trim(),
+
+            note:
+                document.getElementById(
+                    "note"
+                ).value.trim()
+
+        };
+
+
+        try {
+
+            const response =
+                await fetch(
+                    API_URL + "/tickets",
+                    {
+
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify(data)
+
+                    }
+                );
+
+
+            const responseData =
+                await response.json();
+
+
+            if (
+                !response.ok ||
+                !responseData.success
+            ) {
+
+                throw new Error(
+                    "Request failed"
+                );
+
+            }
+
+
+            result.innerHTML = `
+
+                <div
+                    class="ticket-result"
+                    style="margin-top:20px;"
+                >
+
+                    <h3>
+                        ✅ درخواست Rankup ثبت شد
+                    </h3>
+
+                    <p>
+                        کد پیگیری شما:
+                    </p>
+
+                    <strong>
+                        ${responseData.id}
+                    </strong>
+
+                    <p>
+                        این کد را برای پیگیری نگه دارید.
+                    </p>
+
+                </div>
+
+            `;
+
+
+            document
+            .getElementById(
+                "rankupForm"
+            )
+            .reset();
+
+
+        } catch (error) {
+
+            console.error(error);
+
+
+            result.innerHTML = `
+
+                <p
+                    style="
+                        color:#ff3333;
+                        margin-top:20px;
+                    "
+                >
+
+                    ❌ خطا در ارسال درخواست.
+                    لطفاً دوباره امتحان کنید.
+
+                </p>
+
+            `;
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+
+</html>
