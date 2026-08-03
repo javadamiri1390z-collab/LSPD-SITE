@@ -1,7 +1,7 @@
-// ===================================
-// Vanguard LSPD System
-// Secure MongoDB Ticket Server
-// ===================================
+// ============================================================
+// VANGUARD LSPD - SERVER.JS
+// MongoDB Ticket + Authentication + Command Logs
+// ============================================================
 
 const express = require("express");
 const cors = require("cors");
@@ -11,10 +11,54 @@ const { MongoClient, ObjectId } = require("mongodb");
 
 const app = express();
 
+// ============================================================
+// CONFIG
+// ============================================================
 
-// ===================================
-// MIDDLEWARE
-// ===================================
+const PORT = process.env.PORT || 3000;
+
+const MONGO_URI = process.env.MONGODB_URI;
+
+// ------------------------------------------------------------
+// Command Accounts
+// ------------------------------------------------------------
+// بهتر است این موارد را در Environment Variables قرار دهید.
+// مقادیر پیش‌فرض برای هماهنگی با سیستم قبلی گذاشته شده‌اند.
+// ------------------------------------------------------------
+
+const COMMAND_USERNAME =
+    process.env.COMMAND_USERNAME || "LSPD";
+
+const COMMAND_PASSWORD =
+    process.env.COMMAND_PASSWORD || "LSPD00078";
+
+const COMMAND_NAME =
+    process.env.COMMAND_NAME || "Vanguard Command";
+
+const COMMAND_RANK =
+    process.env.COMMAND_RANK || "Commander";
+
+
+// ============================================================
+// Owner Account
+// ============================================================
+
+const OWNER_USERNAME =
+    process.env.OWNER_USERNAME || "SEDJAVAD";
+
+const OWNER_PASSWORD =
+    process.env.OWNER_PASSWORD || "SEDJAVAD00078";
+
+const OWNER_NAME =
+    process.env.OWNER_NAME || "SEDJAVAD";
+
+const OWNER_RANK =
+    process.env.OWNER_RANK || "LSPD High Command";
+
+
+// ============================================================
+// Middleware
+// ============================================================
 
 app.use(cors());
 
@@ -27,25 +71,9 @@ app.use(
 app.use(express.static(__dirname));
 
 
-// ===================================
-// HOME
-// ===================================
-
-app.get("/", (req, res) => {
-
-    res.sendFile(
-        path.join(__dirname, "index.html")
-    );
-
-});
-
-
-// ===================================
-// MONGODB
-// ===================================
-
-const MONGO_URI =
-    process.env.MONGODB_URI;
+// ============================================================
+// MongoDB
+// ============================================================
 
 if (!MONGO_URI) {
 
@@ -54,32 +82,19 @@ if (!MONGO_URI) {
     );
 
     process.exit(1);
-
 }
-
 
 const client =
     new MongoClient(MONGO_URI);
 
-
+let database;
 let tickets;
 let logs;
 
 
-// ===================================
-// AUTH TOKENS
-// ===================================
-//
-// Tokenها موقت هستند و با Restart سرور
-// دوباره باید Login انجام شود.
-//
-
-const sessions = new Map();
-
-
-// ===================================
-// HELPERS
-// ===================================
+// ============================================================
+// Helpers
+// ============================================================
 
 function text(value) {
 
@@ -92,80 +107,233 @@ function text(value) {
 
 function safeObjectId(id) {
 
-    return ObjectId.isValid(id)
-        ? new ObjectId(id)
-        : null;
+    if (!ObjectId.isValid(id)) {
+
+        return null;
+
+    }
+
+    return new ObjectId(id);
 
 }
 
 
-function generateToken() {
+function now() {
 
-    return crypto
-        .randomBytes(32)
-        .toString("hex");
+    return new Date();
 
 }
 
 
-function getBearerToken(req) {
+// ============================================================
+// Token System
+// ============================================================
+//
+// بدون نیاز به JWT package.
+// Token با HMAC ساخته می‌شود.
+//
+// توجه:
+// برای امنیت واقعی SECRET_TOKEN را در Render Environment
+// Variables قرار دهید.
+// ============================================================
 
-    const header =
-        req.headers.authorization || "";
+const TOKEN_SECRET =
+    process.env.TOKEN_SECRET ||
+    crypto.randomBytes(32).toString("hex");
+
+
+function createToken(user) {
+
+    const payload = {
+
+        username: user.username,
+
+        name: user.name,
+
+        rank: user.rank,
+
+        role: user.role,
+
+        issuedAt: Date.now()
+
+    };
+
+
+    const encoded =
+        Buffer
+            .from(JSON.stringify(payload))
+            .toString("base64url");
+
+
+    const signature =
+        crypto
+            .createHmac(
+                "sha256",
+                TOKEN_SECRET
+            )
+            .update(encoded)
+            .digest("base64url");
+
+
+    return encoded + "." + signature;
+
+}
+
+
+function verifyToken(token) {
+
+    try {
+
+        if (!token) {
+
+            return null;
+
+        }
+
+
+        const parts =
+            token.split(".");
+
+
+        if (parts.length !== 2) {
+
+            return null;
+
+        }
+
+
+        const encoded =
+            parts[0];
+
+        const signature =
+            parts[1];
+
+
+        const expected =
+            crypto
+                .createHmac(
+                    "sha256",
+                    TOKEN_SECRET
+                )
+                .update(encoded)
+                .digest("base64url");
+
+
+        if (
+            signature.length !==
+            expected.length
+        ) {
+
+            return null;
+
+        }
+
+
+        if (
+            !crypto.timingSafeEqual(
+                Buffer.from(signature),
+                Buffer.from(expected)
+            )
+        ) {
+
+            return null;
+
+        }
+
+
+        const payload =
+            JSON.parse(
+                Buffer
+                    .from(encoded, "base64url")
+                    .toString("utf8")
+            );
+
+
+        // Token حداکثر 24 ساعت معتبر باشد.
+
+        if (
+            !payload.issuedAt ||
+            Date.now() - payload.issuedAt >
+            24 * 60 * 60 * 1000
+        ) {
+
+            return null;
+
+        }
+
+
+        return payload;
+
+    } catch (error) {
+
+        return null;
+
+    }
+
+}
+
+
+// ============================================================
+// Authentication Middleware
+// ============================================================
+
+function getTokenFromRequest(req) {
+
+    const authorization =
+        text(req.headers.authorization);
+
 
     if (
-        !header.startsWith("Bearer ")
+        authorization &&
+        authorization.startsWith("Bearer ")
     ) {
 
-        return null;
+        return authorization.substring(7).trim();
 
     }
 
-    return header.substring(7).trim();
 
-}
+    const customToken =
+        text(req.headers["x-admin-token"]);
 
 
-function getSession(req) {
+    if (customToken) {
 
-    const token =
-        getBearerToken(req);
-
-    if (!token) {
-
-        return null;
+        return customToken;
 
     }
 
-    return sessions.get(token) || null;
+
+    return "";
 
 }
 
-
-// ===================================
-// AUTH MIDDLEWARE
-// ===================================
 
 function requireAuth(req, res, next) {
 
-    const session =
-        getSession(req);
+    const token =
+        getTokenFromRequest(req);
 
-    if (!session) {
+
+    const user =
+        verifyToken(token);
+
+
+    if (!user) {
 
         return res.status(401).json({
 
             success: false,
 
             message:
-                "دسترسی غیرمجاز. ابتدا وارد شوید."
+                "دسترسی غیرمجاز. لطفاً وارد شوید."
 
         });
 
     }
 
-    req.user =
-        session;
+
+    req.user = user;
 
     next();
 
@@ -174,17 +342,22 @@ function requireAuth(req, res, next) {
 
 function requireCommand(req, res, next) {
 
-    const session =
-        getSession(req);
+    const token =
+        getTokenFromRequest(req);
 
-    if (!session) {
+
+    const user =
+        verifyToken(token);
+
+
+    if (!user) {
 
         return res.status(401).json({
 
             success: false,
 
             message:
-                "ابتدا وارد حساب فرماندهی شوید."
+                "ابتدا وارد پنل فرماندهی شوید."
 
         });
 
@@ -192,8 +365,8 @@ function requireCommand(req, res, next) {
 
 
     if (
-        session.role !== "command" &&
-        session.role !== "admin"
+        user.role !== "command" &&
+        user.role !== "owner"
     ) {
 
         return res.status(403).json({
@@ -208,70 +381,71 @@ function requireCommand(req, res, next) {
     }
 
 
-    req.user =
-        session;
+    req.user = user;
 
     next();
 
 }
 
 
-function requireAdmin(req, res, next) {
+function requireOwner(req, res, next) {
 
-    const session =
-        getSession(req);
+    const token =
+        getTokenFromRequest(req);
 
-    if (!session) {
+
+    const user =
+        verifyToken(token);
+
+
+    if (!user) {
 
         return res.status(401).json({
 
             success: false,
 
             message:
-                "ابتدا وارد حساب شوید."
+                "ابتدا وارد شوید."
 
         });
 
     }
 
 
-    if (
-        session.role !== "admin"
-    ) {
+    if (user.role !== "owner") {
 
         return res.status(403).json({
 
             success: false,
 
             message:
-                "فقط مدیر اصلی به این بخش دسترسی دارد."
+                "این بخش فقط برای مالک سیستم قابل دسترسی است."
 
         });
 
     }
 
 
-    req.user =
-        session;
+    req.user = user;
 
     next();
 
 }
 
 
-// ===================================
-// LOG HELPER
-// ===================================
+// ============================================================
+// LOG SYSTEM
+// ============================================================
 
 async function createLog({
 
     action,
+
     ticketId = null,
-    actorType = "system",
-    username = "system",
-    name = "System",
-    rank = "System",
-    details = ""
+
+    actor = null,
+
+    details = {}
 
 }) {
 
@@ -279,48 +453,68 @@ async function createLog({
 
         if (!logs) {
 
+            console.warn(
+                "⚠️ Logs collection هنوز آماده نیست."
+            );
+
             return;
 
         }
 
 
-        await logs.insertOne({
+        const log = {
 
-            action,
+            action: text(action),
 
             ticketId:
                 ticketId
-                    ? String(ticketId)
-                    : null,
+                ? String(ticketId)
+                : null,
 
             actor: {
 
                 type:
-                    actorType,
+                    actor?.role ||
+                    "system",
 
                 username:
-                    text(username),
+                    actor?.username ||
+                    "System",
 
                 name:
-                    text(name),
+                    actor?.name ||
+                    "System",
 
                 rank:
-                    text(rank)
+                    actor?.rank ||
+                    "System"
 
             },
 
-            details:
-                text(details),
+            details,
 
-            createdAt:
-                new Date()
+            createdAt: now()
 
-        });
+        };
+
+
+        await logs.insertOne(log);
+
+
+        console.log(
+            "📝 LOG:",
+            log.action,
+            "|",
+            log.actor.name,
+            "|",
+            log.actor.rank
+        );
+
 
     } catch (error) {
 
         console.error(
-            "Create Log Error:",
+            "❌ Create Log Error:",
             error
         );
 
@@ -329,199 +523,305 @@ async function createLog({
 }
 
 
-// ===================================
+// ============================================================
+// HOME
+// ============================================================
+
+app.get("/", (req, res) => {
+
+    res.sendFile(
+        path.join(
+            __dirname,
+            "index.html"
+        )
+    );
+
+});
+
+
+// ============================================================
 // AUTH LOGIN
-// ===================================
+// ============================================================
 
-app.post(
-    "/auth/login",
-    async (req, res) => {
+app.post("/auth/login", async (req, res) => {
 
-        try {
+    try {
 
-            const username =
-                text(req.body.username);
+        const username =
+            text(req.body.username);
 
-            const password =
-                text(req.body.password);
+        const password =
+            text(req.body.password);
 
 
-            if (
-                !username ||
-                !password
-            ) {
+        if (!username || !password) {
 
-                return res.status(400).json({
+            return res.status(400).json({
 
-                    success: false,
+                success: false,
 
-                    message:
-                        "نام کاربری و رمز عبور الزامی است."
+                message:
+                    "نام کاربری و رمز عبور الزامی است."
 
-                });
+            });
 
-            }
+        }
 
 
-            const commandUsername =
-                text(
-                    process.env.COMMAND_USERNAME
-                ) || "LSPD";
+        let user = null;
 
 
-            const commandPassword =
-                text(
-                    process.env.COMMAND_PASSWORD
-                ) || "LSPD00078";
+        // ----------------------------------------------------
+        // OWNER
+        // ----------------------------------------------------
 
+        if (
+            username === OWNER_USERNAME &&
+            password === OWNER_PASSWORD
+        ) {
 
-            const adminUsername =
-                text(
-                    process.env.ADMIN_USERNAME
-                ) || "SEDJAVAD";
+            user = {
 
-
-            const adminPassword =
-                text(
-                    process.env.ADMIN_PASSWORD
-                ) || "SEDJAVAD00078";
-
-
-            let role = null;
-            let rank = null;
-
-
-            // ===================================
-            // ADMIN
-            // ===================================
-
-            if (
-                username === adminUsername &&
-                password === adminPassword
-            ) {
-
-                role = "admin";
-
-                rank =
-                    process.env.ADMIN_RANK ||
-                    "Chief";
-
-
-            // ===================================
-            // COMMAND
-            // ===================================
-
-            } else if (
-                username === commandUsername &&
-                password === commandPassword
-            ) {
-
-                role = "command";
-
-                rank =
-                    process.env.COMMAND_RANK ||
-                    "Commander";
-
-            }
-
-
-            if (!role) {
-
-                return res.status(401).json({
-
-                    success: false,
-
-                    message:
-                        "نام کاربری یا رمز عبور اشتباه است."
-
-                });
-
-            }
-
-
-            const token =
-                generateToken();
-
-
-            const user = {
-
-                role,
-
-                username,
-
-                rank,
+                username:
+                    OWNER_USERNAME,
 
                 name:
-                    username,
+                    OWNER_NAME,
 
-                loginAt:
-                    new Date()
+                rank:
+                    OWNER_RANK,
+
+                role:
+                    "owner"
 
             };
 
+        }
 
-            sessions.set(
-                token,
-                user
-            );
 
+        // ----------------------------------------------------
+        // COMMAND
+        // ----------------------------------------------------
+
+        else if (
+            username === COMMAND_USERNAME &&
+            password === COMMAND_PASSWORD
+        ) {
+
+            user = {
+
+                username:
+                    COMMAND_USERNAME,
+
+                name:
+                    COMMAND_NAME,
+
+                rank:
+                    COMMAND_RANK,
+
+                role:
+                    "command"
+
+            };
+
+        }
+
+
+        // ----------------------------------------------------
+        // WRONG LOGIN
+        // ----------------------------------------------------
+
+        else {
 
             await createLog({
 
                 action:
-                    "login",
+                    "LOGIN_FAILED",
 
-                actorType:
-                    role,
+                actor: {
 
-                username,
-
-                name:
-                    username,
-
-                rank,
-
-                details:
-                    "ورود موفق به سیستم"
-
-            });
-
-
-            return res.json({
-
-                success: true,
-
-                token,
-
-                user: {
+                    role:
+                        "unknown",
 
                     username,
 
                     name:
                         username,
 
-                    rank,
+                    rank:
+                        "Unknown"
 
-                    role
+                },
+
+                details: {
+
+                    ip:
+                        req.ip
 
                 }
 
             });
 
-        } catch (error) {
 
-            console.error(
-                "AUTH LOGIN ERROR:",
-                error
-            );
-
-
-            return res.status(500).json({
+            return res.status(401).json({
 
                 success: false,
 
                 message:
-                    "خطا در ورود"
+                    "نام کاربری یا رمز عبور اشتباه است."
+
+            });
+
+        }
+
+
+        const token =
+            createToken(user);
+
+
+        await createLog({
+
+            action:
+                "LOGIN_SUCCESS",
+
+            actor:
+                user,
+
+            details: {
+
+                ip:
+                    req.ip
+
+            }
+
+        });
+
+
+        res.json({
+
+            success: true,
+
+            token,
+
+            user: {
+
+                username:
+                    user.username,
+
+                name:
+                    user.name,
+
+                rank:
+                    user.rank,
+
+                role:
+                    user.role,
+
+                isOwner:
+                    user.role === "owner"
+
+            }
+
+        });
+
+
+    } catch (error) {
+
+        console.error(
+            "LOGIN ERROR:",
+            error
+        );
+
+
+        res.status(500).json({
+
+            success: false,
+
+            message:
+                "خطا در ورود"
+
+        });
+
+    }
+
+});
+
+
+// ============================================================
+// AUTH ME
+// ============================================================
+
+app.get(
+    "/auth/me",
+    requireAuth,
+    async (req, res) => {
+
+        res.json({
+
+            success: true,
+
+            user: {
+
+                username:
+                    req.user.username,
+
+                name:
+                    req.user.name,
+
+                rank:
+                    req.user.rank,
+
+                role:
+                    req.user.role,
+
+                isOwner:
+                    req.user.role === "owner"
+
+            }
+
+        });
+
+    }
+);
+
+
+// ============================================================
+// GET ALL TICKETS
+// ============================================================
+
+app.get(
+    "/tickets",
+    requireCommand,
+    async (req, res) => {
+
+        try {
+
+            const data =
+                await tickets
+                    .find({})
+                    .sort({
+                        createdAt: -1
+                    })
+                    .toArray();
+
+
+            res.json(data);
+
+
+        } catch (error) {
+
+            console.error(
+                "GET /tickets Error:",
+                error
+            );
+
+
+            res.status(500).json({
+
+                success: false,
+
+                message:
+                    "خطا در دریافت درخواست‌ها"
 
             });
 
@@ -531,20 +831,1295 @@ app.post(
 );
 
 
-// ===================================
-// AUTH ME
-// ===================================
+// ============================================================
+// GET SINGLE TICKET
+// ============================================================
 
 app.get(
-    "/auth/me",
-    requireAuth,
-    (req, res) => {
+    "/tickets/:id",
+    async (req, res) => {
+
+        try {
+
+            const id =
+                safeObjectId(
+                    req.params.id
+                );
+
+
+            if (!id) {
+
+                return res.status(400).json({
+
+                    success: false,
+
+                    message:
+                        "کد پیگیری نامعتبر است."
+
+                });
+
+            }
+
+
+            const ticket =
+                await tickets.findOne({
+
+                    _id: id
+
+                });
+
+
+            if (!ticket) {
+
+                return res.status(404).json({
+
+                    success: false,
+
+                    message:
+                        "درخواست پیدا نشد."
+
+                });
+
+            }
+
+
+            res.json(ticket);
+
+
+        } catch (error) {
+
+            console.error(
+                "GET SINGLE TICKET Error:",
+                error
+            );
+
+
+            res.status(500).json({
+
+                success: false,
+
+                message:
+                    "خطا در دریافت درخواست"
+
+            });
+
+        }
+
+    }
+);
+
+
+// ============================================================
+// CREATE NEW TICKET
+// ============================================================
+
+app.post(
+    "/tickets",
+    async (req, res) => {
+
+        try {
+
+            const body =
+                req.body || {};
+
+
+            const requestType =
+                text(
+                    body.requestType ||
+                    body.type ||
+                    "membership"
+                );
+
+
+            // ------------------------------------------------
+            // SCORE
+            // ------------------------------------------------
+
+            let score = null;
+
+
+            if (
+                body.score !== undefined &&
+                body.score !== null &&
+                body.score !== ""
+            ) {
+
+                const numberScore =
+                    Number(body.score);
+
+
+                if (
+                    Number.isFinite(numberScore) &&
+                    numberScore >= 0 &&
+                    numberScore <= 20
+                ) {
+
+                    score =
+                        numberScore;
+
+                }
+
+            }
+
+
+            const passed =
+                body.passed === true ||
+                (
+                    score !== null &&
+                    score >= 12
+                );
+
+
+            // ------------------------------------------------
+            // TICKET
+            // ------------------------------------------------
+
+            const ticket = {
+
+                requestType,
+
+
+                // مشترک
+
+                ocName:
+                    text(body.ocName),
+
+                icName:
+                    text(
+                        body.icName ||
+                        body.name
+                    ),
+
+                name:
+                    text(
+                        body.icName ||
+                        body.name
+                    ),
+
+                discord:
+                    text(
+                        body.discord ||
+                        body.discordId
+                    ),
+
+                discordId:
+                    text(
+                        body.discordId ||
+                        body.discord
+                    ),
+
+                steamHex:
+                    text(body.steamHex),
+
+                cmx:
+                    text(body.cmx),
+
+                age:
+                    text(body.age),
+
+
+                // Membership
+
+                experience:
+                    text(body.experience),
+
+                reason:
+                    text(body.reason),
+
+
+                // Division
+
+                currentDivision:
+                    text(
+                        body.currentDivision
+                    ),
+
+                requestedDivision:
+                    text(
+                        body.requestedDivision
+                    ),
+
+                reasonForRequest:
+                    text(
+                        body.reasonForRequest
+                    ),
+
+                previousDivisionExperience:
+                    text(
+                        body.previousDivisionExperience
+                    ),
+
+                additionalInformation:
+                    text(
+                        body.additionalInformation
+                    ),
+
+
+                // Resignation
+
+                oocName:
+                    text(body.oocName),
+
+                rank:
+                    text(body.rank),
+
+                callSign:
+                    text(body.callSign),
+
+                resignationReason:
+                    text(
+                        body.resignationReason ||
+                        body.reason
+                    ),
+
+
+                // Rankup
+
+                requestRank:
+                    text(body.requestRank),
+
+                currentRankTimeplay:
+                    text(
+                        body.currentRankTimeplay
+                    ),
+
+                note:
+                    text(body.note),
+
+
+                // Exam
+
+                score,
+
+                passed,
+
+                passingScore:
+                    12,
+
+
+                // Status
+
+                status:
+                    "Pending",
+
+
+                // Reply
+
+                reply:
+                    "در انتظار پاسخ فرماندهی",
+
+
+                // Chat
+
+                messages: [],
+
+
+                // Dates
+
+                createdAt:
+                    now(),
+
+                updatedAt:
+                    now()
+
+            };
+
+
+            const result =
+                await tickets.insertOne(
+                    ticket
+                );
+
+
+            const ticketId =
+                result.insertedId.toString();
+
+
+            console.log(
+                "🎫 New Ticket:",
+                ticketId
+            );
+
+
+            // ------------------------------------------------
+            // AUTO LOG
+            // ------------------------------------------------
+
+            await createLog({
+
+                action:
+                    "TICKET_CREATED",
+
+                ticketId,
+
+                actor: {
+
+                    role:
+                        "applicant",
+
+                    username:
+                        ticket.discord ||
+                        "Applicant",
+
+                    name:
+                        ticket.icName ||
+                        ticket.ocName ||
+                        "Applicant",
+
+                    rank:
+                        "Applicant"
+
+                },
+
+                details: {
+
+                    requestType,
+
+                    score,
+
+                    passed
+
+                }
+
+            });
+
+
+            res.json({
+
+                success: true,
+
+                id:
+                    ticketId,
+
+                score,
+
+                passed
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "POST /tickets Error:",
+                error
+            );
+
+
+            res.status(500).json({
+
+                success: false,
+
+                message:
+                    "خطا در ثبت درخواست"
+
+            });
+
+        }
+
+    }
+);
+
+
+// ============================================================
+// UPDATE TICKET
+// ============================================================
+
+app.put(
+    "/tickets/:id",
+    requireCommand,
+    async (req, res) => {
+
+        try {
+
+            const id =
+                safeObjectId(
+                    req.params.id
+                );
+
+
+            if (!id) {
+
+                return res.status(400).json({
+
+                    success: false,
+
+                    message:
+                        "شناسه تیکت نامعتبر است"
+
+                });
+
+            }
+
+
+            const ticket =
+                await tickets.findOne({
+                    _id: id
+                });
+
+
+            if (!ticket) {
+
+                return res.status(404).json({
+
+                    success: false,
+
+                    message:
+                        "درخواست پیدا نشد"
+
+                });
+
+            }
+
+
+            const oldStatus =
+                ticket.status;
+
+
+            const oldReply =
+                ticket.reply;
+
+
+            const status =
+                text(req.body.status) ||
+                "Pending";
+
+
+            const reply =
+                text(req.body.reply);
+
+
+            const result =
+                await tickets.updateOne(
+
+                    {
+                        _id: id
+                    },
+
+                    {
+
+                        $set: {
+
+                            status,
+
+                            reply,
+
+                            updatedAt:
+                                now()
+
+                        }
+
+                    }
+
+                );
+
+
+            if (!result.matchedCount) {
+
+                return res.status(404).json({
+
+                    success: false,
+
+                    message:
+                        "درخواست پیدا نشد"
+
+                });
+
+            }
+
+
+            // ------------------------------------------------
+            // LOG STATUS CHANGE
+            // ------------------------------------------------
+
+            if (oldStatus !== status) {
+
+                await createLog({
+
+                    action:
+                        "TICKET_STATUS_CHANGED",
+
+                    ticketId:
+                        id.toString(),
+
+                    actor:
+                        req.user,
+
+                    details: {
+
+                        oldStatus,
+
+                        newStatus:
+                            status
+
+                    }
+
+                });
+
+            }
+
+
+            // ------------------------------------------------
+            // LOG REPLY
+            // ------------------------------------------------
+
+            if (oldReply !== reply) {
+
+                await createLog({
+
+                    action:
+                        "TICKET_REPLY_UPDATED",
+
+                    ticketId:
+                        id.toString(),
+
+                    actor:
+                        req.user,
+
+                    details: {
+
+                        reply
+
+                    }
+
+                });
+
+            }
+
+
+            res.json({
+
+                success: true
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "PUT /tickets Error:",
+                error
+            );
+
+
+            res.status(500).json({
+
+                success: false,
+
+                message:
+                    "خطا در بروزرسانی تیکت"
+
+            });
+
+        }
+
+    }
+);
+
+
+// ============================================================
+// GET CHAT MESSAGES
+// ============================================================
+
+app.get(
+    "/tickets/:id/messages",
+    async (req, res) => {
+
+        try {
+
+            const id =
+                safeObjectId(
+                    req.params.id
+                );
+
+
+            if (!id) {
+
+                return res.status(400).json({
+
+                    success: false,
+
+                    message:
+                        "کد پیگیری نامعتبر است"
+
+                });
+
+            }
+
+
+            const ticket =
+                await tickets.findOne(
+
+                    {
+                        _id: id
+                    },
+
+                    {
+
+                        projection: {
+
+                            messages:
+                                1
+
+                        }
+
+                    }
+
+                );
+
+
+            if (!ticket) {
+
+                return res.status(404).json({
+
+                    success: false,
+
+                    message:
+                        "درخواست پیدا نشد"
+
+                });
+
+            }
+
+
+            res.json(
+                ticket.messages || []
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "GET MESSAGES Error:",
+                error
+            );
+
+
+            res.status(500).json({
+
+                success: false,
+
+                message:
+                    "خطا در دریافت چت"
+
+            });
+
+        }
+
+    }
+);
+
+
+// ============================================================
+// SEND CHAT MESSAGE
+// ============================================================
+//
+// applicant:
+// بدون لاگین می‌تواند پیام خودش را بفرستد.
+//
+// command:
+// باید Authorization داشته باشد.
+//
+// sender از body قابل اعتماد نیست.
+// ============================================================
+
+app.post(
+    "/tickets/:id/messages",
+    async (req, res) => {
+
+        try {
+
+            const id =
+                safeObjectId(
+                    req.params.id
+                );
+
+
+            if (!id) {
+
+                return res.status(400).json({
+
+                    success: false,
+
+                    message:
+                        "کد پیگیری نامعتبر است"
+
+                });
+
+            }
+
+
+            const message =
+                text(req.body.message);
+
+
+            if (!message) {
+
+                return res.status(400).json({
+
+                    success: false,
+
+                    message:
+                        "پیام نمی‌تواند خالی باشد"
+
+                });
+
+            }
+
+
+            if (message.length > 2000) {
+
+                return res.status(400).json({
+
+                    success: false,
+
+                    message:
+                        "پیام بیش از حد طولانی است"
+
+                });
+
+            }
+
+
+            const ticket =
+                await tickets.findOne({
+
+                    _id: id
+
+                });
+
+
+            if (!ticket) {
+
+                return res.status(404).json({
+
+                    success: false,
+
+                    message:
+                        "درخواست پیدا نشد"
+
+                });
+
+            }
+
+
+            // ------------------------------------------------
+            // تشخیص فرمانده از Token
+            // ------------------------------------------------
+
+            const token =
+                getTokenFromRequest(req);
+
+
+            const authenticatedUser =
+                verifyToken(token);
+
+
+            let sender =
+                "applicant";
+
+
+            let actor = {
+
+                role:
+                    "applicant",
+
+                username:
+                    ticket.discord ||
+                    "Applicant",
+
+                name:
+                    ticket.icName ||
+                    ticket.ocName ||
+                    "Applicant",
+
+                rank:
+                    "Applicant"
+
+            };
+
+
+            if (authenticatedUser) {
+
+                if (
+                    authenticatedUser.role !==
+                        "command" &&
+                    authenticatedUser.role !==
+                        "owner"
+                ) {
+
+                    return res.status(403).json({
+
+                        success: false,
+
+                        message:
+                            "دسترسی غیرمجاز"
+
+                    });
+
+                }
+
+
+                sender =
+                    "command";
+
+
+                actor =
+                    authenticatedUser;
+
+            }
+
+
+            // ------------------------------------------------
+            // Message Object
+            // ------------------------------------------------
+
+            const chatMessage = {
+
+                sender,
+
+                message,
+
+                senderUsername:
+                    actor.username,
+
+                senderName:
+                    actor.name,
+
+                senderRank:
+                    actor.rank,
+
+                senderRole:
+                    actor.role,
+
+                createdAt:
+                    now()
+
+            };
+
+
+            const result =
+                await tickets.updateOne(
+
+                    {
+                        _id: id
+                    },
+
+                    {
+
+                        $push: {
+
+                            messages:
+                                chatMessage
+
+                        },
+
+                        $set: {
+
+                            updatedAt:
+                                now()
+
+                        }
+
+                    }
+
+                );
+
+
+            if (!result.matchedCount) {
+
+                return res.status(404).json({
+
+                    success: false,
+
+                    message:
+                        "درخواست پیدا نشد"
+
+                });
+
+            }
+
+
+            // ------------------------------------------------
+            // AUTO LOG
+            // ------------------------------------------------
+
+            await createLog({
+
+                action:
+                    sender === "command"
+                        ? "COMMAND_MESSAGE_SENT"
+                        : "APPLICANT_MESSAGE_SENT",
+
+                ticketId:
+                    id.toString(),
+
+                actor,
+
+                details: {
+
+                    message
+
+                }
+
+            });
+
+
+            res.json({
+
+                success: true,
+
+                message:
+                    chatMessage
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "POST MESSAGE Error:",
+                error
+            );
+
+
+            res.status(500).json({
+
+                success: false,
+
+                message:
+                    "خطا در ارسال پیام"
+
+            });
+
+        }
+
+    }
+);
+
+
+// ============================================================
+// DELETE TICKET
+// ============================================================
+//
+// فقط OWNER
+// ============================================================
+
+app.delete(
+    "/tickets/:id",
+    requireOwner,
+    async (req, res) => {
+
+        try {
+
+            const id =
+                safeObjectId(
+                    req.params.id
+                );
+
+
+            if (!id) {
+
+                return res.status(400).json({
+
+                    success: false,
+
+                    message:
+                        "شناسه تیکت نامعتبر است"
+
+                });
+
+            }
+
+
+            // ابتدا اطلاعات تیکت را می‌گیریم
+            // تا بعد از حذف هم لاگ کامل داشته باشیم.
+
+            const ticket =
+                await tickets.findOne({
+
+                    _id: id
+
+                });
+
+
+            if (!ticket) {
+
+                return res.status(404).json({
+
+                    success: false,
+
+                    message:
+                        "تیکت پیدا نشد"
+
+                });
+
+            }
+
+
+            const result =
+                await tickets.deleteOne({
+
+                    _id: id
+
+                });
+
+
+            if (
+                result.deletedCount <= 0
+            ) {
+
+                return res.status(404).json({
+
+                    success: false,
+
+                    message:
+                        "تیکت حذف نشد"
+
+                });
+
+            }
+
+
+            // ------------------------------------------------
+            // AUTO LOG DELETE
+            // ------------------------------------------------
+
+            await createLog({
+
+                action:
+                    "TICKET_DELETED",
+
+                ticketId:
+                    id.toString(),
+
+                actor:
+                    req.user,
+
+                details: {
+
+                    requestType:
+                        ticket.requestType,
+
+                    icName:
+                        ticket.icName,
+
+                    ocName:
+                        ticket.ocName,
+
+                    status:
+                        ticket.status
+
+                }
+
+            });
+
+
+            res.json({
+
+                success: true
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "DELETE /tickets Error:",
+                error
+            );
+
+
+            res.status(500).json({
+
+                success: false,
+
+                message:
+                    "خطا در حذف تیکت"
+
+            });
+
+        }
+
+    }
+);
+
+
+// ============================================================
+// GET LOGS
+// ============================================================
+//
+// فقط OWNER
+// ============================================================
+
+app.get(
+    "/logs",
+    requireOwner,
+    async (req, res) => {
+
+        try {
+
+            const limit =
+                Math.min(
+
+                    Math.max(
+
+                        Number(
+                            req.query.limit
+                        ) || 100,
+
+                        1
+
+                    ),
+
+                    500
+
+                );
+
+
+            const data =
+                await logs
+                    .find({})
+                    .sort({
+                        createdAt: -1
+                    })
+                    .limit(limit)
+                    .toArray();
+
+
+            res.json({
+
+                success: true,
+
+                logs:
+                    data
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "GET /logs Error:",
+                error
+            );
+
+
+            res.status(500).json({
+
+                success: false,
+
+                message:
+                    "خطا در دریافت لاگ‌ها"
+
+            });
+
+        }
+
+    }
+);
+
+
+// ============================================================
+// GET TICKET LOGS
+// ============================================================
+//
+// فقط OWNER
+// ============================================================
+
+app.get(
+    "/logs/ticket/:id",
+    requireOwner,
+    async (req, res) => {
+
+        try {
+
+            const ticketId =
+                text(req.params.id);
+
+
+            if (!ticketId) {
+
+                return res.status(400).json({
+
+                    success: false,
+
+                    message:
+                        "شناسه تیکت نامعتبر است"
+
+                });
+
+            }
+
+
+            const data =
+                await logs
+                    .find({
+
+                        ticketId
+
+                    })
+                    .sort({
+
+                        createdAt: 1
+
+                    })
+                    .toArray();
+
+
+            res.json({
+
+                success: true,
+
+                logs:
+                    data
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "GET TICKET LOGS Error:",
+                error
+            );
+
+
+            res.status(500).json({
+
+                success: false,
+
+                message:
+                    "خطا در دریافت لاگ تیکت"
+
+            });
+
+        }
+
+    }
+);
+
+
+// ============================================================
+// HEALTH CHECK
+// ============================================================
+
+app.get(
+    "/health",
+    async (req, res) => {
 
         res.json({
 
             success: true,
 
-            user: req.user
+            server:
+                "Vanguard LSPD",
+
+            mongodb:
+                !!database,
+
+            time:
+                now()
 
         });
 
@@ -552,38 +2127,9 @@ app.get(
 );
 
 
-// ===================================
-// LOGOUT
-// ===================================
-
-app.post(
-    "/auth/logout",
-    requireAuth,
-    (req, res) => {
-
-        const token =
-            getBearerToken(req);
-
-        if (token) {
-
-            sessions.delete(token);
-
-        }
-
-
-        res.json({
-
-            success: true
-
-        });
-
-    }
-);
-
-
-// ===================================
+// ============================================================
 // START SERVER
-// ===================================
+// ============================================================
 
 async function startServer() {
 
@@ -591,38 +2137,33 @@ async function startServer() {
 
         await client.connect();
 
+
         console.log(
             "MongoDB Connected ✅"
         );
 
 
-        const database =
+        database =
             client.db("LSPD");
 
 
         tickets =
-            database.collection("tickets");
+            database.collection(
+                "tickets"
+            );
 
 
         logs =
-            database.collection("logs");
+            database.collection(
+                "logs"
+            );
 
 
-        // ===================================
-        // INDEXES
-        // ===================================
+        // ----------------------------------------------------
+        // Indexes
+        // ----------------------------------------------------
 
         try {
-
-            await tickets.createIndex({
-                createdAt: -1
-            });
-
-
-            await tickets.createIndex({
-                updatedAt: -1
-            });
-
 
             await logs.createIndex({
                 createdAt: -1
@@ -633,1492 +2174,73 @@ async function startServer() {
                 ticketId: 1
             });
 
+
+            await tickets.createIndex({
+                createdAt: -1
+            });
+
+
+            console.log(
+                "MongoDB Indexes Ready ✅"
+            );
+
         } catch (indexError) {
 
-            console.error(
-                "Index Error:",
-                indexError
+            console.warn(
+                "⚠️ Index creation warning:",
+                indexError.message
             );
 
         }
 
 
-        // ===================================
-        // GET ALL TICKETS
-        // ===================================
-        //
-        // فقط فرماندهی و Admin
-        //
-
-        app.get(
-            "/tickets",
-            requireCommand,
-            async (req, res) => {
-
-                try {
-
-                    const data =
-                        await tickets
-                            .find({})
-                            .sort({
-                                createdAt: -1
-                            })
-                            .toArray();
-
-
-                    res.json(data);
-
-                } catch (error) {
-
-                    console.error(
-                        "GET /tickets Error:",
-                        error
-                    );
-
-
-                    res.status(500).json({
-
-                        success: false,
-
-                        message:
-                            "خطا در دریافت درخواست‌ها"
-
-                    });
-
-                }
-
-            }
-        );
-
-
-        // ===================================
-        // GET SINGLE TICKET
-        // ===================================
-        //
-        // عمومی است تا صفحه Tracking کار کند
-        //
-
-        app.get(
-            "/tickets/:id",
-            async (req, res) => {
-
-                try {
-
-                    const id =
-                        safeObjectId(
-                            req.params.id
-                        );
-
-
-                    if (!id) {
-
-                        return res.status(400).json({
-
-                            success: false,
-
-                            message:
-                                "کد پیگیری نامعتبر است."
-
-                        });
-
-                    }
-
-
-                    const ticket =
-                        await tickets.findOne({
-
-                            _id: id
-
-                        });
-
-
-                    if (!ticket) {
-
-                        return res.status(404).json({
-
-                            success: false,
-
-                            message:
-                                "درخواست پیدا نشد."
-
-                        });
-
-                    }
-
-
-                    res.json(ticket);
-
-                } catch (error) {
-
-                    console.error(
-                        "GET SINGLE TICKET Error:",
-                        error
-                    );
-
-
-                    res.status(500).json({
-
-                        success: false,
-
-                        message:
-                            "خطا در دریافت درخواست"
-
-                    });
-
-                }
-
-            }
-        );
-
-
-        // ===================================
-        // CREATE NEW TICKET
-        // ===================================
-
-        app.post(
-            "/tickets",
-            async (req, res) => {
-
-                try {
-
-                    const body =
-                        req.body || {};
-
-
-                    const requestType =
-                        text(
-                            body.requestType ||
-                            body.type ||
-                            "membership"
-                        );
-
-
-                    // ===================================
-                    // SCORE
-                    // ===================================
-
-                    let score = null;
-
-
-                    if (
-                        body.score !== undefined &&
-                        body.score !== null &&
-                        body.score !== ""
-                    ) {
-
-                        const numberScore =
-                            Number(
-                                body.score
-                            );
-
-
-                        if (
-                            Number.isFinite(
-                                numberScore
-                            ) &&
-                            numberScore >= 0 &&
-                            numberScore <= 20
-                        ) {
-
-                            score =
-                                numberScore;
-
-                        }
-
-                    }
-
-
-                    const passed =
-                        body.passed === true ||
-                        (
-                            score !== null &&
-                            score >= 12
-                        );
-
-
-                    // ===================================
-                    // TICKET
-                    // ===================================
-
-                    const ticket = {
-
-                        requestType,
-
-                        ocName:
-                            text(
-                                body.ocName
-                            ),
-
-                        icName:
-                            text(
-                                body.icName ||
-                                body.name
-                            ),
-
-                        name:
-                            text(
-                                body.icName ||
-                                body.name
-                            ),
-
-                        discord:
-                            text(
-                                body.discord ||
-                                body.discordId
-                            ),
-
-                        discordId:
-                            text(
-                                body.discordId ||
-                                body.discord
-                            ),
-
-                        steamHex:
-                            text(
-                                body.steamHex
-                            ),
-
-                        cmx:
-                            text(
-                                body.cmx
-                            ),
-
-                        age:
-                            text(
-                                body.age
-                            ),
-
-
-                        // MEMBERSHIP
-
-                        experience:
-                            text(
-                                body.experience
-                            ),
-
-                        reason:
-                            text(
-                                body.reason
-                            ),
-
-
-                        // DIVISION
-
-                        currentDivision:
-                            text(
-                                body.currentDivision
-                            ),
-
-                        requestedDivision:
-                            text(
-                                body.requestedDivision
-                            ),
-
-                        reasonForRequest:
-                            text(
-                                body.reasonForRequest
-                            ),
-
-                        previousDivisionExperience:
-                            text(
-                                body.previousDivisionExperience
-                            ),
-
-                        additionalInformation:
-                            text(
-                                body.additionalInformation
-                            ),
-
-
-                        // RESIGNATION
-
-                        oocName:
-                            text(
-                                body.oocName
-                            ),
-
-                        rank:
-                            text(
-                                body.rank
-                            ),
-
-                        callSign:
-                            text(
-                                body.callSign
-                            ),
-
-                        resignationReason:
-                            text(
-                                body.resignationReason ||
-                                body.reason
-                            ),
-
-
-                        // RANK UP
-
-                        requestRank:
-                            text(
-                                body.requestRank
-                            ),
-
-                        currentRankTimeplay:
-                            text(
-                                body.currentRankTimeplay
-                            ),
-
-                        note:
-                            text(
-                                body.note
-                            ),
-
-
-                        // EXAM
-
-                        score,
-
-                        passed,
-
-                        passingScore:
-                            12,
-
-
-                        // STATUS
-
-                        status:
-                            "Pending",
-
-
-                        // REPLY
-
-                        reply:
-                            "در انتظار پاسخ فرماندهی",
-
-
-                        // CHAT
-
-                        messages: [],
-
-
-                        // DATES
-
-                        createdAt:
-                            new Date(),
-
-                        updatedAt:
-                            new Date()
-
-                    };
-
-
-                    const result =
-                        await tickets.insertOne(
-                            ticket
-                        );
-
-
-                    const ticketId =
-                        result.insertedId.toString();
-
-
-                    console.log(
-                        "New Ticket:",
-                        ticketId,
-                        "| Type:",
-                        requestType,
-                        "| Score:",
-                        score
-                    );
-
-
-                    // ===================================
-                    // AUTO LOG
-                    // ===================================
-
-                    await createLog({
-
-                        action:
-                            "ticket_created",
-
-                        ticketId,
-
-                        actorType:
-                            "applicant",
-
-                        username:
-                            ticket.discord ||
-
-                            ticket.discordId ||
-
-                            "applicant",
-
-                        name:
-                            ticket.icName ||
-
-                            ticket.name ||
-
-                            ticket.ocName ||
-
-                            "Applicant",
-
-                        rank:
-                            "Applicant",
-
-                        details:
-                            `درخواست جدید ثبت شد | نوع: ${requestType}`
-
-                    });
-
-
-                    res.json({
-
-                        success: true,
-
-                        id:
-                            ticketId,
-
-                        score,
-
-                        passed
-
-                    });
-
-                } catch (error) {
-
-                    console.error(
-                        "POST /tickets Error:",
-                        error
-                    );
-
-
-                    res.status(500).json({
-
-                        success: false,
-
-                        message:
-                            "خطا در ثبت درخواست"
-
-                    });
-
-                }
-
-            }
-        );
-
-
-        // ===================================
-        // UPDATE TICKET
-        // ===================================
-        //
-        // فقط Command / Admin
-        //
-
-        app.put(
-            "/tickets/:id",
-            requireCommand,
-            async (req, res) => {
-
-                try {
-
-                    const id =
-                        safeObjectId(
-                            req.params.id
-                        );
-
-
-                    if (!id) {
-
-                        return res.status(400).json({
-
-                            success: false,
-
-                            message:
-                                "شناسه تیکت نامعتبر است"
-
-                        });
-
-                    }
-
-
-                    const existing =
-                        await tickets.findOne({
-
-                            _id: id
-
-                        });
-
-
-                    if (!existing) {
-
-                        return res.status(404).json({
-
-                            success: false,
-
-                            message:
-                                "درخواست پیدا نشد"
-
-                        });
-
-                    }
-
-
-                    const status =
-                        text(
-                            req.body.status
-                        ) || "Pending";
-
-
-                    const reply =
-                        text(
-                            req.body.reply
-                        );
-
-
-                    const result =
-                        await tickets.updateOne(
-
-                            {
-                                _id: id
-                            },
-
-                            {
-
-                                $set: {
-
-                                    status,
-
-                                    reply,
-
-                                    updatedAt:
-                                        new Date()
-
-                                }
-
-                            }
-
-                        );
-
-
-                    if (!result.matchedCount) {
-
-                        return res.status(404).json({
-
-                            success: false,
-
-                            message:
-                                "درخواست پیدا نشد"
-
-                        });
-
-                    }
-
-
-                    // ===================================
-                    // AUTO LOG UPDATE
-                    // ===================================
-
-                    await createLog({
-
-                        action:
-                            "ticket_updated",
-
-                        ticketId:
-                            id.toString(),
-
-                        actorType:
-                            req.user.role,
-
-                        username:
-                            req.user.username,
-
-                        name:
-                            req.user.name,
-
-                        rank:
-                            req.user.rank,
-
-                        details:
-                            `تیکت بروزرسانی شد | وضعیت: ${status}`
-
-                    });
-
-
-                    res.json({
-
-                        success: true
-
-                    });
-
-                } catch (error) {
-
-                    console.error(
-                        "PUT /tickets Error:",
-                        error
-                    );
-
-
-                    res.status(500).json({
-
-                        success: false,
-
-                        message:
-                            "خطا در بروزرسانی تیکت"
-
-                    });
-
-                }
-
-            }
-        );
-
-
-        // ===================================
-        // GET CHAT MESSAGES
-        // ===================================
-        //
-        // عمومی است تا Tracking کار کند
-        //
-
-        app.get(
-            "/tickets/:id/messages",
-            async (req, res) => {
-
-                try {
-
-                    const id =
-                        safeObjectId(
-                            req.params.id
-                        );
-
-
-                    if (!id) {
-
-                        return res.status(400).json({
-
-                            success: false,
-
-                            message:
-                                "کد پیگیری نامعتبر است"
-
-                        });
-
-                    }
-
-
-                    const ticket =
-                        await tickets.findOne(
-
-                            {
-                                _id: id
-                            },
-
-                            {
-                                projection: {
-                                    messages: 1
-                                }
-                            }
-
-                        );
-
-
-                    if (!ticket) {
-
-                        return res.status(404).json({
-
-                            success: false,
-
-                            message:
-                                "درخواست پیدا نشد"
-
-                        });
-
-                    }
-
-
-                    res.json(
-                        ticket.messages || []
-                    );
-
-                } catch (error) {
-
-                    console.error(
-                        "GET MESSAGES Error:",
-                        error
-                    );
-
-
-                    res.status(500).json({
-
-                        success: false,
-
-                        message:
-                            "خطا در دریافت چت"
-
-                    });
-
-                }
-
-            }
-        );
-
-
-        // ===================================
-        // SEND CHAT MESSAGE
-        // ===================================
-        //
-        // Applicant:
-        // بدون Login
-        //
-        // Command/Admin:
-        // حتماً Login لازم دارد
-        //
-
-        app.post(
-            "/tickets/:id/messages",
-            async (req, res) => {
-
-                try {
-
-                    const id =
-                        safeObjectId(
-                            req.params.id
-                        );
-
-
-                    if (!id) {
-
-                        return res.status(400).json({
-
-                            success: false,
-
-                            message:
-                                "کد پیگیری نامعتبر است"
-
-                        });
-
-                    }
-
-
-                    const ticket =
-                        await tickets.findOne({
-
-                            _id: id
-
-                        });
-
-
-                    if (!ticket) {
-
-                        return res.status(404).json({
-
-                            success: false,
-
-                            message:
-                                "درخواست پیدا نشد"
-
-                        });
-
-                    }
-
-
-                    const message =
-                        text(
-                            req.body.message
-                        );
-
-
-                    let sender =
-                        text(
-                            req.body.sender
-                        );
-
-
-                    if (!message) {
-
-                        return res.status(400).json({
-
-                            success: false,
-
-                            message:
-                                "پیام نمی‌تواند خالی باشد"
-
-                        });
-
-                    }
-
-
-                    if (
-                        message.length > 2000
-                    ) {
-
-                        return res.status(400).json({
-
-                            success: false,
-
-                            message:
-                                "پیام بیش از حد طولانی است"
-
-                        });
-
-                    }
-
-
-                    // ===================================
-                    // COMMAND MESSAGE
-                    // ===================================
-
-                    if (
-                        sender === "command"
-                    ) {
-
-                        const session =
-                            getSession(req);
-
-
-                        if (!session) {
-
-                            return res.status(401).json({
-
-                                success: false,
-
-                                message:
-                                    "برای ارسال پیام فرماندهی ابتدا وارد شوید."
-
-                            });
-
-                        }
-
-
-                        if (
-                            session.role !== "command" &&
-                            session.role !== "admin"
-                        ) {
-
-                            return res.status(403).json({
-
-                                success: false,
-
-                                message:
-                                    "شما اجازه ارسال پیام فرماندهی ندارید."
-
-                            });
-
-                        }
-
-
-                        const chatMessage = {
-
-                            sender:
-                                "command",
-
-                            message,
-
-                            username:
-                                session.username,
-
-                            name:
-                                session.name,
-
-                            rank:
-                                session.rank,
-
-                            role:
-                                session.role,
-
-                            createdAt:
-                                new Date()
-
-                        };
-
-
-                        await tickets.updateOne(
-
-                            {
-                                _id: id
-                            },
-
-                            {
-
-                                $push: {
-
-                                    messages:
-                                        chatMessage
-
-                                },
-
-                                $set: {
-
-                                    updatedAt:
-                                        new Date()
-
-                                }
-
-                            }
-
-                        );
-
-
-                        // ===================================
-                        // AUTO LOG COMMAND
-                        // ===================================
-
-                        await createLog({
-
-                            action:
-                                "command_message",
-
-                            ticketId:
-                                id.toString(),
-
-                            actorType:
-                                session.role,
-
-                            username:
-                                session.username,
-
-                            name:
-                                session.name,
-
-                            rank:
-                                session.rank,
-
-                            details:
-                                `فرمانده پیام ارسال کرد: ${message}`
-
-                        });
-
-
-                        return res.json({
-
-                            success: true,
-
-                            message:
-                                chatMessage
-
-                        });
-
-                    }
-
-
-                    // ===================================
-                    // APPLICANT MESSAGE
-                    // ===================================
-
-                    sender =
-                        "applicant";
-
-
-                    const applicantName =
-                        text(
-                            ticket.icName ||
-                            ticket.name ||
-                            ticket.ocName
-                        ) ||
-                        "Applicant";
-
-
-                    const applicantUsername =
-                        text(
-                            ticket.discord ||
-                            ticket.discordId
-                        ) ||
-                        "Applicant";
-
-
-                    const chatMessage = {
-
-                        sender:
-                            "applicant",
-
-                        message,
-
-                        username:
-                            applicantUsername,
-
-                        name:
-                            applicantName,
-
-                        rank:
-                            "Applicant",
-
-                        role:
-                            "applicant",
-
-                        createdAt:
-                            new Date()
-
-                    };
-
-
-                    await tickets.updateOne(
-
-                        {
-                            _id: id
-                        },
-
-                        {
-
-                            $push: {
-
-                                messages:
-                                    chatMessage
-
-                            },
-
-                            $set: {
-
-                                updatedAt:
-                                    new Date()
-
-                            }
-
-                        }
-
-                    );
-
-
-                    // ===================================
-                    // AUTO LOG APPLICANT
-                    // ===================================
-
-                    await createLog({
-
-                        action:
-                            "applicant_message",
-
-                        ticketId:
-                            id.toString(),
-
-                        actorType:
-                            "applicant",
-
-                        username:
-                            applicantUsername,
-
-                        name:
-                            applicantName,
-
-                        rank:
-                            "Applicant",
-
-                        details:
-                            `متقاضی پیام ارسال کرد: ${message}`
-
-                    });
-
-
-                    res.json({
-
-                        success: true,
-
-                        message:
-                            chatMessage
-
-                    });
-
-                } catch (error) {
-
-                    console.error(
-                        "POST MESSAGE Error:",
-                        error
-                    );
-
-
-                    res.status(500).json({
-
-                        success: false,
-
-                        message:
-                            "خطا در ارسال پیام"
-
-                    });
-
-                }
-
-            }
-        );
-
-
-        // ===================================
-        // DELETE TICKET
-        // ===================================
-        //
-        // فقط SEDJAVAD / ADMIN
-        //
-
-        app.delete(
-            "/tickets/:id",
-            requireAdmin,
-            async (req, res) => {
-
-                try {
-
-                    const id =
-                        safeObjectId(
-                            req.params.id
-                        );
-
-
-                    if (!id) {
-
-                        return res.status(400).json({
-
-                            success: false,
-
-                            message:
-                                "شناسه تیکت نامعتبر است"
-
-                        });
-
-                    }
-
-
-                    const ticket =
-                        await tickets.findOne({
-
-                            _id: id
-
-                        });
-
-
-                    if (!ticket) {
-
-                        return res.status(404).json({
-
-                            success: false,
-
-                            message:
-                                "تیکت پیدا نشد"
-
-                        });
-
-                    }
-
-
-                    const result =
-                        await tickets.deleteOne({
-
-                            _id: id
-
-                        });
-
-
-                    if (
-                        result.deletedCount === 0
-                    ) {
-
-                        return res.status(404).json({
-
-                            success: false,
-
-                            message:
-                                "تیکت حذف نشد"
-
-                        });
-
-                    }
-
-
-                    // ===================================
-                    // AUTO LOG DELETE
-                    // ===================================
-
-                    await createLog({
-
-                        action:
-                            "ticket_deleted",
-
-                        ticketId:
-                            id.toString(),
-
-                        actorType:
-                            req.user.role,
-
-                        username:
-                            req.user.username,
-
-                        name:
-                            req.user.name,
-
-                        rank:
-                            req.user.rank,
-
-                        details:
-                            `تیکت ${id.toString()} حذف شد | متقاضی: ${
-                                ticket.icName ||
-                                ticket.name ||
-                                ticket.ocName ||
-                                "Unknown"
-                            }`
-
-                    });
-
-
-                    res.json({
-
-                        success: true
-
-                    });
-
-                } catch (error) {
-
-                    console.error(
-                        "DELETE /tickets Error:",
-                        error
-                    );
-
-
-                    res.status(500).json({
-
-                        success: false,
-
-                        message:
-                            "خطا در حذف تیکت"
-
-                    });
-
-                }
-
-            }
-        );
-
-
-        // ===================================
-        // GET LOGS
-        // ===================================
-        //
-        // فقط Admin
-        //
-
-        app.get(
-            "/admin/logs",
-            requireAdmin,
-            async (req, res) => {
-
-                try {
-
-                    const limit =
-                        Math.min(
-
-                            Math.max(
-
-                                Number(
-                                    req.query.limit
-                                ) || 200,
-
-                                1
-
-                            ),
-
-                            500
-
-                        );
-
-
-                    const data =
-                        await logs
-                            .find({})
-                            .sort({
-                                createdAt: -1
-                            })
-                            .limit(limit)
-                            .toArray();
-
-
-                    res.json({
-
-                        success: true,
-
-                        logs:
-                            data
-
-                    });
-
-                } catch (error) {
-
-                    console.error(
-                        "GET ADMIN LOGS Error:",
-                        error
-                    );
-
-
-                    res.status(500).json({
-
-                        success: false,
-
-                        message:
-                            "خطا در دریافت لاگ‌ها"
-
-                    });
-
-                }
-
-            }
-        );
-
-
-        // ===================================
-        // GET LOGS FOR ONE TICKET
-        // ===================================
-        //
-        // فقط Admin
-        //
-
-        app.get(
-            "/admin/logs/:ticketId",
-            requireAdmin,
-            async (req, res) => {
-
-                try {
-
-                    const ticketId =
-                        text(
-                            req.params.ticketId
-                        );
-
-
-                    const data =
-                        await logs
-                            .find({
-                                ticketId
-                            })
-                            .sort({
-                                createdAt: 1
-                            })
-                            .toArray();
-
-
-                    res.json({
-
-                        success: true,
-
-                        logs:
-                            data
-
-                    });
-
-                } catch (error) {
-
-                    console.error(
-                        "GET TICKET LOGS Error:",
-                        error
-                    );
-
-
-                    res.status(500).json({
-
-                        success: false,
-
-                        message:
-                            "خطا در دریافت لاگ تیکت"
-
-                    });
-
-                }
-
-            }
-        );
-
-
-        // ===================================
-        // DELETE LOGS
-        // ===================================
-        //
-        // فقط Admin
-        //
-
-        app.delete(
-            "/admin/logs",
-            requireAdmin,
-            async (req, res) => {
-
-                try {
-
-                    await logs.deleteMany({});
-
-
-                    await createLog({
-
-                        action:
-                            "logs_cleared",
-
-                        actorType:
-                            req.user.role,
-
-                        username:
-                            req.user.username,
-
-                        name:
-                            req.user.name,
-
-                        rank:
-                            req.user.rank,
-
-                        details:
-                            "تمام لاگ‌ها پاک شدند."
-
-                    });
-
-
-                    res.json({
-
-                        success: true
-
-                    });
-
-                } catch (error) {
-
-                    console.error(
-                        "DELETE LOGS Error:",
-                        error
-                    );
-
-
-                    res.status(500).json({
-
-                        success: false,
-
-                        message:
-                            "خطا در پاک کردن لاگ‌ها"
-
-                    });
-
-                }
-
-            }
-        );
-
-
-        // ===================================
-        // SERVER
-        // ===================================
-
-        const PORT =
-            process.env.PORT || 3000;
-
+        // ----------------------------------------------------
+        // Server
+        // ----------------------------------------------------
 
         app.listen(
             PORT,
             () => {
 
                 console.log(
-                    `🚔 Vanguard LSPD Server running on port ${PORT}`
+                    "=========================================="
                 );
 
                 console.log(
-                    "🔐 Authentication system enabled"
+                    "🚔 Vanguard LSPD Server"
                 );
 
                 console.log(
-                    "👮 Command role enabled"
+                    `🌐 Port: ${PORT}`
                 );
 
                 console.log(
-                    "👑 Admin role enabled"
+                    "🍃 MongoDB: Connected"
+                );
+
+                console.log(
+                    "📝 Logs: Enabled"
+                );
+
+                console.log(
+                    "🔐 Auth: Enabled"
+                );
+
+                console.log(
+                    "👮 Command Access: Enabled"
+                );
+
+                console.log(
+                    "👑 Owner Access: Enabled"
+                );
+
+                console.log(
+                    "=========================================="
                 );
 
             }
-        );
 
+        );
 
     } catch (error) {
 
@@ -2135,8 +2257,68 @@ async function startServer() {
 }
 
 
-// ===================================
+// ============================================================
+// Graceful Shutdown
+// ============================================================
+
+process.on(
+    "SIGINT",
+    async () => {
+
+        console.log(
+            "🛑 Closing server..."
+        );
+
+
+        try {
+
+            await client.close();
+
+        } catch (error) {
+
+            console.error(
+                error
+            );
+
+        }
+
+
+        process.exit(0);
+
+    }
+);
+
+
+process.on(
+    "SIGTERM",
+    async () => {
+
+        console.log(
+            "🛑 Closing server..."
+        );
+
+
+        try {
+
+            await client.close();
+
+        } catch (error) {
+
+            console.error(
+                error
+            );
+
+        }
+
+
+        process.exit(0);
+
+    }
+);
+
+
+// ============================================================
 // RUN
-// ===================================
+// ============================================================
 
 startServer();
