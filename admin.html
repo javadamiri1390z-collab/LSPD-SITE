@@ -2,21 +2,17 @@
 <html lang="fa" dir="rtl">
 
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Vanguard LSPD | Command Center</title>
 
 <link rel="stylesheet" href="style.css">
-
 </head>
-
 
 <body class="command-page">
 
 <div class="overlay"></div>
-
 
 <header class="navbar">
 
@@ -27,17 +23,9 @@
     >
 
     <div class="nav-title">
-
-        <h2>
-            Vanguard LSPD
-        </h2>
-
-        <span>
-            Command Center
-        </span>
-
+        <h2>Vanguard LSPD</h2>
+        <span>Command Center</span>
     </div>
-
 
     <button
         class="login-btn"
@@ -49,241 +37,178 @@
 </header>
 
 
-
 <main class="hero">
-
 
 <div class="dashboard">
 
+    <h1>🚔 پنل فرماندهی LSPD</h1>
 
-<h1>
-    🚔 پنل فرماندهی LSPD
-</h1>
-
-
-<p class="dashboard-sub">
-    مدیریت و بررسی درخواست‌های نیروها
-</p>
+    <p class="dashboard-sub">
+        مدیریت درخواست‌ها و ارتباط با متقاضیان
+    </p>
 
 
+    <!-- =========================
+         STATS
+    ========================= -->
 
-<!-- =========================
-     STATS
-========================= -->
+    <div class="stats">
 
-<div class="stats">
+        <div class="card stat-total">
+            <h2 id="total">0</h2>
+            <p>کل درخواست‌ها</p>
+        </div>
 
+        <div class="card stat-pending">
+            <h2 id="pending">0</h2>
+            <p>در انتظار بررسی</p>
+        </div>
 
-    <div class="card stat-total">
+        <div class="card stat-accepted">
+            <h2 id="accepted">0</h2>
+            <p>تایید شده</p>
+        </div>
 
-        <h2 id="total">
-            0
-        </h2>
-
-        <p>
-            کل درخواست‌ها
-        </p>
-
-    </div>
-
-
-    <div class="card stat-pending">
-
-        <h2 id="pending">
-            0
-        </h2>
-
-        <p>
-            در انتظار بررسی
-        </p>
+        <div class="card">
+            <h2 id="rejected">0</h2>
+            <p>رد شده</p>
+        </div>
 
     </div>
 
 
-    <div class="card stat-accepted">
+    <!-- =========================
+         SEARCH
+    ========================= -->
 
-        <h2 id="accepted">
-            0
-        </h2>
+    <input
+        class="search-box"
+        id="search"
+        type="text"
+        placeholder="🔍 جستجو IC Name، OOC Name، Discord یا کد پیگیری..."
+        autocomplete="off"
+    >
 
-        <p>
-            تایید شده
-        </p>
+
+    <!-- =========================
+         FILTER
+    ========================= -->
+
+    <div
+        class="request-tabs"
+        style="
+            display:flex;
+            flex-wrap:wrap;
+            gap:10px;
+            margin:25px 0;
+        "
+    >
+
+        <button
+            class="btn primary"
+            onclick="filterRequests('all')"
+        >
+            📋 همه درخواست‌ها
+        </button>
+
+        <button
+            class="btn"
+            onclick="filterRequests('membership')"
+        >
+            🚔 درخواست عضویت
+        </button>
+
+        <button
+            class="btn"
+            onclick="filterRequests('division')"
+        >
+            🎖️ درخواست دیویژن
+        </button>
+
+        <button
+            class="btn"
+            onclick="filterRequests('resignation')"
+        >
+            📤 درخواست استعفا
+        </button>
+
+        <button
+            class="btn"
+            onclick="filterRequests('rankup')"
+        >
+            ⬆️ درخواست رنکاپ
+        </button>
 
     </div>
 
 
-</div>
-
-
-
-<!-- =========================
-     SEARCH
-========================= -->
-
-<input
-    class="search-box"
-    id="search"
-    type="text"
-    placeholder="🔍 جستجو IC Name، OOC Name یا Discord..."
->
-
-
-
-<!-- =========================
-     REQUEST FILTER BUTTONS
-========================= -->
-
-<div
-    class="request-tabs"
-    style="
-        display:flex;
-        flex-wrap:wrap;
-        gap:10px;
-        margin:25px 0;
-    "
->
-
-
-    <button
-        class="btn primary"
-        onclick="filterRequests('all')"
+    <div
+        id="sectionTitle"
+        style="margin-bottom:20px;"
     >
-        📋 همه درخواست‌ها
-    </button>
+        <h2>📋 همه درخواست‌ها</h2>
+    </div>
 
 
-    <button
-        class="btn"
-        onclick="filterRequests('membership')"
-    >
-        🚔 درخواست عضویت
-    </button>
+    <!-- =========================
+         REQUESTS
+    ========================= -->
 
-
-    <button
-        class="btn"
-        onclick="filterRequests('division')"
-    >
-        🎖️ درخواست دیویژن
-    </button>
-
-
-    <button
-        class="btn"
-        onclick="filterRequests('resignation')"
-    >
-        📤 درخواست استعفا
-    </button>
-
-
-    <button
-        class="btn"
-        onclick="filterRequests('rankup')"
-    >
-        ⬆️ درخواست رنکاپ
-    </button>
-
-
-</div>
-
-
-
-<!-- =========================
-     SECTION TITLES
-========================= -->
-
-<div
-    id="sectionTitle"
-    style="margin-bottom:20px;"
->
-
-    <h2>
-        📋 همه درخواست‌ها
-    </h2>
-
-</div>
-
-
-
-<!-- =========================
-     TICKETS
-========================= -->
-
-<div id="tickets"></div>
-
-
+    <div id="tickets"></div>
 
 </div>
 
 </main>
 
 
-
 <script src="script.js"></script>
-
 
 <script>
 
-
 let allTickets = [];
-
 let currentFilter = "all";
-
 let currentSearch = "";
 
 
-
 // ===================================
-// LOAD TICKETS
+// LOAD
 // ===================================
 
 async function loadTickets() {
+
+    const box = document.getElementById("tickets");
+
+    box.innerHTML = `
+        <div class="ticket-card">
+            <h3>⏳ در حال دریافت درخواست‌ها...</h3>
+        </div>
+    `;
 
     try {
 
         allTickets = await getTickets();
 
-
         if (!Array.isArray(allTickets)) {
-
             allTickets = [];
-
         }
 
-
         updateStats();
-
         renderRequests();
-
 
     } catch (error) {
 
         console.error(error);
 
-
-        document.getElementById(
-            "tickets"
-        ).innerHTML = `
-
+        box.innerHTML = `
             <div class="ticket-card empty">
-
-                <h2>
-                    ❌ خطا در دریافت درخواست‌ها
-                </h2>
-
-                <p>
-                    اتصال به سرور برقرار نشد.
-                </p>
-
+                <h2>❌ خطا در دریافت درخواست‌ها</h2>
+                <p>اتصال به سرور برقرار نشد.</p>
             </div>
-
         `;
 
     }
 
 }
-
 
 
 // ===================================
@@ -292,38 +217,29 @@ async function loadTickets() {
 
 function updateStats() {
 
-    document.getElementById(
-        "total"
-    ).innerText =
+    document.getElementById("total").innerText =
         allTickets.length;
 
-
-    document.getElementById(
-        "pending"
-    ).innerText =
-
+    document.getElementById("pending").innerText =
         allTickets.filter(
-            t =>
-            (t.status || "Pending")
-            === "Pending"
+            t => (t.status || "Pending") === "Pending"
         ).length;
 
-
-    document.getElementById(
-        "accepted"
-    ).innerText =
-
+    document.getElementById("accepted").innerText =
         allTickets.filter(
-            t =>
-            t.status === "Accepted"
+            t => t.status === "Accepted"
+        ).length;
+
+    document.getElementById("rejected").innerText =
+        allTickets.filter(
+            t => t.status === "Rejected"
         ).length;
 
 }
 
 
-
 // ===================================
-// REQUEST TYPE
+// TYPE
 // ===================================
 
 function getRequestType(ticket) {
@@ -334,11 +250,6 @@ function getRequestType(ticket) {
 
 }
 
-
-
-// ===================================
-// REQUEST TITLE
-// ===================================
 
 function getRequestTitle(type) {
 
@@ -364,257 +275,156 @@ function getRequestTitle(type) {
 }
 
 
-
 // ===================================
-// STATUS CLASS
+// STATUS
 // ===================================
 
 function getStatusClass(status) {
 
     if (status === "Accepted") {
-
         return "approved-text";
-
     }
-
 
     if (status === "Rejected") {
-
         return "rejected-text";
-
     }
-
 
     return "pending-text";
 
 }
 
 
-
-// ===================================
-// STATUS TEXT
-// ===================================
-
 function getStatusText(status) {
 
     if (status === "Accepted") {
-
         return "🟢 تایید شده";
-
     }
-
 
     if (status === "Rejected") {
-
         return "🔴 رد شده";
-
     }
-
 
     return "🟡 در انتظار";
 
 }
 
 
-
 // ===================================
-// RENDER REQUESTS
-// ===================================
-
-function renderRequests() {
-
-
-    let filtered =
-        allTickets.filter(ticket => {
-
-
-            let type =
-                getRequestType(ticket);
-
-
-            let typeMatch =
-
-                currentFilter === "all" ||
-
-                type === currentFilter;
-
-
-            if (!typeMatch) {
-
-                return false;
-
-            }
-
-
-            if (!currentSearch) {
-
-                return true;
-
-            }
-
-
-            let searchText =
-
-                (
-
-                    (ticket.icName || "") +
-
-                    " " +
-
-                    (ticket.ocName || "") +
-
-                    " " +
-
-                    (ticket.oocName || "") +
-
-                    " " +
-
-                    (ticket.discord || "") +
-
-                    " " +
-
-                    (ticket.discordId || "") +
-
-                    " " +
-
-                    (ticket.steamHex || "") +
-
-                    " " +
-
-                    (ticket.cmx || "")
-
-                ).toLowerCase();
-
-
-            return searchText.includes(
-                currentSearch
-            );
-
-        });
-
-
-    showTickets(filtered);
-
-}
-
-
-
-// ===================================
-// FILTER BUTTON
+// FILTER
 // ===================================
 
 function filterRequests(type) {
 
-
     currentFilter = type;
 
-
-    let title =
-        document.getElementById(
-            "sectionTitle"
-        );
-
-
-    title.innerHTML = `
-
-        <h2>
-            ${getRequestTitle(type)}
-        </h2>
-
-    `;
-
+    const title =
+        document.getElementById("sectionTitle");
 
     if (type === "all") {
 
-        title.innerHTML = `
+        title.innerHTML =
+            "<h2>📋 همه درخواست‌ها</h2>";
 
-            <h2>
-                📋 همه درخواست‌ها
-            </h2>
+    } else {
 
-        `;
+        title.innerHTML =
+            `<h2>${getRequestTitle(type)}</h2>`;
 
     }
-
 
     renderRequests();
 
 }
 
 
+// ===================================
+// RENDER
+// ===================================
+
+function renderRequests() {
+
+    let filtered = allTickets.filter(ticket => {
+
+        const type = getRequestType(ticket);
+
+        if (
+            currentFilter !== "all" &&
+            type !== currentFilter
+        ) {
+            return false;
+        }
+
+        if (!currentSearch) {
+            return true;
+        }
+
+        const searchText = (
+
+            (ticket._id || "") + " " +
+            (ticket.icName || "") + " " +
+            (ticket.ocName || "") + " " +
+            (ticket.oocName || "") + " " +
+            (ticket.discord || "") + " " +
+            (ticket.discordId || "") + " " +
+            (ticket.steamHex || "") + " " +
+            (ticket.cmx || "")
+
+        ).toLowerCase();
+
+        return searchText.includes(currentSearch);
+
+    });
+
+    showTickets(filtered);
+
+}
+
 
 // ===================================
-// SHOW TICKETS
+// SHOW
 // ===================================
 
 function showTickets(tickets) {
 
-
-    let box =
-        document.getElementById(
-            "tickets"
-        );
-
+    const box =
+        document.getElementById("tickets");
 
     box.innerHTML = "";
 
-
-    if (
-        !tickets ||
-        tickets.length === 0
-    ) {
-
+    if (!tickets.length) {
 
         box.innerHTML = `
-
             <div class="ticket-card empty">
 
-                <h2>
-                    📭 درخواستی وجود ندارد
-                </h2>
+                <h2>📭 درخواستی وجود ندارد</h2>
 
                 <p>
-                    در این بخش هنوز درخواستی ثبت نشده است.
+                    در این بخش درخواستی پیدا نشد.
                 </p>
 
             </div>
-
         `;
 
-
         return;
-
     }
-
 
 
     tickets.forEach(ticket => {
 
-        let type =
+        const type =
             getRequestType(ticket);
 
-
-        let status =
+        const status =
             ticket.status || "Pending";
 
-
-        let statusClass =
+        const statusClass =
             getStatusClass(status);
 
-
-        let statusText =
+        const statusText =
             getStatusText(status);
 
 
-        let html = "";
-
-
-
-        // ===================================
-        // HEADER
-        // ===================================
-
-        html += `
+        let html = `
 
         <div class="ticket-card">
 
@@ -627,25 +437,53 @@ function showTickets(tickets) {
                     </h2>
 
                     <small>
-                        ID:
-                        ${escapeHTML(
-                            ticket._id || "-"
-                        )}
+                        کد پیگیری:
+                        ${escapeHTML(ticket._id || "-")}
                     </small>
 
                 </div>
 
-
                 <span class="${statusClass}">
-
                     ${statusText}
-
                 </span>
 
             </div>
-
         `;
 
+
+        // ===================================
+        // COMMON INFORMATION
+        // ===================================
+
+        html += `
+
+            <p>
+                <b>👤 IC Name:</b>
+                ${escapeHTML(
+                    ticket.icName ||
+                    ticket.name ||
+                    "-"
+                )}
+            </p>
+
+            <p>
+                <b>🎭 OOC Name:</b>
+                ${escapeHTML(
+                    ticket.oocName ||
+                    ticket.ocName ||
+                    "-"
+                )}
+            </p>
+
+            <p>
+                <b>💬 Discord:</b>
+                ${escapeHTML(
+                    ticket.discordId ||
+                    ticket.discord ||
+                    "-"
+                )}
+            </p>
+        `;
 
 
         // ===================================
@@ -657,83 +495,33 @@ function showTickets(tickets) {
             html += `
 
                 <p>
-                    <b>🎭 OOC Name:</b>
-                    ${escapeHTML(
-                        ticket.ocName ||
-                        ticket.oocName ||
-                        "-"
-                    )}
-                </p>
-
-
-                <p>
-                    <b>👤 IC Name:</b>
-                    ${escapeHTML(
-                        ticket.icName ||
-                        ticket.name ||
-                        "-"
-                    )}
-                </p>
-
-
-                <p>
-                    <b>💬 Discord:</b>
-                    ${escapeHTML(
-                        ticket.discordId ||
-                        ticket.discord ||
-                        "-"
-                    )}
-                </p>
-
-
-                <p>
                     <b>🎮 Steam Hex:</b>
-                    ${escapeHTML(
-                        ticket.steamHex ||
-                        "-"
-                    )}
+                    ${escapeHTML(ticket.steamHex || "-")}
                 </p>
-
 
                 <p>
                     <b>🆔 CMX:</b>
-                    ${escapeHTML(
-                        ticket.cmx ||
-                        "-"
-                    )}
+                    ${escapeHTML(ticket.cmx || "-")}
                 </p>
-
 
                 <p>
                     <b>🎂 سن:</b>
-                    ${escapeHTML(
-                        ticket.age ||
-                        "-"
-                    )}
+                    ${escapeHTML(ticket.age || "-")}
                 </p>
-
 
                 <p>
                     <b>🚔 تجربه رول‌پلی:</b>
-                    ${escapeHTML(
-                        ticket.experience ||
-                        "-"
-                    )}
+                    ${escapeHTML(ticket.experience || "-")}
                 </p>
-
 
                 <p>
                     <b>📄 دلیل عضویت:</b>
-                    ${escapeHTML(
-                        ticket.reason ||
-                        "-"
-                    )}
+                    ${escapeHTML(ticket.reason || "-")}
                 </p>
 
             `;
 
         }
-
 
 
         // ===================================
@@ -745,109 +533,49 @@ function showTickets(tickets) {
             html += `
 
                 <p>
-                    <b>👤 IC Name:</b>
-                    ${escapeHTML(
-                        ticket.icName ||
-                        "-"
-                    )}
-                </p>
-
-
-                <p>
-                    <b>🎭 OOC Name:</b>
-                    ${escapeHTML(
-                        ticket.oocName ||
-                        ticket.ocName ||
-                        "-"
-                    )}
-                </p>
-
-
-                <p>
-                    <b>💬 Discord ID:</b>
-                    ${escapeHTML(
-                        ticket.discordId ||
-                        ticket.discord ||
-                        "-"
-                    )}
-                </p>
-
-
-                <p>
-                    <b>🎮 Steam Hex:</b>
-                    ${escapeHTML(
-                        ticket.steamHex ||
-                        "-"
-                    )}
-                </p>
-
-
-                <p>
                     <b>⭐ Rank:</b>
-                    ${escapeHTML(
-                        ticket.rank ||
-                        "-"
-                    )}
+                    ${escapeHTML(ticket.rank || "-")}
                 </p>
-
 
                 <p>
                     <b>📻 Call Sign:</b>
-                    ${escapeHTML(
-                        ticket.callSign ||
-                        "-"
-                    )}
+                    ${escapeHTML(ticket.callSign || "-")}
                 </p>
-
 
                 <p>
                     <b>🎖️ Current Division:</b>
-                    ${escapeHTML(
-                        ticket.currentDivision ||
-                        "-"
-                    )}
+                    ${escapeHTML(ticket.currentDivision || "-")}
                 </p>
-
 
                 <p>
                     <b>🎯 Requested Division:</b>
-                    ${escapeHTML(
-                        ticket.requestedDivision ||
-                        "-"
-                    )}
+                    ${escapeHTML(ticket.requestedDivision || "-")}
                 </p>
-
 
                 <p>
                     <b>📄 Reason:</b>
                     ${escapeHTML(
-                        ticket.reasonForRequest ||
-                        "-"
+                        ticket.reasonForRequest || "-"
                     )}
                 </p>
-
 
                 <p>
-                    <b>📚 Previous Division Experience:</b>
+                    <b>📚 Previous Experience:</b>
                     ${escapeHTML(
-                        ticket.previousDivisionExperience ||
-                        "-"
+                        ticket.previousDivisionExperience || "-"
                     )}
                 </p>
-
 
                 <p>
                     <b>📝 Additional Information:</b>
                     ${escapeHTML(
-                        ticket.additionalInformation ||
-                        "-"
+                        ticket.additionalInformation || "-"
                     )}
                 </p>
 
             `;
 
         }
-
 
 
         // ===================================
@@ -859,41 +587,14 @@ function showTickets(tickets) {
             html += `
 
                 <p>
-                    <b>👤 IC Name:</b>
-                    ${escapeHTML(
-                        ticket.icName ||
-                        "-"
-                    )}
-                </p>
-
-
-                <p>
-                    <b>🎭 OOC Name:</b>
-                    ${escapeHTML(
-                        ticket.oocName ||
-                        ticket.ocName ||
-                        "-"
-                    )}
-                </p>
-
-
-                <p>
                     <b>⭐ Rank:</b>
-                    ${escapeHTML(
-                        ticket.rank ||
-                        "-"
-                    )}
+                    ${escapeHTML(ticket.rank || "-")}
                 </p>
-
 
                 <p>
                     <b>📻 Call Sign:</b>
-                    ${escapeHTML(
-                        ticket.callSign ||
-                        "-"
-                    )}
+                    ${escapeHTML(ticket.callSign || "-")}
                 </p>
-
 
                 <p>
                     <b>📄 Reason:</b>
@@ -909,7 +610,6 @@ function showTickets(tickets) {
         }
 
 
-
         // ===================================
         // RANKUP
         // ===================================
@@ -919,73 +619,32 @@ function showTickets(tickets) {
             html += `
 
                 <p>
-                    <b>👤 IC Name:</b>
-                    ${escapeHTML(
-                        ticket.icName ||
-                        "-"
-                    )}
-                </p>
-
-
-                <p>
-                    <b>🎭 OOC Name:</b>
-                    ${escapeHTML(
-                        ticket.oocName ||
-                        ticket.ocName ||
-                        "-"
-                    )}
-                </p>
-
-
-                <p>
-                    <b>💬 Discord ID:</b>
-                    ${escapeHTML(
-                        ticket.discordId ||
-                        ticket.discord ||
-                        "-"
-                    )}
-                </p>
-
-
-                <p>
                     <b>⭐ Current Rank:</b>
-                    ${escapeHTML(
-                        ticket.rank ||
-                        "-"
-                    )}
+                    ${escapeHTML(ticket.rank || "-")}
                 </p>
-
 
                 <p>
-                    <b>⬆️ Request Rank:</b>
+                    <b>⬆️ Requested Rank:</b>
                     ${escapeHTML(
-                        ticket.requestRank ||
-                        "-"
+                        ticket.requestRank || "-"
                     )}
                 </p>
-
 
                 <p>
                     <b>⏱️ Current Rank Timeplay:</b>
                     ${escapeHTML(
-                        ticket.currentRankTimeplay ||
-                        "-"
+                        ticket.currentRankTimeplay || "-"
                     )}
                 </p>
 
-
                 <p>
                     <b>📝 Note:</b>
-                    ${escapeHTML(
-                        ticket.note ||
-                        "-"
-                    )}
+                    ${escapeHTML(ticket.note || "-")}
                 </p>
 
             `;
 
         }
-
 
 
         // ===================================
@@ -995,38 +654,16 @@ function showTickets(tickets) {
         html += `
 
             <p>
-
-                <b>
-                    🕒 تاریخ ثبت:
-                </b>
-
+                <b>🕒 تاریخ ثبت:</b>
                 ${
                     ticket.createdAt
-
-                    ?
-
-                    new Date(
+                    ? new Date(
                         ticket.createdAt
-                    ).toLocaleString(
-                        "fa-IR"
-                    )
-
-                    :
-
-                    "-"
+                      ).toLocaleString("fa-IR")
+                    : "-"
                 }
-
             </p>
 
-        `;
-
-
-
-        // ===================================
-        // COMMAND RESPONSE
-        // ===================================
-
-        html += `
 
             <hr>
 
@@ -1035,56 +672,35 @@ function showTickets(tickets) {
                 ✍️ پاسخ فرماندهی
             </label>
 
-
             <textarea
                 id="reply-${ticket._id}"
-                placeholder="پاسخ فرماندهی را بنویسید..."
-            >${escapeHTML(
-                ticket.reply || ""
-            )}</textarea>
-
+                placeholder="پاسخ فرماندهی..."
+            >${escapeHTML(ticket.reply || "")}</textarea>
 
 
             <label>
                 وضعیت درخواست
             </label>
 
-
-            <select
-                id="status-${ticket._id}"
-            >
+            <select id="status-${ticket._id}">
 
                 <option
                     value="Pending"
-                    ${
-                        status === "Pending"
-                        ? "selected"
-                        : ""
-                    }
+                    ${status === "Pending" ? "selected" : ""}
                 >
                     🟡 در انتظار
                 </option>
 
-
                 <option
                     value="Accepted"
-                    ${
-                        status === "Accepted"
-                        ? "selected"
-                        : ""
-                    }
+                    ${status === "Accepted" ? "selected" : ""}
                 >
                     🟢 تایید شده
                 </option>
 
-
                 <option
                     value="Rejected"
-                    ${
-                        status === "Rejected"
-                        ? "selected"
-                        : ""
-                    }
+                    ${status === "Rejected" ? "selected" : ""}
                 >
                     🔴 رد شده
                 </option>
@@ -1092,9 +708,7 @@ function showTickets(tickets) {
             </select>
 
 
-
             <div class="ticket-buttons">
-
 
                 <button
                     class="btn primary"
@@ -1103,7 +717,6 @@ function showTickets(tickets) {
                     💾 ذخیره
                 </button>
 
-
                 <button
                     class="btn delete-btn"
                     onclick="removeTicket('${ticket._id}')"
@@ -1111,14 +724,30 @@ function showTickets(tickets) {
                     🗑 حذف
                 </button>
 
-
             </div>
 
 
+            <div
+                class="command-chat-box"
+                style="
+                    margin-top:20px;
+                    padding:15px;
+                    border-top:1px solid rgba(255,255,255,.15);
+                "
+            >
+
+                <h3>
+                    💬 چت با متقاضی
+                </h3>
+
+                <p style="color:#aaa;">
+                    بخش گفت‌وگوی دوطرفه بعد از اتصال نسخه جدید سرور فعال می‌شود.
+                </p>
+
+            </div>
+
         </div>
-
         `;
-
 
 
         box.innerHTML += html;
@@ -1126,7 +755,6 @@ function showTickets(tickets) {
     });
 
 }
-
 
 
 // ===================================
@@ -1137,20 +765,18 @@ async function saveTicket(id) {
 
     try {
 
-
-        let status =
+        const status =
             document.getElementById(
                 "status-" + id
             ).value;
 
-
-        let reply =
+        const reply =
             document.getElementById(
                 "reply-" + id
             ).value;
 
 
-        let result =
+        const result =
             await updateTicket(
                 id,
                 status,
@@ -1164,16 +790,20 @@ async function saveTicket(id) {
                 "درخواست با موفقیت بروزرسانی شد ✅"
             );
 
+        } else {
+
+            alert(
+                "بروزرسانی انجام نشد ❌"
+            );
+
         }
 
 
         await loadTickets();
 
-
     } catch (error) {
 
         console.error(error);
-
 
         alert(
             "خطا در بروزرسانی درخواست ❌"
@@ -1184,43 +814,45 @@ async function saveTicket(id) {
 }
 
 
-
 // ===================================
 // DELETE
 // ===================================
 
 async function removeTicket(id) {
 
-
     if (
         !confirm(
             "آیا از حذف این درخواست مطمئن هستید؟"
         )
     ) {
-
         return;
-
     }
 
 
     try {
 
+        const result =
+            await deleteTicket(id);
 
-        await deleteTicket(id);
+        if (result) {
 
+            alert(
+                "درخواست حذف شد ✅"
+            );
 
-        alert(
-            "درخواست حذف شد ✅"
-        );
+        } else {
 
+            alert(
+                "حذف درخواست انجام نشد ❌"
+            );
+
+        }
 
         await loadTickets();
-
 
     } catch (error) {
 
         console.error(error);
-
 
         alert(
             "خطا در حذف درخواست ❌"
@@ -1229,7 +861,6 @@ async function removeTicket(id) {
     }
 
 }
-
 
 
 // ===================================
@@ -1242,18 +873,15 @@ document
     "input",
     function() {
 
-
         currentSearch =
             this.value
             .toLowerCase()
             .trim();
 
-
         renderRequests();
 
     }
 );
-
 
 
 // ===================================
@@ -1262,35 +890,15 @@ document
 
 function escapeHTML(value) {
 
-    return String(value)
+    return String(value ?? "")
 
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-
-        .replace(
-            /</g,
-            "&lt;"
-        )
-
-        .replace(
-            />/g,
-            "&gt;"
-        )
-
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 
 }
-
 
 
 // ===================================
@@ -1302,5 +910,4 @@ loadTickets();
 </script>
 
 </body>
-
 </html>
