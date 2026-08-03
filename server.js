@@ -16,7 +16,7 @@ const app = express();
 // ===================================
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "1mb" }));
 app.use(express.static(__dirname));
 
 
@@ -39,6 +39,7 @@ if (!MONGO_URI) {
     console.error(
         "❌ MONGODB_URI در Environment Variables تنظیم نشده است."
     );
+
     process.exit(1);
 }
 
@@ -102,12 +103,61 @@ async function startServer() {
                 );
 
                 res.status(500).json({
-
                     success: false,
+                    message: "خطا در دریافت درخواست‌ها"
+                });
 
-                    message:
-                        "خطا در دریافت درخواست‌ها"
+            }
 
+        });
+
+
+        // ===================================
+        // GET SINGLE TICKET
+        // ===================================
+
+        app.get("/tickets/:id", async (req, res) => {
+
+            try {
+
+                const id =
+                    safeObjectId(req.params.id);
+
+                if (!id) {
+
+                    return res.status(400).json({
+                        success: false,
+                        message: "کد پیگیری نامعتبر است."
+                    });
+
+                }
+
+                const ticket =
+                    await tickets.findOne({
+                        _id: id
+                    });
+
+                if (!ticket) {
+
+                    return res.status(404).json({
+                        success: false,
+                        message: "درخواست پیدا نشد."
+                    });
+
+                }
+
+                res.json(ticket);
+
+            } catch (error) {
+
+                console.error(
+                    "GET /tickets/:id Error:",
+                    error
+                );
+
+                res.status(500).json({
+                    success: false,
+                    message: "خطا در دریافت درخواست"
                 });
 
             }
@@ -125,7 +175,6 @@ async function startServer() {
 
                 const body = req.body || {};
 
-
                 /*
                     requestType:
 
@@ -135,7 +184,6 @@ async function startServer() {
                     rankup
                 */
 
-
                 const requestType =
                     text(
                         body.requestType ||
@@ -144,15 +192,23 @@ async function startServer() {
                     );
 
 
-                const ticket = {
+                const score =
+                    Number.isFinite(Number(body.score))
+                        ? Number(body.score)
+                        : null;
 
+
+                const passed =
+                    body.passed === true;
+
+
+                const ticket = {
 
                     // ===================================
                     // نوع درخواست
                     // ===================================
 
-                    requestType:
-                        requestType,
+                    requestType: requestType,
 
 
                     // ===================================
@@ -162,13 +218,11 @@ async function startServer() {
                     ocName:
                         text(body.ocName),
 
-
                     icName:
                         text(
                             body.icName ||
                             body.name
                         ),
-
 
                     name:
                         text(
@@ -176,13 +230,11 @@ async function startServer() {
                             body.name
                         ),
 
-
                     discord:
                         text(
                             body.discord ||
                             body.discordId
                         ),
-
 
                     discordId:
                         text(
@@ -190,18 +242,14 @@ async function startServer() {
                             body.discord
                         ),
 
-
                     steamHex:
                         text(body.steamHex),
-
 
                     cmx:
                         text(body.cmx),
 
-
                     age:
                         text(body.age),
-
 
 
                     // ===================================
@@ -211,10 +259,17 @@ async function startServer() {
                     experience:
                         text(body.experience),
 
-
                     reason:
                         text(body.reason),
 
+
+                    // ===================================
+                    // آزمون استخدام
+                    // ===================================
+
+                    score: score,
+
+                    passed: passed,
 
 
                     // ===================================
@@ -222,34 +277,23 @@ async function startServer() {
                     // ===================================
 
                     currentDivision:
-                        text(
-                            body.currentDivision
-                        ),
-
+                        text(body.currentDivision),
 
                     requestedDivision:
-                        text(
-                            body.requestedDivision
-                        ),
-
+                        text(body.requestedDivision),
 
                     reasonForRequest:
-                        text(
-                            body.reasonForRequest
-                        ),
-
+                        text(body.reasonForRequest),
 
                     previousDivisionExperience:
                         text(
                             body.previousDivisionExperience
                         ),
 
-
                     additionalInformation:
                         text(
                             body.additionalInformation
                         ),
-
 
 
                     // ===================================
@@ -259,21 +303,17 @@ async function startServer() {
                     oocName:
                         text(body.oocName),
 
-
                     rank:
                         text(body.rank),
 
-
                     callSign:
                         text(body.callSign),
-
 
                     resignationReason:
                         text(
                             body.resignationReason ||
                             body.reason
                         ),
-
 
 
                     // ===================================
@@ -283,16 +323,13 @@ async function startServer() {
                     requestRank:
                         text(body.requestRank),
 
-
                     currentRankTimeplay:
                         text(
                             body.currentRankTimeplay
                         ),
 
-
                     note:
                         text(body.note),
-
 
 
                     // ===================================
@@ -303,7 +340,6 @@ async function startServer() {
                         "Pending",
 
 
-
                     // ===================================
                     // پاسخ فرماندهی
                     // ===================================
@@ -312,9 +348,15 @@ async function startServer() {
                         "در انتظار پاسخ فرماندهی",
 
 
+                    // ===================================
+                    // CHAT
+                    // ===================================
+
+                    messages: [],
+
 
                     // ===================================
-                    // تاریخ ثبت
+                    // تاریخ
                     // ===================================
 
                     createdAt:
@@ -323,24 +365,16 @@ async function startServer() {
                 };
 
 
-
                 const result =
                     await tickets.insertOne(ticket);
 
 
-
                 console.log(
-
                     "New Ticket:",
-
                     result.insertedId.toString(),
-
                     "| Type:",
-
                     requestType
-
                 );
-
 
 
                 res.json({
@@ -355,12 +389,10 @@ async function startServer() {
 
             } catch (error) {
 
-
                 console.error(
                     "POST /tickets Error:",
                     error
                 );
-
 
                 res.status(500).json({
 
@@ -376,7 +408,6 @@ async function startServer() {
         });
 
 
-
         // ===================================
         // UPDATE TICKET
         // ===================================
@@ -387,7 +418,6 @@ async function startServer() {
 
                 const id =
                     safeObjectId(req.params.id);
-
 
 
                 if (!id) {
@@ -404,19 +434,16 @@ async function startServer() {
                 }
 
 
-
                 const status =
                     text(
                         req.body.status
                     ) || "Pending";
 
 
-
                 const reply =
                     text(
                         req.body.reply
                     );
-
 
 
                 const result =
@@ -427,7 +454,6 @@ async function startServer() {
                         },
 
                         {
-
                             $set: {
 
                                 status:
@@ -446,7 +472,6 @@ async function startServer() {
                     );
 
 
-
                 res.json({
 
                     success:
@@ -456,7 +481,6 @@ async function startServer() {
 
 
             } catch (error) {
-
 
                 console.error(
                     "PUT /tickets Error:",
@@ -478,6 +502,256 @@ async function startServer() {
         });
 
 
+        // ===================================
+        // GET CHAT MESSAGES
+        // ===================================
+
+        app.get(
+            "/tickets/:id/messages",
+            async (req, res) => {
+
+                try {
+
+                    const id =
+                        safeObjectId(req.params.id);
+
+
+                    if (!id) {
+
+                        return res.status(400).json({
+
+                            success: false,
+
+                            message:
+                                "شناسه تیکت نامعتبر است"
+
+                        });
+
+                    }
+
+
+                    const ticket =
+                        await tickets.findOne(
+
+                            {
+                                _id: id
+                            },
+
+                            {
+                                projection: {
+                                    messages: 1
+                                }
+                            }
+
+                        );
+
+
+                    if (!ticket) {
+
+                        return res.status(404).json({
+
+                            success: false,
+
+                            message:
+                                "درخواست پیدا نشد"
+
+                        });
+
+                    }
+
+
+                    res.json(
+                        ticket.messages || []
+                    );
+
+
+                } catch (error) {
+
+                    console.error(
+                        "GET messages Error:",
+                        error
+                    );
+
+
+                    res.status(500).json({
+
+                        success: false,
+
+                        message:
+                            "خطا در دریافت پیام‌ها"
+
+                    });
+
+                }
+
+            }
+        );
+
+
+        // ===================================
+        // SEND CHAT MESSAGE
+        // ===================================
+
+        app.post(
+            "/tickets/:id/messages",
+            async (req, res) => {
+
+                try {
+
+                    const id =
+                        safeObjectId(req.params.id);
+
+
+                    if (!id) {
+
+                        return res.status(400).json({
+
+                            success: false,
+
+                            message:
+                                "شناسه تیکت نامعتبر است"
+
+                        });
+
+                    }
+
+
+                    const message =
+                        text(req.body.message);
+
+
+                    let sender =
+                        text(req.body.sender);
+
+
+                    if (
+                        sender !== "command" &&
+                        sender !== "applicant"
+                    ) {
+
+                        sender = "applicant";
+
+                    }
+
+
+                    if (!message) {
+
+                        return res.status(400).json({
+
+                            success: false,
+
+                            message:
+                                "پیام نمی‌تواند خالی باشد"
+
+                        });
+
+                    }
+
+
+                    if (message.length > 2000) {
+
+                        return res.status(400).json({
+
+                            success: false,
+
+                            message:
+                                "پیام بیش از حد طولانی است"
+
+                        });
+
+                    }
+
+
+                    const chatMessage = {
+
+                        sender:
+                            sender,
+
+                        message:
+                            message,
+
+                        createdAt:
+                            new Date()
+
+                    };
+
+
+                    const result =
+                        await tickets.updateOne(
+
+                            {
+                                _id: id
+                            },
+
+                            {
+
+                                $push: {
+
+                                    messages:
+                                        chatMessage
+
+                                },
+
+                                $set: {
+
+                                    updatedAt:
+                                        new Date()
+
+                                }
+
+                            }
+
+                        );
+
+
+                    if (
+                        result.matchedCount === 0
+                    ) {
+
+                        return res.status(404).json({
+
+                            success: false,
+
+                            message:
+                                "درخواست پیدا نشد"
+
+                        });
+
+                    }
+
+
+                    res.json({
+
+                        success: true,
+
+                        message:
+                            chatMessage
+
+                    });
+
+
+                } catch (error) {
+
+                    console.error(
+                        "POST messages Error:",
+                        error
+                    );
+
+
+                    res.status(500).json({
+
+                        success: false,
+
+                        message:
+                            "خطا در ارسال پیام"
+
+                    });
+
+                }
+
+            }
+        );
+
 
         // ===================================
         // DELETE TICKET
@@ -489,7 +763,6 @@ async function startServer() {
 
                 const id =
                     safeObjectId(req.params.id);
-
 
 
                 if (!id) {
@@ -506,14 +779,12 @@ async function startServer() {
                 }
 
 
-
                 const result =
                     await tickets.deleteOne({
 
                         _id: id
 
                     });
-
 
 
                 res.json({
@@ -525,7 +796,6 @@ async function startServer() {
 
 
             } catch (error) {
-
 
                 console.error(
                     "DELETE /tickets Error:",
@@ -547,7 +817,6 @@ async function startServer() {
         });
 
 
-
         // ===================================
         // SERVER
         // ===================================
@@ -556,13 +825,10 @@ async function startServer() {
             process.env.PORT || 3000;
 
 
-
         app.listen(PORT, () => {
 
             console.log(
-
                 `🚔 Vanguard LSPD Server running on port ${PORT}`
-
             );
 
         });
@@ -570,15 +836,10 @@ async function startServer() {
 
     } catch (error) {
 
-
         console.error(
-
             "❌ MongoDB Connection Error:",
-
             error
-
         );
-
 
         process.exit(1);
 
