@@ -10,7 +10,6 @@ const { MongoClient, ObjectId } = require("mongodb");
 
 const app = express();
 
-
 // ===================================
 // MIDDLEWARE
 // ===================================
@@ -18,7 +17,6 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: "1mb" }));
 app.use(express.static(__dirname));
-
 
 // ===================================
 // HOME
@@ -28,7 +26,6 @@ app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "index.html"));
 });
 
-
 // ===================================
 // MONGODB
 // ===================================
@@ -36,17 +33,13 @@ app.get("/", (req, res) => {
 const MONGO_URI = process.env.MONGODB_URI;
 
 if (!MONGO_URI) {
-    console.error(
-        "❌ MONGODB_URI در Environment Variables تنظیم نشده است."
-    );
-
+    console.error("❌ MONGODB_URI در Environment Variables تنظیم نشده است.");
     process.exit(1);
 }
 
 const client = new MongoClient(MONGO_URI);
 
 let tickets;
-
 
 // ===================================
 // HELPERS
@@ -61,7 +54,6 @@ function safeObjectId(id) {
         ? new ObjectId(id)
         : null;
 }
-
 
 // ===================================
 // START SERVER
@@ -78,7 +70,6 @@ async function startServer() {
         const database = client.db("LSPD");
 
         tickets = database.collection("tickets");
-
 
         // ===================================
         // GET ALL TICKETS
@@ -97,10 +88,7 @@ async function startServer() {
 
             } catch (error) {
 
-                console.error(
-                    "GET /tickets Error:",
-                    error
-                );
+                console.error("GET /tickets Error:", error);
 
                 res.status(500).json({
                     success: false,
@@ -111,7 +99,6 @@ async function startServer() {
 
         });
 
-
         // ===================================
         // GET SINGLE TICKET
         // ===================================
@@ -120,8 +107,7 @@ async function startServer() {
 
             try {
 
-                const id =
-                    safeObjectId(req.params.id);
+                const id = safeObjectId(req.params.id);
 
                 if (!id) {
 
@@ -132,10 +118,9 @@ async function startServer() {
 
                 }
 
-                const ticket =
-                    await tickets.findOne({
-                        _id: id
-                    });
+                const ticket = await tickets.findOne({
+                    _id: id
+                });
 
                 if (!ticket) {
 
@@ -150,10 +135,7 @@ async function startServer() {
 
             } catch (error) {
 
-                console.error(
-                    "GET /tickets/:id Error:",
-                    error
-                );
+                console.error("GET SINGLE TICKET Error:", error);
 
                 res.status(500).json({
                     success: false,
@@ -163,7 +145,6 @@ async function startServer() {
             }
 
         });
-
 
         // ===================================
         // CREATE NEW TICKET
@@ -175,178 +156,160 @@ async function startServer() {
 
                 const body = req.body || {};
 
-                /*
-                    requestType:
+                const requestType = text(
+                    body.requestType ||
+                    body.type ||
+                    "membership"
+                );
 
-                    membership
-                    division
-                    resignation
-                    rankup
-                */
+                // ===================================
+                // SCORE
+                // ===================================
 
-                const requestType =
-                    text(
-                        body.requestType ||
-                        body.type ||
-                        "membership"
-                    );
+                let score = null;
 
+                if (
+                    body.score !== undefined &&
+                    body.score !== null &&
+                    body.score !== ""
+                ) {
 
-                const score =
-                    Number.isFinite(Number(body.score))
-                        ? Number(body.score)
-                        : null;
+                    const numberScore = Number(body.score);
 
+                    if (
+                        Number.isFinite(numberScore) &&
+                        numberScore >= 0 &&
+                        numberScore <= 20
+                    ) {
+
+                        score = numberScore;
+
+                    }
+
+                }
 
                 const passed =
-                    body.passed === true;
+                    body.passed === true ||
+                    (score !== null && score >= 12);
 
+                // ===================================
+                // TICKET
+                // ===================================
 
                 const ticket = {
 
-                    // ===================================
                     // نوع درخواست
-                    // ===================================
+                    requestType,
 
-                    requestType: requestType,
-
-
-                    // ===================================
                     // اطلاعات مشترک
-                    // ===================================
+                    ocName: text(body.ocName),
 
-                    ocName:
-                        text(body.ocName),
+                    icName: text(
+                        body.icName ||
+                        body.name
+                    ),
 
-                    icName:
-                        text(
-                            body.icName ||
-                            body.name
-                        ),
+                    name: text(
+                        body.icName ||
+                        body.name
+                    ),
 
-                    name:
-                        text(
-                            body.icName ||
-                            body.name
-                        ),
+                    discord: text(
+                        body.discord ||
+                        body.discordId
+                    ),
 
-                    discord:
-                        text(
-                            body.discord ||
-                            body.discordId
-                        ),
+                    discordId: text(
+                        body.discordId ||
+                        body.discord
+                    ),
 
-                    discordId:
-                        text(
-                            body.discordId ||
-                            body.discord
-                        ),
+                    steamHex: text(body.steamHex),
 
-                    steamHex:
-                        text(body.steamHex),
+                    cmx: text(body.cmx),
 
-                    cmx:
-                        text(body.cmx),
-
-                    age:
-                        text(body.age),
-
+                    age: text(body.age),
 
                     // ===================================
-                    // درخواست عضویت
+                    // MEMBERSHIP
                     // ===================================
 
-                    experience:
-                        text(body.experience),
+                    experience: text(body.experience),
 
-                    reason:
-                        text(body.reason),
-
+                    reason: text(body.reason),
 
                     // ===================================
-                    // آزمون استخدام
+                    // DIVISION
                     // ===================================
 
-                    score: score,
+                    currentDivision: text(
+                        body.currentDivision
+                    ),
 
-                    passed: passed,
+                    requestedDivision: text(
+                        body.requestedDivision
+                    ),
 
+                    reasonForRequest: text(
+                        body.reasonForRequest
+                    ),
 
-                    // ===================================
-                    // درخواست دیویژن
-                    // ===================================
+                    previousDivisionExperience: text(
+                        body.previousDivisionExperience
+                    ),
 
-                    currentDivision:
-                        text(body.currentDivision),
-
-                    requestedDivision:
-                        text(body.requestedDivision),
-
-                    reasonForRequest:
-                        text(body.reasonForRequest),
-
-                    previousDivisionExperience:
-                        text(
-                            body.previousDivisionExperience
-                        ),
-
-                    additionalInformation:
-                        text(
-                            body.additionalInformation
-                        ),
-
+                    additionalInformation: text(
+                        body.additionalInformation
+                    ),
 
                     // ===================================
-                    // درخواست استعفا
+                    // RESIGNATION
                     // ===================================
 
-                    oocName:
-                        text(body.oocName),
+                    oocName: text(body.oocName),
 
-                    rank:
-                        text(body.rank),
+                    rank: text(body.rank),
 
-                    callSign:
-                        text(body.callSign),
+                    callSign: text(body.callSign),
 
-                    resignationReason:
-                        text(
-                            body.resignationReason ||
-                            body.reason
-                        ),
-
+                    resignationReason: text(
+                        body.resignationReason ||
+                        body.reason
+                    ),
 
                     // ===================================
-                    // درخواست Rank Up
+                    // RANK UP
                     // ===================================
 
-                    requestRank:
-                        text(body.requestRank),
+                    requestRank: text(body.requestRank),
 
-                    currentRankTimeplay:
-                        text(
-                            body.currentRankTimeplay
-                        ),
+                    currentRankTimeplay: text(
+                        body.currentRankTimeplay
+                    ),
 
-                    note:
-                        text(body.note),
-
+                    note: text(body.note),
 
                     // ===================================
-                    // وضعیت
+                    // EXAM
                     // ===================================
 
-                    status:
-                        "Pending",
+                    score,
 
+                    passed,
+
+                    passingScore: 12,
 
                     // ===================================
-                    // پاسخ فرماندهی
+                    // STATUS
                     // ===================================
 
-                    reply:
-                        "در انتظار پاسخ فرماندهی",
+                    status: "Pending",
 
+                    // ===================================
+                    // COMMAND REPLY
+                    // ===================================
+
+                    reply: "در انتظار پاسخ فرماندهی",
 
                     // ===================================
                     // CHAT
@@ -354,38 +317,38 @@ async function startServer() {
 
                     messages: [],
 
-
                     // ===================================
-                    // تاریخ
+                    // DATES
                     // ===================================
 
-                    createdAt:
-                        new Date()
+                    createdAt: new Date(),
+
+                    updatedAt: new Date()
 
                 };
 
-
-                const result =
-                    await tickets.insertOne(ticket);
-
+                const result = await tickets.insertOne(ticket);
 
                 console.log(
                     "New Ticket:",
                     result.insertedId.toString(),
                     "| Type:",
-                    requestType
+                    requestType,
+                    "| Score:",
+                    score
                 );
-
 
                 res.json({
 
                     success: true,
 
-                    id:
-                        result.insertedId.toString()
+                    id: result.insertedId.toString(),
+
+                    score,
+
+                    passed
 
                 });
-
 
             } catch (error) {
 
@@ -398,15 +361,13 @@ async function startServer() {
 
                     success: false,
 
-                    message:
-                        "خطا در ثبت درخواست"
+                    message: "خطا در ثبت درخواست"
 
                 });
 
             }
 
         });
-
 
         // ===================================
         // UPDATE TICKET
@@ -416,9 +377,7 @@ async function startServer() {
 
             try {
 
-                const id =
-                    safeObjectId(req.params.id);
-
+                const id = safeObjectId(req.params.id);
 
                 if (!id) {
 
@@ -426,25 +385,17 @@ async function startServer() {
 
                         success: false,
 
-                        message:
-                            "شناسه تیکت نامعتبر است"
+                        message: "شناسه تیکت نامعتبر است"
 
                     });
 
                 }
 
-
                 const status =
-                    text(
-                        req.body.status
-                    ) || "Pending";
-
+                    text(req.body.status) || "Pending";
 
                 const reply =
-                    text(
-                        req.body.reply
-                    );
-
+                    text(req.body.reply);
 
                 const result =
                     await tickets.updateOne(
@@ -454,16 +405,14 @@ async function startServer() {
                         },
 
                         {
+
                             $set: {
 
-                                status:
-                                    status,
+                                status,
 
-                                reply:
-                                    reply,
+                                reply,
 
-                                updatedAt:
-                                    new Date()
+                                updatedAt: new Date()
 
                             }
 
@@ -471,14 +420,23 @@ async function startServer() {
 
                     );
 
+                if (!result.matchedCount) {
+
+                    return res.status(404).json({
+
+                        success: false,
+
+                        message: "درخواست پیدا نشد"
+
+                    });
+
+                }
 
                 res.json({
 
-                    success:
-                        result.matchedCount > 0
+                    success: true
 
                 });
-
 
             } catch (error) {
 
@@ -487,13 +445,11 @@ async function startServer() {
                     error
                 );
 
-
                 res.status(500).json({
 
                     success: false,
 
-                    message:
-                        "خطا در بروزرسانی تیکت"
+                    message: "خطا در بروزرسانی تیکت"
 
                 });
 
@@ -501,257 +457,209 @@ async function startServer() {
 
         });
 
-
         // ===================================
         // GET CHAT MESSAGES
         // ===================================
 
-        app.get(
-            "/tickets/:id/messages",
-            async (req, res) => {
+        app.get("/tickets/:id/messages", async (req, res) => {
 
-                try {
+            try {
 
-                    const id =
-                        safeObjectId(req.params.id);
+                const id = safeObjectId(req.params.id);
 
+                if (!id) {
 
-                    if (!id) {
-
-                        return res.status(400).json({
-
-                            success: false,
-
-                            message:
-                                "شناسه تیکت نامعتبر است"
-
-                        });
-
-                    }
-
-
-                    const ticket =
-                        await tickets.findOne(
-
-                            {
-                                _id: id
-                            },
-
-                            {
-                                projection: {
-                                    messages: 1
-                                }
-                            }
-
-                        );
-
-
-                    if (!ticket) {
-
-                        return res.status(404).json({
-
-                            success: false,
-
-                            message:
-                                "درخواست پیدا نشد"
-
-                        });
-
-                    }
-
-
-                    res.json(
-                        ticket.messages || []
-                    );
-
-
-                } catch (error) {
-
-                    console.error(
-                        "GET messages Error:",
-                        error
-                    );
-
-
-                    res.status(500).json({
+                    return res.status(400).json({
 
                         success: false,
 
-                        message:
-                            "خطا در دریافت پیام‌ها"
+                        message: "کد پیگیری نامعتبر است"
 
                     });
 
                 }
 
-            }
-        );
+                const ticket = await tickets.findOne(
 
+                    {
+                        _id: id
+                    },
+
+                    {
+                        projection: {
+                            messages: 1
+                        }
+                    }
+
+                );
+
+                if (!ticket) {
+
+                    return res.status(404).json({
+
+                        success: false,
+
+                        message: "درخواست پیدا نشد"
+
+                    });
+
+                }
+
+                res.json(ticket.messages || []);
+
+            } catch (error) {
+
+                console.error(
+                    "GET MESSAGES Error:",
+                    error
+                );
+
+                res.status(500).json({
+
+                    success: false,
+
+                    message: "خطا در دریافت چت"
+
+                });
+
+            }
+
+        });
 
         // ===================================
         // SEND CHAT MESSAGE
         // ===================================
 
-        app.post(
-            "/tickets/:id/messages",
-            async (req, res) => {
+        app.post("/tickets/:id/messages", async (req, res) => {
 
-                try {
+            try {
 
-                    const id =
-                        safeObjectId(req.params.id);
+                const id = safeObjectId(req.params.id);
 
+                if (!id) {
 
-                    if (!id) {
-
-                        return res.status(400).json({
-
-                            success: false,
-
-                            message:
-                                "شناسه تیکت نامعتبر است"
-
-                        });
-
-                    }
-
-
-                    const message =
-                        text(req.body.message);
-
-
-                    let sender =
-                        text(req.body.sender);
-
-
-                    if (
-                        sender !== "command" &&
-                        sender !== "applicant"
-                    ) {
-
-                        sender = "applicant";
-
-                    }
-
-
-                    if (!message) {
-
-                        return res.status(400).json({
-
-                            success: false,
-
-                            message:
-                                "پیام نمی‌تواند خالی باشد"
-
-                        });
-
-                    }
-
-
-                    if (message.length > 2000) {
-
-                        return res.status(400).json({
-
-                            success: false,
-
-                            message:
-                                "پیام بیش از حد طولانی است"
-
-                        });
-
-                    }
-
-
-                    const chatMessage = {
-
-                        sender:
-                            sender,
-
-                        message:
-                            message,
-
-                        createdAt:
-                            new Date()
-
-                    };
-
-
-                    const result =
-                        await tickets.updateOne(
-
-                            {
-                                _id: id
-                            },
-
-                            {
-
-                                $push: {
-
-                                    messages:
-                                        chatMessage
-
-                                },
-
-                                $set: {
-
-                                    updatedAt:
-                                        new Date()
-
-                                }
-
-                            }
-
-                        );
-
-
-                    if (
-                        result.matchedCount === 0
-                    ) {
-
-                        return res.status(404).json({
-
-                            success: false,
-
-                            message:
-                                "درخواست پیدا نشد"
-
-                        });
-
-                    }
-
-
-                    res.json({
-
-                        success: true,
-
-                        message:
-                            chatMessage
-
-                    });
-
-
-                } catch (error) {
-
-                    console.error(
-                        "POST messages Error:",
-                        error
-                    );
-
-
-                    res.status(500).json({
+                    return res.status(400).json({
 
                         success: false,
 
-                        message:
-                            "خطا در ارسال پیام"
+                        message: "کد پیگیری نامعتبر است"
 
                     });
 
                 }
 
-            }
-        );
+                const message = text(req.body.message);
 
+                let sender =
+                    text(req.body.sender);
+
+                if (!message) {
+
+                    return res.status(400).json({
+
+                        success: false,
+
+                        message: "پیام نمی‌تواند خالی باشد"
+
+                    });
+
+                }
+
+                if (message.length > 2000) {
+
+                    return res.status(400).json({
+
+                        success: false,
+
+                        message: "پیام بیش از حد طولانی است"
+
+                    });
+
+                }
+
+                // فقط دو نوع فرستنده داریم
+                if (
+                    sender !== "command" &&
+                    sender !== "applicant"
+                ) {
+
+                    sender = "applicant";
+
+                }
+
+                const chatMessage = {
+
+                    sender,
+
+                    message,
+
+                    createdAt: new Date()
+
+                };
+
+                const result =
+                    await tickets.updateOne(
+
+                        {
+                            _id: id
+                        },
+
+                        {
+
+                            $push: {
+
+                                messages: chatMessage
+
+                            },
+
+                            $set: {
+
+                                updatedAt: new Date()
+
+                            }
+
+                        }
+
+                    );
+
+                if (!result.matchedCount) {
+
+                    return res.status(404).json({
+
+                        success: false,
+
+                        message: "درخواست پیدا نشد"
+
+                    });
+
+                }
+
+                res.json({
+
+                    success: true,
+
+                    message: chatMessage
+
+                });
+
+            } catch (error) {
+
+                console.error(
+                    "POST MESSAGE Error:",
+                    error
+                );
+
+                res.status(500).json({
+
+                    success: false,
+
+                    message: "خطا در ارسال پیام"
+
+                });
+
+            }
+
+        });
 
         // ===================================
         // DELETE TICKET
@@ -761,9 +669,7 @@ async function startServer() {
 
             try {
 
-                const id =
-                    safeObjectId(req.params.id);
-
+                const id = safeObjectId(req.params.id);
 
                 if (!id) {
 
@@ -771,13 +677,11 @@ async function startServer() {
 
                         success: false,
 
-                        message:
-                            "شناسه تیکت نامعتبر است"
+                        message: "شناسه تیکت نامعتبر است"
 
                     });
 
                 }
-
 
                 const result =
                     await tickets.deleteOne({
@@ -786,14 +690,12 @@ async function startServer() {
 
                     });
 
-
                 res.json({
 
                     success:
                         result.deletedCount > 0
 
                 });
-
 
             } catch (error) {
 
@@ -802,20 +704,17 @@ async function startServer() {
                     error
                 );
 
-
                 res.status(500).json({
 
                     success: false,
 
-                    message:
-                        "خطا در حذف تیکت"
+                    message: "خطا در حذف تیکت"
 
                 });
 
             }
 
         });
-
 
         // ===================================
         // SERVER
@@ -824,7 +723,6 @@ async function startServer() {
         const PORT =
             process.env.PORT || 3000;
 
-
         app.listen(PORT, () => {
 
             console.log(
@@ -832,7 +730,6 @@ async function startServer() {
             );
 
         });
-
 
     } catch (error) {
 
@@ -846,7 +743,6 @@ async function startServer() {
     }
 
 }
-
 
 // ===================================
 // RUN
