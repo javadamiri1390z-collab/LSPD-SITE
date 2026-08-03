@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Vanguard LSPD | Command Center</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body.command-page {
+    min-height: 100vh;
+}
+
+.command-wrapper {
+    width: 1200px;
+    max-width: 95%;
+    margin: 35px auto;
+}
+
+.command-header {
+    background: rgba(5, 10, 18, .78);
+    border: 1px solid rgba(77,166,255,.25);
+    border-radius: 22px;
+    padding: 25px;
+    backdrop-filter: blur(18px);
+    box-shadow: 0 15px 50px rgba(0,0,0,.35);
+    margin-bottom: 25px;
+}
+
+.command-header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.command-user {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.command-user img {
+    width: 65px;
+    height: 65px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 12px #168cff);
+}
+
+.command-user h1 {
+    color: #4da6ff;
+    margin-bottom: 5px;
+}
+
+.command-user p {
+    color: #aaa;
+    margin: 0;
+}
+
+.rank-badge {
+    display: inline-block;
+    margin-top: 7px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    background: rgba(0,110,255,.18);
+    border: 1px solid rgba(77,166,255,.3);
+    color: #6db6ff;
+    font-size: 13px;
+}
+
+.logout-btn {
+    border: 1px solid rgba(255,255,255,.15);
+    background: rgba(255,255,255,.07);
+    color: white;
+    padding: 11px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.logout-btn:hover {
+    background: rgba(255,255,255,.14);
+}
+
+.command-grid {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 20px;
+}
+
+.panel {
+    background: rgba(5, 10, 18, .78);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 22px;
+    padding: 22px;
+    backdrop-filter: blur(18px);
+}
+
+.panel h2 {
+    color: #4da6ff;
+    margin-bottom: 18px;
+}
+
+.ticket-list {
+    max-height: 650px;
+    overflow-y: auto;
+}
+
+.ticket-item {
+    padding: 16px;
+    border-radius: 14px;
+    background: rgba(255,255,255,.055);
+    border: 1px solid rgba(255,255,255,.08);
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.ticket-item:hover {
+    transform: translateY(-2px);
+    background: rgba(255,255,255,.09);
+}
+
+.ticket-item.active {
+    border-color: #168cff;
+    box-shadow: 0 0 15px rgba(22,140,255,.18);
+}
+
+.ticket-item h3 {
+    margin-bottom: 8px;
+}
+
+.ticket-item small {
+    color: #8995a3;
+}
+
+.status {
+    display: inline-block;
+    padding: 4px 9px;
+    border-radius: 15px;
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+.status.pending {
+    color: #ffbd45;
+    background: rgba(255,180,0,.12);
+}
+
+.status.accepted {
+    color: #00ff88;
+    background: rgba(0,255,136,.1);
+}
+
+.status.rejected {
+    color: #ff5555;
+    background: rgba(255,0,0,.1);
+}
+
+.ticket-detail {
+    min-height: 500px;
+}
+
+.empty {
+    color: #777;
+    text-align: center;
+    padding: 70px 20px;
+}
+
+.detail-row {
+    padding: 11px 0;
+    border-bottom: 1px solid rgba(255,255,255,.07);
+}
+
+.detail-row b {
+    color: #aaa;
+}
+
+.reply-box {
+    margin-top: 20px;
+}
+
+.reply-box textarea {
+    width: 100%;
+    min-height: 120px;
+    resize: vertical;
+    padding: 14px;
+    background: #050a11;
+    color: white;
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 12px;
+    outline: none;
+    font-family: inherit;
+}
+
+.reply-box textarea:focus {
+    border-color: #168cff;
+    box-shadow: 0 0 10px rgba(22,140,255,.2);
+}
+
+.status-select {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 13px;
+    background: #050a11;
+    color: white;
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 10px;
+}
+
+.chat-box {
+    margin-top: 25px;
+    border-top: 1px solid rgba(255,255,255,.1);
+    padding-top: 20px;
+}
+
+.messages {
+    max-height: 320px;
+    overflow-y: auto;
+    padding: 10px;
+    background: #050a11;
+    border-radius: 12px;
+    margin-bottom: 10px;
+}
+
+.message {
+    padding: 11px;
+    margin-bottom: 9px;
+    border-radius: 10px;
+    background: rgba(255,255,255,.06);
+}
+
+.message.command {
+    border-right: 3px solid #3aa0ff;
+}
+
+.message.applicant {
+    border-right: 3px solid #35d07f;
+}
+
+.message-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.message-time {
+    display: block;
+    margin-top: 5px;
+    color: #777;
+    font-size: 11px;
+}
+
+.chat-input {
+    width: 100%;
+    min-height: 90px;
+    padding: 12px;
+    resize: vertical;
+    background: #050a11;
+    color: white;
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 10px;
+    outline: none;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.action-buttons .btn {
+    flex: 1;
+}
+
+.refresh-info {
+    color: #777;
+    font-size: 12px;
+    text-align: center;
+    margin-top: 10px;
+}
+
+@media(max-width:850px) {
+
+    .command-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .command-header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body class="command-page">
+
+<div class="overlay"></div>
+
+
+<header class="navbar">
+
+    <img
+        src="badge.png"
+        class="badge"
+        alt="LSPD"
+    >
+
+    <div class="nav-title">
+
+        <h2>Vanguard LSPD</h2>
+
+        <span>Command Center</span>
+
+    </div>
+
+    <a
+        href="index.html"
+        class="login-btn"
+    >
+        بازگشت
+    </a>
+
+</header>
+
+
+<main>
+
+<div class="command-wrapper">
+
+
+<!-- ============================== -->
+<!-- COMMAND HEADER -->
+<!-- ============================== -->
+
+<div class="command-header">
+
+    <div class="command-header-inner">
+
+        <div class="command-user">
+
+            <img
+                src="badge.png"
+                alt="LSPD"
+            >
+
+            <div>
+
+                <h1>
+                    👮 پنل فرماندهی
+                </h1>
+
+                <p id="commanderName">
+                    در حال دریافت اطلاعات فرمانده...
+                </p>
+
+                <span
+                    id="commanderRank"
+                    class="rank-badge"
+                >
+                    —
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="logout-btn"
+            onclick="logoutCommand()"
+        >
+            خروج
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ============================== -->
+<!-- GRID -->
+<!-- ============================== -->
+
+<div class="command-grid">
+
+
+<!-- ============================== -->
+<!-- TICKET LIST -->
+<!-- ============================== -->
+
+<section class="panel">
+
+    <h2>
+        📂 درخواست‌ها
+    </h2>
+
+    <div
+        id="ticketList"
+        class="ticket-list"
+    >
+
+        <div class="empty">
+            ⏳ در حال دریافت تیکت‌ها...
+        </div>
+
+    </div>
+
+    <div class="refresh-info">
+        بروزرسانی خودکار فعال است
+    </div>
+
+</section>
+
+
+<!-- ============================== -->
+<!-- TICKET DETAIL -->
+<!-- ============================== -->
+
+<section class="panel ticket-detail">
+
+    <div
+        id="ticketDetail"
+    >
+
+        <div class="empty">
+
+            <h2>
+                📄 یک تیکت را انتخاب کنید
+            </h2>
+
+            <p>
+                برای مشاهده جزئیات، یکی از درخواست‌ها را انتخاب کنید.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+</div>
+
+</div>
+
+</main>
+
+
+<script>
+
+const API_URL =
+"https://lspd-site-11.onrender.com";
+
+
+let tickets = [];
+
+let selectedTicketId = null;
+
+
+/*
+========================================
+اطلاعات فرمانده
+========================================
+*/
+
+function getCommander() {
+
+    try {
+
+        const saved =
+            localStorage.getItem(
+                "lspdCommander"
+            );
+
+        if (saved) {
+
+            return JSON.parse(saved);
+
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+
+    /*
+    اگر اطلاعات قدیمی وجود داشته باشد
+    */
+
+    return {
+
+        username:
+            localStorage.getItem("lspdAdminUser") ||
+            "LSPD",
+
+        name:
+            localStorage.getItem("lspdAdminName") ||
+            "فرمانده LSPD",
+
+        rank:
+            localStorage.getItem("lspdAdminRank") ||
+            "Command"
+
+    };
+
+}
+
+
+const commander =
+    getCommander();
+
+
+document
+.getElementById("commanderName")
+.innerText =
+    commander.name ||
+    commander.username ||
+    "فرمانده LSPD";
+
+
+document
+.getElementById("commanderRank")
+.innerText =
+    commander.rank ||
+    "Command";
+
+
+/*
+========================================
+Escape HTML
+========================================
+*/
+
+function escapeHTML(value) {
+
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/*
+========================================
+نوع درخواست
+========================================
+*/
+
+function requestType(type) {
+
+    const types = {
+
+        membership:
+            "🚔 عضویت LSPD",
+
+        division:
+            "🎖️ دیویژن",
+
+        resignation:
+            "📤 استعفا",
+
+        rankup:
+            "⬆️ Rankup"
+
+    };
+
+    return types[type] || "📄 درخواست";
+
+}
+
+
+/*
+========================================
+وضعیت
+========================================
+*/
+
+function statusHTML(status) {
+
+    if (status === "Accepted") {
+
+        return `
+            <span class="status accepted">
+                🟢 تایید شده
+            </span>
+        `;
+
+    }
+
+    if (status === "Rejected") {
+
+        return `
+            <span class="status rejected">
+                🔴 رد شده
+            </span>
+        `;
+
+    }
+
+    return `
+        <span class="status pending">
+            🟡 در انتظار بررسی
+        </span>
+    `;
+
+}
+
+
+/*
+========================================
+دریافت تیکت‌ها
+========================================
+*/
+
+async function loadTickets() {
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL + "/tickets",
+                {
+                    cache: "no-store"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "خطا در دریافت تیکت‌ها"
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        tickets =
+            Array.isArray(data)
+            ? data
+            : [];
+
+
+        renderTickets();
+
+
+        /*
+        اگر تیکت انتخاب شده باشد
+        اطلاعاتش را بروز کن
+        */
+
+        if (selectedTicketId) {
+
+            const selected =
+                tickets.find(
+                    t =>
+                    String(t._id) ===
+                    String(selectedTicketId)
+                );
+
+
+            if (selected) {
+
+                renderTicketDetail(
+                    selected
+                );
+
+            }
+
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        document
+        .getElementById("ticketList")
+        .innerHTML = `
+
+            <div class="empty">
+
+                ❌ دریافت تیکت‌ها ناموفق بود.
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/*
+========================================
+نمایش لیست
+========================================
+*/
+
+function renderTickets() {
+
+    const box =
+        document.getElementById(
+            "ticketList"
+        );
+
+
+    if (!tickets.length) {
+
+        box.innerHTML = `
+
+            <div class="empty">
+
+                📭 هیچ تیکتی وجود ندارد.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    box.innerHTML =
+        tickets.map(ticket => {
+
+            const id =
+                String(ticket._id);
+
+
+            const name =
+                ticket.icName ||
+                ticket.name ||
+                ticket.ocName ||
+                "بدون نام";
+
+
+            const active =
+                String(selectedTicketId) === id
+                ? "active"
+                : "";
+
+
+            return `
+
+                <div
+                    class="ticket-item ${active}"
+                    onclick="selectTicket('${id}')"
+                >
+
+                    <h3>
+
+                        ${escapeHTML(name)}
+
+                    </h3>
+
+                    <small>
+
+                        ${requestType(
+                            ticket.requestType
+                        )}
+
+                    </small>
+
+                    <br>
+
+                    ${statusHTML(
+                        ticket.status
+                    )}
+
+                    <br>
+
+                    <small>
+
+                        ${ticket.createdAt
+                        ? new Date(
+                            ticket.createdAt
+                          ).toLocaleString("fa-IR")
+                        : ""}
+
+                    </small>
+
+                </div>
+
+            `;
+
+        }).join("");
+
+}
+
+
+/*
+========================================
+انتخاب تیکت
+========================================
+*/
+
+async function selectTicket(id) {
+
+    selectedTicketId =
+        String(id);
+
+
+    const ticket =
+        tickets.find(
+            t =>
+            String(t._id) ===
+            String(id)
+        );
+
+
+    if (!ticket) {
+
+        return;
+
+    }
+
+
+    renderTickets();
+
+    renderTicketDetail(ticket);
+
+    await loadMessages(id);
+
+}
+
+
+/*
+========================================
+جزئیات تیکت
+========================================
+*/
+
+function renderTicketDetail(ticket) {
+
+    const box =
+        document.getElementById(
+            "ticketDetail"
+        );
+
+
+    box.innerHTML = `
+
+        <h2>
+            📄 جزئیات درخواست
+        </h2>
+
+        <div class="detail-row">
+
+            <b>کد پیگیری:</b>
+
+            <br>
+
+            ${escapeHTML(ticket._id)}
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <b>نوع درخواست:</b>
+
+            <br>
+
+            ${requestType(
+                ticket.requestType
+            )}
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <b>IC Name:</b>
+
+            <br>
+
+            ${escapeHTML(
+                ticket.icName ||
+                ticket.name ||
+                "—"
+            )}
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <b>OC Name:</b>
+
+            <br>
+
+            ${escapeHTML(
+                ticket.ocName ||
+                "—"
+            )}
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <b>Discord:</b>
+
+            <br>
+
+            ${escapeHTML(
+                ticket.discord ||
+                ticket.discordId ||
+                "—"
+            )}
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <b>Steam Hex:</b>
+
+            <br>
+
+            ${escapeHTML(
+                ticket.steamHex ||
+                "—"
+            )}
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <b>سن:</b>
+
+            <br>
+
+            ${escapeHTML(
+                ticket.age ||
+                "—"
+            )}
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <b>وضعیت فعلی:</b>
+
+            <br>
+
+            ${statusHTML(
+                ticket.status
+            )}
+
+        </div>
+
+
+        ${
+            ticket.score !== null &&
+            ticket.score !== undefined
+            ?
+            `
+            <div class="detail-row">
+
+                <b>
+                    📚 نمره آزمون:
+                </b>
+
+                <br>
+
+                ${escapeHTML(ticket.score)}
+                از 20
+
+            </div>
+            `
+            :
+            ""
+        }
+
+
+        ${
+            ticket.experience
+            ?
+            `
+            <div class="detail-row">
+
+                <b>
+                    تجربه:
+                </b>
+
+                <br>
+
+                ${escapeHTML(
+                    ticket.experience
+                )}
+
+            </div>
+            `
+            :
+            ""
+        }
+
+
+        ${
+            ticket.reason
+            ?
+            `
+            <div class="detail-row">
+
+                <b>
+                    دلیل درخواست:
+                </b>
+
+                <br>
+
+                ${escapeHTML(
+                    ticket.reason
+                )}
+
+            </div>
+            `
+            :
+            ""
+        }
+
+
+        <!-- ======================== -->
+        <!-- REPLY -->
+        <!-- ======================== -->
+
+        <div class="reply-box">
+
+            <h2>
+                ✍️ پاسخ فرماندهی
+            </h2>
+
+
+            <select
+                id="statusSelect"
+                class="status-select"
+            >
+
+                <option
+                    value="Pending"
+                    ${
+                        ticket.status === "Pending"
+                        ? "selected"
+                        : ""
+                    }
+                >
+                    🟡 در انتظار بررسی
+                </option>
+
+                <option
+                    value="Accepted"
+                    ${
+                        ticket.status === "Accepted"
+                        ? "selected"
+                        : ""
+                    }
+                >
+                    🟢 تایید شده
+                </option>
+
+                <option
+                    value="Rejected"
+                    ${
+                        ticket.status === "Rejected"
+                        ? "selected"
+                        : ""
+                    }
+                >
+                    🔴 رد شده
+                </option>
+
+            </select>
+
+
+            <textarea
+                id="replyInput"
+                placeholder="پاسخ خود را برای متقاضی بنویسید..."
+            >${
+                escapeHTML(
+                    ticket.reply ===
+                    "در انتظار پاسخ فرماندهی"
+                    ? ""
+                    : ticket.reply || ""
+                )
+            }</textarea>
+
+
+            <button
+                class="btn primary"
+                style="width:100%;margin-top:10px;"
+                onclick="updateTicket()"
+            >
+                💾 ثبت پاسخ
+            </button>
+
+        </div>
+
+
+        <!-- ======================== -->
+        <!-- CHAT -->
+        <!-- ======================== -->
+
+        <div class="chat-box">
+
+            <h2>
+                💬 گفتگوی مستقیم
+            </h2>
+
+
+            <div
+                id="messages"
+                class="messages"
+            >
+
+                <div class="empty">
+                    ⏳ در حال دریافت پیام‌ها...
+                </div>
+
+            </div>
+
+
+            <textarea
+                id="chatInput"
+                class="chat-input"
+                placeholder="پیام خود را برای متقاضی بنویسید..."
+            ></textarea>
+
+
+            <button
+                class="btn primary"
+                style="width:100%;margin-top:8px;"
+                onclick="sendCommandMessage()"
+            >
+                📨 ارسال پیام
+            </button>
+
+        </div>
+
+    `;
+
+}
+
+
+/*
+========================================
+بروزرسانی تیکت
+========================================
+*/
+
+async function updateTicket() {
+
+    if (!selectedTicketId) {
+
+        return;
+
+    }
+
+
+    const status =
+        document.getElementById(
+            "statusSelect"
+        ).value;
+
+
+    const reply =
+        document.getElementById(
+            "replyInput"
+        ).value.trim();
+
+
+    try {
+
+        const response =
+            await fetch(
+
+                API_URL +
+                "/tickets/" +
+                encodeURIComponent(
+                    selectedTicketId
+                ),
+
+                {
+
+                    method: "PUT",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            status,
+
+                            reply,
+
+                            /*
+                            مشخصات فرمانده
+                            */
+
+                            commander: {
+
+                                username:
+                                    commander.username,
+
+                                name:
+                                    commander.name,
+
+                                rank:
+                                    commander.rank
+
+                            }
+
+                        })
+
+                }
+
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok || !data.success) {
+
+            throw new Error(
+                data.message ||
+                "خطا در ثبت پاسخ"
+            );
+
+        }
+
+
+        alert(
+            "✅ پاسخ با موفقیت ثبت شد."
+        );
+
+
+        await loadTickets();
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "❌ ثبت پاسخ انجام نشد."
+        );
+
+    }
+
+}
+
+
+/*
+========================================
+دریافت پیام‌ها
+========================================
+*/
+
+async function loadMessages(id) {
+
+    const box =
+        document.getElementById(
+            "messages"
+        );
+
+
+    if (!box) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+
+                API_URL +
+                "/tickets/" +
+                encodeURIComponent(id) +
+                "/messages",
+
+                {
+                    cache: "no-store"
+                }
+
+            );
+
+
+        const messages =
+            await response.json();
+
+
+        if (
+            !Array.isArray(messages) ||
+            messages.length === 0
+        ) {
+
+            box.innerHTML = `
+
+                <div class="empty">
+
+                    هنوز پیامی ثبت نشده است.
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        box.innerHTML =
+            messages.map(message => {
+
+                const isCommand =
+                    message.sender ===
+                    "command";
+
+
+                const senderName =
+                    isCommand
+
+                    ?
+
+                    (
+                        message.commanderName ||
+                        "فرماندهی"
+                    )
+
+                    :
+
+                    "👤 متقاضی";
+
+
+                const rank =
+                    isCommand &&
+                    message.commanderRank
+
+                    ?
+
+                    ` - ${escapeHTML(
+                        message.commanderRank
+                    )}`
+
+                    :
+
+                    "";
+
+
+                return `
+
+                    <div class="
+                        message
+                        ${
+                            isCommand
+                            ? "command"
+                            : "applicant"
+                        }
+                    ">
+
+                        <div class="message-name">
+
+                            ${
+                                isCommand
+                                ? "👮 "
+                                : ""
+                            }
+
+                            ${escapeHTML(
+                                senderName
+                            )}
+
+                            ${rank}
+
+                        </div>
+
+
+                        <div>
+
+                            ${escapeHTML(
+                                message.message
+                            )}
+
+                        </div>
+
+
+                        <small class="message-time">
+
+                            ${
+                                message.createdAt
+                                ? new Date(
+                                    message.createdAt
+                                  ).toLocaleString(
+                                    "fa-IR"
+                                  )
+                                : ""
+                            }
+
+                        </small>
+
+                    </div>
+
+                `;
+
+            }).join("");
+
+
+        box.scrollTop =
+            box.scrollHeight;
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        box.innerHTML = `
+
+            <div class="empty">
+
+                ❌ دریافت پیام‌ها ناموفق بود.
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/*
+========================================
+ارسال پیام فرمانده
+========================================
+*/
+
+async function sendCommandMessage() {
+
+    if (!selectedTicketId) {
+
+        return;
+
+    }
+
+
+    const input =
+        document.getElementById(
+            "chatInput"
+        );
+
+
+    if (!input) {
+
+        return;
+
+    }
+
+
+    const message =
+        input.value.trim();
+
+
+    if (!message) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+
+                API_URL +
+                "/tickets/" +
+                encodeURIComponent(
+                    selectedTicketId
+                ) +
+                "/messages",
+
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body: JSON.stringify({
+
+                        message,
+
+                        sender:
+                            "command",
+
+                        commanderName:
+                            commander.name ||
+                            commander.username,
+
+                        commanderRank:
+                            commander.rank,
+
+                        commanderUsername:
+                            commander.username
+
+                    })
+
+                }
+
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok || !data.success) {
+
+            throw new Error(
+                data.message ||
+                "خطا"
+            );
+
+        }
+
+
+        input.value = "";
+
+
+        await loadMessages(
+            selectedTicketId
+        );
+
+
+        /*
+        بروزرسانی لیست
+        */
+
+        await loadTickets();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "❌ ارسال پیام انجام نشد."
+        );
+
+    }
+
+}
+
+
+/*
+========================================
+خروج
+========================================
+*/
+
+function logoutCommand() {
+
+    localStorage.removeItem(
+        "lspdCommander"
+    );
+
+    localStorage.removeItem(
+        "lspdAdmin"
+    );
+
+    localStorage.removeItem(
+        "lspdAdminUser"
+    );
+
+    localStorage.removeItem(
+        "lspdAdminName"
+    );
+
+    localStorage.removeItem(
+        "lspdAdminRank"
+    );
+
+
+    window.location.href =
+        "command-login.html";
+
+}
+
+
+/*
+========================================
+Auto Refresh
+هر 2 ثانیه
+========================================
+*/
+
+loadTickets();
+
+
+setInterval(
+    loadTickets,
+    2000
+);
+
+
+/*
+========================================
+اگر تیکت انتخاب شده،
+پیام‌ها هم هر 2 ثانیه آپدیت شوند
+========================================
+*/
+
+setInterval(
+    async function() {
+
+        if (!selectedTicketId) {
+
+            return;
+
+        }
+
+
+        await loadMessages(
+            selectedTicketId
+        );
+
+    },
+    2000
+);
+
+</script>
+
+</body>
+
+</html>
