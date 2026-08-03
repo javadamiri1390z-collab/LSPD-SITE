@@ -2,7 +2,6 @@
 <html lang="fa" dir="rtl">
 
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -77,7 +76,6 @@
     font-size: 18px;
     direction: ltr;
     user-select: all;
-    word-break: break-all;
 }
 
 .error-box {
@@ -94,778 +92,744 @@
     text-align: center;
 }
 
-.exam-submit:disabled {
-    opacity: .6;
-    cursor: not-allowed;
+.loading-box {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.05);
+    text-align: center;
 }
 
 </style>
 
 </head>
 
-
 <body class="form-page">
 
 <div class="overlay"></div>
 
-
 <header class="navbar">
 
-    <img
-        src="badge.png"
-        class="badge"
-        alt="LSPD Badge"
-    >
+<img
+src="badge.png"
+class="badge"
+alt="LSPD Badge"
+>
 
-    <div class="nav-title">
+<div class="nav-title">
 
-        <h2>
-            Vanguard LSPD
-        </h2>
+<h2>Vanguard LSPD</h2>
 
-        <span>
-            Recruitment Application
-        </span>
+<span>Recruitment Application</span>
 
-    </div>
+</div>
 
-
-    <a
-        href="index.html"
-        class="login-btn"
-    >
-        بازگشت
-    </a>
+<a
+href="index.html"
+class="login-btn"
+>
+بازگشت
+</a>
 
 </header>
-
 
 
 <main class="hero">
 
 <div class="form-box">
 
-    <img
-        src="badge.png"
-        class="form-badge"
-        alt="LSPD Badge"
-    >
+<img
+src="badge.png"
+class="form-badge"
+alt="LSPD Badge"
+>
 
+<h1 class="step-title">
+🚔 درخواست عضویت LSPD
+</h1>
 
-    <h1 class="step-title">
-        🚔 درخواست عضویت LSPD
-    </h1>
+<p id="description">
+ابتدا اطلاعات خود را کامل کنید.
+بعد از تأیید اطلاعات، آزمون قوانین برای شما باز خواهد شد.
+</p>
 
 
-    <p id="description">
-        ابتدا اطلاعات خود را کامل کنید.
-        بعد از تأیید اطلاعات، آزمون قوانین برای شما باز خواهد شد.
-    </p>
+<!-- ========================================= -->
+<!-- مرحله اول -->
+<!-- ========================================= -->
 
+<div id="informationStep">
 
+<form id="informationForm">
 
-    <!-- ========================================= -->
-    <!-- مرحله اول -->
-    <!-- ========================================= -->
 
-    <div id="informationStep">
+<input
+type="text"
+id="ocName"
+placeholder="OC Name"
+required
+>
 
-        <form id="informationForm">
 
+<input
+type="text"
+id="icName"
+placeholder="IC Name"
+required
+>
 
-            <input
-                type="text"
-                id="ocName"
-                placeholder="OOC Name"
-                required
-                maxlength="100"
-            >
 
+<input
+type="text"
+id="discord"
+placeholder="Discord ID"
+required
+>
 
-            <input
-                type="text"
-                id="icName"
-                placeholder="IC Name"
-                required
-                maxlength="100"
-            >
 
+<input
+type="text"
+id="steamHex"
+placeholder="Steam Hex : steam:110000..."
+required
+>
 
-            <input
-                type="text"
-                id="discord"
-                placeholder="Discord ID"
-                required
-                maxlength="100"
-            >
 
+<input
+type="text"
+id="cmx"
+placeholder="CMX"
+required
+>
 
-            <input
-                type="text"
-                id="steamHex"
-                placeholder="Steam Hex : steam:110000..."
-                required
-                maxlength="100"
-            >
 
+<input
+type="number"
+id="age"
+placeholder="سن"
+min="1"
+max="100"
+required
+>
 
-            <input
-                type="text"
-                id="cmx"
-                placeholder="CMX"
-                required
-                maxlength="100"
-            >
 
+<textarea
+id="experience"
+placeholder="سابقه رول پلی و تجربه شما"
+required
+></textarea>
 
-            <input
-                type="number"
-                id="age"
-                placeholder="سن"
-                min="1"
-                max="100"
-                required
-            >
 
+<textarea
+id="reason"
+placeholder="چرا می خواهید عضو LSPD شوید؟"
+required
+></textarea>
 
-            <textarea
-                id="experience"
-                placeholder="سابقه رول پلی و تجربه شما"
-                required
-                maxlength="3000"
-            ></textarea>
 
+<button
+type="submit"
+class="btn primary"
+>
+تأیید اطلاعات و شروع آزمون ➜
+</button>
 
-            <textarea
-                id="reason"
-                placeholder="چرا می خواهید عضو LSPD شوید؟"
-                required
-                maxlength="3000"
-            ></textarea>
+</form>
 
+</div>
 
-            <button
-                type="submit"
-                class="btn primary"
-            >
-                تأیید اطلاعات و شروع آزمون ➜
-            </button>
 
-        </form>
+<!-- ========================================= -->
+<!-- مرحله دوم -->
+<!-- ========================================= -->
 
-    </div>
+<div
+id="examStep"
+class="hidden"
+>
 
+<h2 class="exam-title">
+📚 آزمون استخدام LSPD Vanguard RP
+</h2>
 
+<p class="exam-info">
+آزمون شامل ۲۰ سؤال است.
+<br>
+حداقل نمره قبولی:
+<strong>12 از 20</strong>
+</p>
 
-    <!-- ========================================= -->
-    <!-- مرحله دوم -->
-    <!-- ========================================= -->
 
-    <div
-        id="examStep"
-        class="hidden"
-    >
+<form id="examForm">
 
-        <h2 class="exam-title">
-            📚 آزمون استخدام LSPD Vanguard RP
-        </h2>
 
+<!-- سوال 1 -->
 
-        <p class="exam-info">
+<div class="exam-question">
 
-            آزمون شامل ۲۰ سؤال است.
+<h3>
+1️⃣ استفاده از اسلحه گرم در چه شرایطی مجاز است؟
+</h3>
 
-            <br>
+<label class="exam-option">
+<input type="radio" name="q1" value="0">
+توهین
+</label>
 
-            حداقل نمره قبولی:
-            <strong>12 از 20</strong>
+<label class="exam-option">
+<input type="radio" name="q1" value="1">
+فرار متهم
+</label>
 
-        </p>
+<label class="exam-option">
+<input type="radio" name="q1" value="2">
+تهدید مستقیم جانی
+</label>
 
+</div>
 
-        <form id="examForm">
 
+<!-- سوال 2 -->
 
-            <!-- سوال 1 -->
+<div class="exam-question">
 
-            <div class="exam-question">
+<h3>
+2️⃣ یک سارق مسلح اسلحه را روی سر شما گذاشته است. شما سریعاً اسلحه خود را کشیده و به او شلیک می‌کنید چون تیراندازی‌تان بهتر است. کدام قانون نقض شده؟
+</h3>
 
-                <h3>
-                    1️⃣ استفاده از اسلحه گرم در چه شرایطی مجاز است؟
-                </h3>
+<label class="exam-option">
+<input type="radio" name="q2" value="0">
+RDM
+</label>
 
-                <label class="exam-option">
-                    <input type="radio" name="q1" value="0">
-                    توهین
-                </label>
+<label class="exam-option">
+<input type="radio" name="q2" value="1">
+Fear RP
+</label>
 
-                <label class="exam-option">
-                    <input type="radio" name="q1" value="1">
-                    فرار متهم
-                </label>
+<label class="exam-option">
+<input type="radio" name="q2" value="2">
+FailRP
+</label>
 
-                <label class="exam-option">
-                    <input type="radio" name="q1" value="2">
-                    تهدید مستقیم جانی
-                </label>
+</div>
 
-            </div>
 
+<!-- سوال 3 -->
 
+<div class="exam-question">
 
-            <!-- سوال 2 -->
+<h3>
+3️⃣ در کدام مورد پلیس مجاز به Search فرد است؟
+</h3>
 
-            <div class="exam-question">
+<label class="exam-option">
+<input type="radio" name="q3" value="0">
+فردی که کنار بانک ایستاده و به ماشین پلیس نگاه می‌کند.
+</label>
 
-                <h3>
-                    2️⃣ یک سارق مسلح اسلحه را روی سر شما گذاشته است. شما سریعاً اسلحه خود را کشیده و به او شلیک می‌کنید چون تیراندازی‌تان بهتر است. کدام قانون نقض شده؟
-                </h3>
+<label class="exam-option">
+<input type="radio" name="q3" value="1">
+فردی که لباسش شبیه گنگسترهاست.
+</label>
 
-                <label class="exam-option">
-                    <input type="radio" name="q2" value="0">
-                    RDM
-                </label>
+<label class="exam-option">
+<input type="radio" name="q3" value="2">
+مشاهده مستقیم فرد در حال پنهان کردن اسلحه زیر لباس.
+</label>
 
-                <label class="exam-option">
-                    <input type="radio" name="q2" value="1">
-                    Fear RP
-                </label>
+</div>
 
-                <label class="exam-option">
-                    <input type="radio" name="q2" value="2">
-                    FailRP
-                </label>
 
-            </div>
+<!-- سوال 4 -->
 
+<div class="exam-question">
 
+<h3>
+4️⃣ پلیس چه زمانی باید علت دستگیری را اعلام کند؟
+</h3>
 
-            <!-- سوال 3 -->
+<label class="exam-option">
+<input type="radio" name="q4" value="0">
+بعد از زندان
+</label>
 
-            <div class="exam-question">
+<label class="exam-option">
+<input type="radio" name="q4" value="1">
+حین دستگیری
+</label>
 
-                <h3>
-                    3️⃣ در کدام مورد پلیس مجاز به Search فرد است؟
-                </h3>
+<label class="exam-option">
+<input type="radio" name="q4" value="2">
+نیازی نیست
+</label>
 
-                <label class="exam-option">
-                    <input type="radio" name="q3" value="0">
-                    فردی که کنار بانک ایستاده و به ماشین پلیس نگاه می‌کند.
-                </label>
+</div>
 
-                <label class="exam-option">
-                    <input type="radio" name="q3" value="1">
-                    فردی که لباسش شبیه گنگسترهاست.
-                </label>
 
-                <label class="exam-option">
-                    <input type="radio" name="q3" value="2">
-                    مشاهده مستقیم فرد در حال پنهان کردن اسلحه زیر لباس.
-                </label>
+<!-- سوال 5 -->
 
-            </div>
+<div class="exam-question">
 
+<h3>
+5️⃣ صحبت OOC هنگام دستگیری:
+</h3>
 
+<label class="exam-option">
+<input type="radio" name="q5" value="0">
+مجاز
+</label>
 
-            <!-- سوال 4 -->
+<label class="exam-option">
+<input type="radio" name="q5" value="1">
+اختیاری
+</label>
 
-            <div class="exam-question">
+<label class="exam-option">
+<input type="radio" name="q5" value="2">
+Fail RP
+</label>
 
-                <h3>
-                    4️⃣ پلیس چه زمانی باید علت دستگیری را اعلام کند؟
-                </h3>
+</div>
 
-                <label class="exam-option">
-                    <input type="radio" name="q4" value="0">
-                    بعد از زندان
-                </label>
 
-                <label class="exam-option">
-                    <input type="radio" name="q4" value="1">
-                    حین دستگیری
-                </label>
+<!-- سوال 6 -->
 
-                <label class="exam-option">
-                    <input type="radio" name="q4" value="2">
-                    نیازی نیست
-                </label>
+<div class="exam-question">
 
-            </div>
+<h3>
+6️⃣ اگر شک داشته باشید داخل خودرو اسلحه یا مواد مخدر وجود دارد ولی جرم مشهودی ندیده‌اید، اقدام صحیح چیست؟
+</h3>
 
+<label class="exam-option">
+<input type="radio" name="q6" value="0">
+بدون دلیل موجه و RP منطقی حق تفتیش خودرو را ندارید.
+</label>
 
+<label class="exam-option">
+<input type="radio" name="q6" value="1">
+خودرو را متوقف کرده و بلافاصله صندوق عقب را چک می‌کنید.
+</label>
 
-            <!-- سوال 5 -->
+<label class="exam-option">
+<input type="radio" name="q6" value="2">
+خودرو را توقیف می‌کنید تا بعداً حکم بگیرید.
+</label>
 
-            <div class="exam-question">
+</div>
 
-                <h3>
-                    5️⃣ صحبت OOC هنگام دستگیری:
-                </h3>
 
-                <label class="exam-option">
-                    <input type="radio" name="q5" value="0">
-                    مجاز
-                </label>
+<!-- سوال 7 -->
 
-                <label class="exam-option">
-                    <input type="radio" name="q5" value="1">
-                    اختیاری
-                </label>
+<div class="exam-question">
 
-                <label class="exam-option">
-                    <input type="radio" name="q5" value="2">
-                    Fail RP
-                </label>
+<h3>
+7️⃣ ترتیب درست پروتکل دستگیری کدام است؟
+</h3>
 
-            </div>
+<label class="exam-option">
+<input type="radio" name="q7" value="0">
+اعلام اتهام → دستور ایست → استفاده از زور پلکانی → دستبند → انتقال → ثبت پرونده
+</label>
 
+<label class="exam-option">
+<input type="radio" name="q7" value="1">
+دستور ایست → شوکر → دستبند → اعلام اتهام
+</label>
 
+<label class="exam-option">
+<input type="radio" name="q7" value="2">
+دستبند → انتقال → اعلام اتهام → ثبت پرونده
+</label>
 
-            <!-- سوال 6 -->
+</div>
 
-            <div class="exam-question">
 
-                <h3>
-                    6️⃣ اگر شک داشته باشید داخل خودرو اسلحه یا مواد مخدر وجود دارد ولی جرم مشهودی ندیده‌اید، اقدام صحیح چیست؟
-                </h3>
+<!-- سوال 8 -->
 
-                <label class="exam-option">
-                    <input type="radio" name="q6" value="0">
-                    بدون دلیل موجه و RP منطقی حق تفتیش خودرو را ندارید.
-                </label>
+<div class="exam-question">
 
-                <label class="exam-option">
-                    <input type="radio" name="q6" value="1">
-                    خودرو را متوقف کرده و بلافاصله صندوق عقب را چک می‌کنید.
-                </label>
+<h3>
+8️⃣ حقوق شهروندی چه زمانی باید خوانده شود؟
+</h3>
 
-                <label class="exam-option">
-                    <input type="radio" name="q6" value="2">
-                    خودرو را توقیف می‌کنید تا بعداً حکم بگیرید.
-                </label>
+<label class="exam-option">
+<input type="radio" name="q8" value="0">
+قبل از بازجویی
+</label>
 
-            </div>
+<label class="exam-option">
+<input type="radio" name="q8" value="1">
+بعد از زندان
+</label>
 
+<label class="exam-option">
+<input type="radio" name="q8" value="2">
+لازم نیست
+</label>
 
+</div>
 
-            <!-- سوال 7 -->
 
-            <div class="exam-question">
+<!-- سوال 9 -->
 
-                <h3>
-                    7️⃣ ترتیب درست پروتکل دستگیری کدام است؟
-                </h3>
+<div class="exam-question">
 
-                <label class="exam-option">
-                    <input type="radio" name="q7" value="0">
-                    اعلام اتهام → دستور ایست → استفاده از زور پلکانی → دستبند → انتقال → ثبت پرونده
-                </label>
+<h3>
+9️⃣ PowerGaming پلیس چیست؟
+</h3>
 
-                <label class="exam-option">
-                    <input type="radio" name="q7" value="1">
-                    دستور ایست → شوکر → دستبند → اعلام اتهام
-                </label>
+<label class="exam-option">
+<input type="radio" name="q9" value="0">
+تعقیب قانونی
+</label>
 
-                <label class="exam-option">
-                    <input type="radio" name="q7" value="2">
-                    دستبند → انتقال → اعلام اتهام → ثبت پرونده
-                </label>
+<label class="exam-option">
+<input type="radio" name="q9" value="1">
+انجام کار غیرواقعی
+</label>
 
-            </div>
+<label class="exam-option">
+<input type="radio" name="q9" value="2">
+RP صحیح
+</label>
 
+</div>
 
 
-            <!-- سوال 8 -->
+<!-- سوال 10 -->
 
-            <div class="exam-question">
+<div class="exam-question">
 
-                <h3>
-                    8️⃣ حقوق شهروندی چه زمانی باید خوانده شود؟
-                </h3>
+<h3>
+🔟 آیا پلیس می‌تواند بدون دلیل قانونی دستگیر کند؟
+</h3>
 
-                <label class="exam-option">
-                    <input type="radio" name="q8" value="0">
-                    قبل از بازجویی
-                </label>
+<label class="exam-option">
+<input type="radio" name="q10" value="0">
+بله
+</label>
 
-                <label class="exam-option">
-                    <input type="radio" name="q8" value="1">
-                    بعد از زندان
-                </label>
+<label class="exam-option">
+<input type="radio" name="q10" value="1">
+خیر
+</label>
 
-                <label class="exam-option">
-                    <input type="radio" name="q8" value="2">
-                    لازم نیست
-                </label>
+<label class="exam-option">
+<input type="radio" name="q10" value="2">
+بستگی دارد
+</label>
 
-            </div>
+</div>
 
 
+<!-- سوال 11 -->
 
-            <!-- سوال 9 -->
+<div class="exam-question">
 
-            <div class="exam-question">
+<h3>
+1️⃣1️⃣ استفاده از اطلاعات Discord یا OOC برای رفتن به محل جرم چیست؟
+</h3>
 
-                <h3>
-                    9️⃣ PowerGaming پلیس چیست؟
-                </h3>
+<label class="exam-option">
+<input type="radio" name="q11" value="0">
+MetaGaming (MG)
+</label>
 
-                <label class="exam-option">
-                    <input type="radio" name="q9" value="0">
-                    تعقیب قانونی
-                </label>
+<label class="exam-option">
+<input type="radio" name="q11" value="1">
+MG Intelligence
+</label>
 
-                <label class="exam-option">
-                    <input type="radio" name="q9" value="1">
-                    انجام کار غیرواقعی
-                </label>
+<label class="exam-option">
+<input type="radio" name="q11" value="2">
+زرنگی عملیاتی
+</label>
 
-                <label class="exam-option">
-                    <input type="radio" name="q9" value="2">
-                    RP صحیح
-                </label>
+</div>
 
-            </div>
 
+<!-- سوال 12 -->
 
+<div class="exam-question">
 
-            <!-- سوال 10 -->
+<h3>
+1️⃣2️⃣ تهدید کلامی پلیس نسبت به متهم:
+</h3>
 
-            <div class="exam-question">
+<label class="exam-option">
+<input type="radio" name="q12" value="0">
+مجاز
+</label>
 
-                <h3>
-                    🔟 آیا پلیس می‌تواند بدون دلیل قانونی دستگیر کند؟
-                </h3>
+<label class="exam-option">
+<input type="radio" name="q12" value="1">
+قابل قبول
+</label>
 
-                <label class="exam-option">
-                    <input type="radio" name="q10" value="0">
-                    بله
-                </label>
+<label class="exam-option">
+<input type="radio" name="q12" value="2">
+Fail RP
+</label>
 
-                <label class="exam-option">
-                    <input type="radio" name="q10" value="1">
-                    خیر
-                </label>
+</div>
 
-                <label class="exam-option">
-                    <input type="radio" name="q10" value="2">
-                    بستگی دارد
-                </label>
 
-            </div>
+<!-- سوال 13 -->
 
+<div class="exam-question">
 
+<h3>
+1️⃣3️⃣ شرط اصلی استخدام پلیس چیست؟
+</h3>
 
-            <!-- سوال 11 -->
+<label class="exam-option">
+<input type="radio" name="q13" value="0">
+داشتن اسلحه
+</label>
 
-            <div class="exam-question">
+<label class="exam-option">
+<input type="radio" name="q13" value="1">
+لول بالا
+</label>
 
-                <h3>
-                    1️⃣1️⃣ استفاده از اطلاعات Discord یا OOC برای رفتن به محل جرم چیست؟
-                </h3>
+<label class="exam-option">
+<input type="radio" name="q13" value="2">
+تسلط به قوانین RP
+</label>
 
-                <label class="exam-option">
-                    <input type="radio" name="q11" value="0">
-                    MetaGaming (MG)
-                </label>
+</div>
 
-                <label class="exam-option">
-                    <input type="radio" name="q11" value="1">
-                    MG Intelligence
-                </label>
 
-                <label class="exam-option">
-                    <input type="radio" name="q11" value="2">
-                    زرنگی عملیاتی
-                </label>
+<!-- سوال 14 -->
 
-            </div>
+<div class="exam-question">
 
+<h3>
+1️⃣4️⃣ استفاده از سلاح نیمه‌سنگین سطح ۴ چه زمانی مجاز است؟
+</h3>
 
+<label class="exam-option">
+<input type="radio" name="q14" value="0">
+وقتی تعداد مجرمین بیش از ۳ نفر باشد.
+</label>
 
-            <!-- سوال 12 -->
+<label class="exam-option">
+<input type="radio" name="q14" value="1">
+در تعقیب و گریزهای طولانی.
+</label>
 
-            <div class="exam-question">
+<label class="exam-option">
+<input type="radio" name="q14" value="2">
+با مجوز فرمانده و در شرایط خاص.
+</label>
 
-                <h3>
-                    1️⃣2️⃣ تهدید کلامی پلیس نسبت به متهم:
-                </h3>
+</div>
 
-                <label class="exam-option">
-                    <input type="radio" name="q12" value="0">
-                    مجاز
-                </label>
 
-                <label class="exam-option">
-                    <input type="radio" name="q12" value="1">
-                    قابل قبول
-                </label>
+<!-- سوال 15 -->
 
-                <label class="exam-option">
-                    <input type="radio" name="q12" value="2">
-                    Fail RP
-                </label>
+<div class="exam-question">
 
-            </div>
+<h3>
+1️⃣5️⃣ سوءاستفاده از قدرت پلیس چه وضعیتی دارد؟
+</h3>
 
+<label class="exam-option">
+<input type="radio" name="q15" value="0">
+مجاز
+</label>
 
+<label class="exam-option">
+<input type="radio" name="q15" value="1">
+اختیاری
+</label>
 
-            <!-- سوال 13 -->
+<label class="exam-option">
+<input type="radio" name="q15" value="2">
+تخلف
+</label>
 
-            <div class="exam-question">
+</div>
 
-                <h3>
-                    1️⃣3️⃣ شرط اصلی استخدام پلیس چیست؟
-                </h3>
 
-                <label class="exam-option">
-                    <input type="radio" name="q13" value="0">
-                    داشتن اسلحه
-                </label>
+<!-- سوال 16 -->
 
-                <label class="exam-option">
-                    <input type="radio" name="q13" value="1">
-                    لول بالا
-                </label>
+<div class="exam-question">
 
-                <label class="exam-option">
-                    <input type="radio" name="q13" value="2">
-                    تسلط به قوانین RP
-                </label>
+<h3>
+1️⃣6️⃣ بر اساس پروتکل Checkpoint کدام مورد الزامی است؟
+</h3>
 
-            </div>
+<label class="exam-option">
+<input type="radio" name="q16" value="0">
+تمام ماشین‌ها بدون استثنا بازرسی شوند.
+</label>
 
+<label class="exam-option">
+<input type="radio" name="q16" value="1">
+باید از قبل اعلام شده و دلیل مشخصی داشته باشد.
+</label>
 
+<label class="exam-option">
+<input type="radio" name="q16" value="2">
+فقط در مناطق گنگ نشین اجرا شود.
+</label>
 
-            <!-- سوال 14 -->
+</div>
 
-            <div class="exam-question">
 
-                <h3>
-                    1️⃣4️⃣ استفاده از سلاح نیمه‌سنگین سطح ۴ چه زمانی مجاز است؟
-                </h3>
+<!-- سوال 17 -->
 
-                <label class="exam-option">
-                    <input type="radio" name="q14" value="0">
-                    وقتی تعداد مجرمین بیش از ۳ نفر باشد.
-                </label>
+<div class="exam-question">
 
-                <label class="exam-option">
-                    <input type="radio" name="q14" value="1">
-                    در تعقیب و گریزهای طولانی.
-                </label>
+<h3>
+1️⃣7️⃣ رعایت سلسله مراتب در پلیس:
+</h3>
 
-                <label class="exam-option">
-                    <input type="radio" name="q14" value="2">
-                    با مجوز فرمانده و در شرایط خاص.
-                </label>
+<label class="exam-option">
+<input type="radio" name="q17" value="0">
+مهم نیست
+</label>
 
-            </div>
+<label class="exam-option">
+<input type="radio" name="q17" value="1">
+اختیاری
+</label>
 
+<label class="exam-option">
+<input type="radio" name="q17" value="2">
+الزامی
+</label>
 
+</div>
 
-            <!-- سوال 15 -->
 
-            <div class="exam-question">
+<!-- سوال 18 -->
 
-                <h3>
-                    1️⃣5️⃣ سوءاستفاده از قدرت پلیس چه وضعیتی دارد؟
-                </h3>
+<div class="exam-question">
 
-                <label class="exam-option">
-                    <input type="radio" name="q15" value="0">
-                    مجاز
-                </label>
+<h3>
+1️⃣8️⃣ اولویت اول افسر در صحنه درگیری چیست؟
+</h3>
 
-                <label class="exam-option">
-                    <input type="radio" name="q15" value="1">
-                    اختیاری
-                </label>
+<label class="exam-option">
+<input type="radio" name="q18" value="0">
+دستگیری سریع مجرم
+</label>
 
-                <label class="exam-option">
-                    <input type="radio" name="q15" value="2">
-                    تخلف
-                </label>
+<label class="exam-option">
+<input type="radio" name="q18" value="1">
+ثبت مستندات
+</label>
 
-            </div>
+<label class="exam-option">
+<input type="radio" name="q18" value="2">
+حفظ جان شهروندان
+</label>
 
+</div>
 
 
-            <!-- سوال 16 -->
+<!-- سوال 19 -->
 
-            <div class="exam-question">
+<div class="exam-question">
 
-                <h3>
-                    1️⃣6️⃣ بر اساس پروتکل Checkpoint کدام مورد الزامی است؟
-                </h3>
+<h3>
+1️⃣9️⃣ پلیس در RP نماینده چیست؟
+</h3>
 
-                <label class="exam-option">
-                    <input type="radio" name="q16" value="0">
-                    تمام ماشین‌ها بدون استثنا بازرسی شوند.
-                </label>
+<label class="exam-option">
+<input type="radio" name="q19" value="0">
+قدرت شخصی
+</label>
 
-                <label class="exam-option">
-                    <input type="radio" name="q16" value="1">
-                    باید از قبل اعلام شده و دلیل مشخصی داشته باشد.
-                </label>
+<label class="exam-option">
+<input type="radio" name="q19" value="1">
+قانون و نظم
+</label>
 
-                <label class="exam-option">
-                    <input type="radio" name="q16" value="2">
-                    فقط در مناطق گنگ نشین اجرا شود.
-                </label>
+<label class="exam-option">
+<input type="radio" name="q19" value="2">
+خشونت
+</label>
 
-            </div>
+</div>
 
 
+<!-- سوال 20 -->
 
-            <!-- سوال 17 -->
+<div class="exam-question">
 
-            <div class="exam-question">
+<h3>
+2️⃣0️⃣ عدم رعایت RP توسط پلیس چه نتیجه‌ای دارد؟
+</h3>
 
-                <h3>
-                    1️⃣7️⃣ رعایت سلسله مراتب در پلیس:
-                </h3>
+<label class="exam-option">
+<input type="radio" name="q20" value="0">
+هیچ
+</label>
 
-                <label class="exam-option">
-                    <input type="radio" name="q17" value="0">
-                    مهم نیست
-                </label>
+<label class="exam-option">
+<input type="radio" name="q20" value="1">
+اخطار یا اخراج
+</label>
 
-                <label class="exam-option">
-                    <input type="radio" name="q17" value="1">
-                    اختیاری
-                </label>
+<label class="exam-option">
+<input type="radio" name="q20" value="2">
+پاداش
+</label>
 
-                <label class="exam-option">
-                    <input type="radio" name="q17" value="2">
-                    الزامی
-                </label>
+</div>
 
-            </div>
 
+<button
+type="submit"
+class="btn primary"
+>
+📨 ثبت آزمون و ارسال درخواست
+</button>
 
+</form>
 
-            <!-- سوال 18 -->
+</div>
 
-            <div class="exam-question">
 
-                <h3>
-                    1️⃣8️⃣ اولویت اول افسر در صحنه درگیری چیست؟
-                </h3>
-
-                <label class="exam-option">
-                    <input type="radio" name="q18" value="0">
-                    دستگیری سریع مجرم
-                </label>
-
-                <label class="exam-option">
-                    <input type="radio" name="q18" value="1">
-                    ثبت مستندات
-                </label>
-
-                <label class="exam-option">
-                    <input type="radio" name="q18" value="2">
-                    حفظ جان شهروندان
-                </label>
-
-            </div>
-
-
-
-            <!-- سوال 19 -->
-
-            <div class="exam-question">
-
-                <h3>
-                    1️⃣9️⃣ پلیس در RP نماینده چیست؟
-                </h3>
-
-                <label class="exam-option">
-                    <input type="radio" name="q19" value="0">
-                    قدرت شخصی
-                </label>
-
-                <label class="exam-option">
-                    <input type="radio" name="q19" value="1">
-                    قانون و نظم
-                </label>
-
-                <label class="exam-option">
-                    <input type="radio" name="q19" value="2">
-                    خشونت
-                </label>
-
-            </div>
-
-
-
-            <!-- سوال 20 -->
-
-            <div class="exam-question">
-
-                <h3>
-                    2️⃣0️⃣ عدم رعایت RP توسط پلیس چه نتیجه‌ای دارد؟
-                </h3>
-
-                <label class="exam-option">
-                    <input type="radio" name="q20" value="0">
-                    هیچ
-                </label>
-
-                <label class="exam-option">
-                    <input type="radio" name="q20" value="1">
-                    اخطار یا اخراج
-                </label>
-
-                <label class="exam-option">
-                    <input type="radio" name="q20" value="2">
-                    پاداش
-                </label>
-
-            </div>
-
-
-
-            <button
-                type="submit"
-                class="btn primary exam-submit"
-            >
-                📨 ثبت آزمون و ارسال درخواست
-            </button>
-
-        </form>
-
-    </div>
-
-
-
-    <!-- ========================================= -->
-    <!-- RESULT -->
-    <!-- ========================================= -->
-
-    <div id="result"></div>
-
+<div id="result"></div>
 
 </div>
 
 </main>
 
 
-
 <script>
+
+/*
+================================================
+API SERVER
+================================================
+*/
 
 const API_URL =
     "https://lspd-site-11.onrender.com";
 
 const PASSING_SCORE = 12;
 
+
+/*
+================================================
+اطلاعات متقاضی
+================================================
+*/
+
 let applicantData = null;
 
 
-
-// ===================================
-// مرحله اول
-// ===================================
+/*
+================================================
+مرحله اول
+================================================
+*/
 
 document
 .getElementById("informationForm")
@@ -950,18 +914,22 @@ document
 
 
         window.scrollTo({
+
             top: 0,
+
             behavior: "smooth"
+
         });
 
     }
 );
 
 
-
-// ===================================
-// ANSWERS
-// ===================================
+/*
+================================================
+پاسخ‌های صحیح
+================================================
+*/
 
 const correctAnswers = {
 
@@ -989,10 +957,11 @@ const correctAnswers = {
 };
 
 
-
-// ===================================
-// SUBMIT EXAM
-// ===================================
+/*
+================================================
+ثبت آزمون
+================================================
+*/
 
 document
 .getElementById("examForm")
@@ -1014,6 +983,10 @@ document
 
         let unanswered = 0;
 
+
+        /*
+        بررسی سوالات
+        */
 
         for (
             let i = 1;
@@ -1048,6 +1021,10 @@ document
         }
 
 
+        /*
+        سوالات بدون پاسخ
+        */
+
         if (unanswered > 0) {
 
             document
@@ -1061,9 +1038,7 @@ document
                     <br><br>
 
                     تعداد سوالات بدون پاسخ:
-                    <strong>
-                        ${unanswered}
-                    </strong>
+                    <strong>${unanswered}</strong>
 
                 </div>
 
@@ -1087,10 +1062,17 @@ document
         }
 
 
+        /*
+        قبولی
+        */
 
         const passed =
             score >= PASSING_SCORE;
 
+
+        /*
+        اطلاعات نهایی
+        */
 
         const finalData = {
 
@@ -1102,6 +1084,10 @@ document
 
         };
 
+
+        /*
+        دکمه ارسال
+        */
 
         const submitButton =
             document.querySelector(
@@ -1115,8 +1101,29 @@ document
             "⏳ در حال ثبت درخواست...";
 
 
+        /*
+        نمایش وضعیت
+        */
+
+        document
+        .getElementById("result")
+        .innerHTML = `
+
+            <div class="loading-box">
+
+                ⏳ در حال اتصال به سرور LSPD...
+
+            </div>
+
+        `;
+
 
         try {
+
+
+            /*
+            ارسال به MongoDB Server
+            */
 
             const response =
                 await fetch(
@@ -1133,33 +1140,72 @@ document
                         },
 
                         body:
-                            JSON.stringify(
-                                finalData
-                            )
+                            JSON.stringify(finalData)
 
                     }
                 );
 
 
-            const data =
-                await response.json();
+            /*
+            بررسی HTTP
+            */
 
+            if (!response.ok) {
 
+                let serverMessage =
+                    "خطا در سرور";
 
-            if (
-                !response.ok ||
-                !data.success ||
-                !data.id
-            ) {
+                try {
+
+                    const errorData =
+                        await response.json();
+
+                    if (errorData.message) {
+
+                        serverMessage =
+                            errorData.message;
+
+                    }
+
+                } catch (_) {}
+
 
                 throw new Error(
-                    data.message ||
-                    "خطا در ثبت درخواست"
+                    serverMessage
                 );
 
             }
 
 
+            /*
+            JSON
+            */
+
+            const data =
+                await response.json();
+
+
+            /*
+            بررسی نتیجه API
+            */
+
+            if (
+                !data ||
+                data.success !== true ||
+                !data.id
+            ) {
+
+                throw new Error(
+                    data?.message ||
+                    "سرور درخواست را ثبت نکرد."
+                );
+
+            }
+
+
+            /*
+            مخفی کردن آزمون
+            */
 
             document
             .getElementById("examStep")
@@ -1167,6 +1213,9 @@ document
             .add("hidden");
 
 
+            /*
+            نمایش نتیجه
+            */
 
             document
             .getElementById("result")
@@ -1203,14 +1252,16 @@ document
                         حداقل نمره قبولی:
 
                         <strong>
-                            12 از 20
+                            ${PASSING_SCORE} از 20
                         </strong>
 
                     </p>
 
 
                     <p>
+
                         کد پیگیری درخواست شما:
+
                     </p>
 
 
@@ -1240,7 +1291,9 @@ document
                         href="ticket.html"
                         class="btn primary"
                     >
+
                         📄 پیگیری درخواست
+
                     </a>
 
                 </div>
@@ -1259,13 +1312,16 @@ document
 
         } catch (error) {
 
+
             console.error(
                 "Application Error:",
                 error
             );
 
 
-            submitButton.disabled = false;
+            submitButton.disabled =
+                false;
+
 
             submitButton.innerText =
                 "📨 ثبت آزمون و ارسال درخواست";
@@ -1281,7 +1337,18 @@ document
 
                     <br><br>
 
-                    لطفاً اتصال اینترنت و سرور را بررسی کنید
+                    <small>
+                        ${
+                            escapeHTML(
+                                error.message ||
+                                "خطای ناشناخته"
+                            )
+                        }
+                    </small>
+
+                    <br><br>
+
+                    لطفاً اتصال سرور را بررسی کنید
                     و دوباره تلاش کنید.
 
                 </div>
@@ -1294,45 +1361,29 @@ document
 );
 
 
-
-// ===================================
-// ESCAPE HTML
-// ===================================
+/*
+================================================
+ESCAPE HTML
+================================================
+*/
 
 function escapeHTML(value) {
 
     return String(value ?? "")
 
-        .replace(
-            /&/g,
-            "&amp;"
-        )
+        .replace(/&/g, "&amp;")
 
-        .replace(
-            /</g,
-            "&lt;"
-        )
+        .replace(/</g, "&lt;")
 
-        .replace(
-            />/g,
-            "&gt;"
-        )
+        .replace(/>/g, "&gt;")
 
-        .replace(
-            /"/g,
-            "&quot;"
-        )
+        .replace(/"/g, "&quot;")
 
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+        .replace(/'/g, "&#039;");
 
 }
 
 </script>
 
-
 </body>
-
 </html>
