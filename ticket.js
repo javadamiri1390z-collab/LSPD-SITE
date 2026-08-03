@@ -1,13 +1,16 @@
 // ===================================
 // Vanguard LSPD
-// Ticket Tracking + Live Chat
+// Ticket Tracking
+// MongoDB + Live Chat
 // ===================================
 
 const API_URL = "https://lspd-site-11.onrender.com";
 
-let currentTicket = null;
-let chatInterval = null;
-let lastMessageCount = 0;
+const REFRESH_INTERVAL = 2000;
+
+let currentTicketId = null;
+let refreshTimer = null;
+let isRefreshing = false;
 
 
 // ===================================
@@ -19,7 +22,10 @@ async function searchTicket() {
     const input = document.getElementById("ticketCode");
     const box = document.getElementById("result");
 
-    if (!input || !box) return;
+    if (!input || !box) {
+        console.error("ticketCode یا result پیدا نشد.");
+        return;
+    }
 
     const code = input.value.trim();
 
@@ -33,91 +39,88 @@ async function searchTicket() {
             </div>
         `;
 
+        stopLiveRefresh();
+
         return;
     }
 
+    currentTicketId = code;
 
     box.innerHTML = `
         <div class="ticket-card">
-            <p>⏳ در حال بررسی درخواست...</p>
+            <p>⏳ در حال دریافت اطلاعات درخواست...</p>
         </div>
     `;
 
+    await refreshTicket();
+
+    startLiveRefresh();
+}
+
+
+// ===================================
+// GET SINGLE TICKET
+// ===================================
+
+async function refreshTicket() {
+
+    if (!currentTicketId || isRefreshing) {
+        return;
+    }
+
+    isRefreshing = true;
 
     try {
 
-        const response =
-            await fetch(
-                API_URL + "/tickets/" + encodeURIComponent(code)
-            );
-
+        const response = await fetch(
+            API_URL + "/tickets/" + encodeURIComponent(currentTicketId),
+            {
+                method: "GET",
+                cache: "no-store"
+            }
+        );
 
         if (!response.ok) {
 
             if (response.status === 404) {
 
-                throw new Error("NOT_FOUND");
+                showNotFound();
 
+                stopLiveRefresh();
+
+                return;
             }
 
-            throw new Error("SERVER_ERROR");
-
+            throw new Error(
+                "Server Error: " + response.status
+            );
         }
 
-
-        const ticket =
-            await response.json();
-
-
-        currentTicket = ticket;
-
-        lastMessageCount = 0;
-
+        const ticket = await response.json();
 
         renderTicket(ticket);
 
-
-        startChatPolling();
-
-
     } catch (error) {
 
-        console.error("Tracking Error:", error);
+        console.error(
+            "Tracking Error:",
+            error
+        );
 
+        /*
+         * اگر قبلاً تیکت نمایش داده شده باشد،
+         * هنگام خطای موقت صفحه را خراب نمی‌کنیم.
+         */
 
-        if (error.message === "NOT_FOUND") {
+        if (!document.querySelector(".ticket-card")) {
 
-            box.innerHTML = `
-                <div class="ticket-card">
-
-                    <h2 style="color:#ff3333;">
-                        ❌ درخواست پیدا نشد
-                    </h2>
-
-                    <p>
-                        کد پیگیری وارد شده صحیح نیست.
-                    </p>
-
-                </div>
-            `;
-
-        } else {
-
-            box.innerHTML = `
-                <div class="ticket-card">
-
-                    <h2 style="color:#ff3333;">
-                        ❌ خطا در اتصال به سرور
-                    </h2>
-
-                    <p>
-                        لطفاً چند لحظه بعد دوباره تلاش کنید.
-                    </p>
-
-                </div>
-            `;
+            showConnectionError();
 
         }
+
+    } finally {
+
+        isRefreshing = false;
 
     }
 
@@ -133,10 +136,121 @@ function renderTicket(ticket) {
     const box =
         document.getElementById("result");
 
+    if (!box) {
+        return;
+    }
 
     const status =
         getStatusText(ticket.status);
 
+    const type =
+        getRequestType(ticket.requestType);
+
+    const messages =
+        Array.isArray(ticket.messages)
+            ? ticket.messages
+            : [];
+
+
+    let chatHTML = "";
+
+
+    // ===================================
+    // CHAT
+    // ===================================
+
+    if (messages.length === 0) {
+
+        chatHTML = `
+            <div
+                style="
+                    padding:12px;
+                    color:#999;
+                    text-align:center;
+                "
+            >
+                هنوز پیامی ارسال نشده است.
+            </div>
+        `;
+
+    } else {
+
+        chatHTML = messages.map(message => {
+
+            const sender =
+                message.sender === "command"
+                    ? "فرماندهی"
+                    : "متقاضی";
+
+            const senderClass =
+                message.sender === "command"
+                    ? "command-message"
+                    : "applicant-message";
+
+            const date =
+                message.createdAt
+                    ? new Date(
+                        message.createdAt
+                    ).toLocaleString("fa-IR")
+                    : "";
+
+
+            return `
+
+                <div
+                    class="${senderClass}"
+                    style="
+                        margin:10px 0;
+                        padding:12px;
+                        border-radius:12px;
+                        background:rgba(255,255,255,.06);
+                    "
+                >
+
+                    <div
+                        style="
+                            display:flex;
+                            justify-content:space-between;
+                            gap:10px;
+                            margin-bottom:6px;
+                        "
+                    >
+
+                        <strong>
+                            ${
+                                message.sender === "command"
+                                ? "👮 فرماندهی"
+                                : "👤 شما"
+                            }
+                        </strong>
+
+                        <small style="color:#888;">
+                            ${escapeHTML(date)}
+                        </small>
+
+                    </div>
+
+                    <div
+                        style="
+                            white-space:pre-wrap;
+                            word-break:break-word;
+                        "
+                    >
+                        ${escapeHTML(message.message)}
+                    </div>
+
+                </div>
+
+            `;
+
+        }).join("");
+
+    }
+
+
+    // ===================================
+    // MAIN
+    // ===================================
 
     box.innerHTML = `
 
@@ -149,13 +263,13 @@ function renderTicket(ticket) {
 
             <p>
                 <b>کد پیگیری:</b>
-                ${escapeHTML(ticket._id)}
+                ${escapeHTML(ticket._id || "-")}
             </p>
 
 
             <p>
                 <b>نوع درخواست:</b>
-                ${getRequestType(ticket.requestType)}
+                ${type}
             </p>
 
 
@@ -195,41 +309,25 @@ function renderTicket(ticket) {
             </p>
 
 
-            <p>
-
-                <b>🕒 تاریخ ثبت:</b>
-
-                ${
-                    ticket.createdAt
-                    ?
-                    new Date(
-                        ticket.createdAt
-                    ).toLocaleString("fa-IR")
-                    :
-                    "-"
-                }
-
-            </p>
-
-
             <hr>
 
 
-            <!-- COMMAND REPLY -->
+            <!-- ===================================
+                 COMMAND REPLY
+            =================================== -->
 
             <h3>
-                📢 پاسخ فرماندهی
+                👮 پاسخ فرماندهی
             </h3>
 
 
             <div
-                id="commandReply"
                 style="
                     padding:15px;
                     border-radius:10px;
                     background:rgba(255,255,255,.06);
                     white-space:pre-wrap;
-                    margin-bottom:20px;
+                    word-break:break-word;
                 "
             >
 
@@ -241,47 +339,58 @@ function renderTicket(ticket) {
             </div>
 
 
-            <!-- CHAT -->
+            <p>
+
+                <b>
+                    🕒 تاریخ ثبت:
+                </b>
+
+                ${
+                    ticket.createdAt
+                    ? new Date(
+                        ticket.createdAt
+                      ).toLocaleString(
+                        "fa-IR"
+                      )
+                    : "-"
+                }
+
+            </p>
+
+
+            <hr>
+
+
+            <!-- ===================================
+                 LIVE CHAT
+            =================================== -->
 
             <div
-                class="live-chat"
+                class="command-chat-box"
                 style="
                     margin-top:20px;
-                    padding:18px;
+                    padding:15px;
                     border-radius:14px;
                     background:rgba(0,120,255,.06);
-                    border:1px solid rgba(255,255,255,.1);
+                    border:1px solid rgba(255,255,255,.08);
                 "
             >
 
-                <h2>
+                <h3>
                     💬 گفت‌وگو با فرماندهی
-                </h2>
-
-
-                <p
-                    style="
-                        color:#aaa;
-                        font-size:13px;
-                    "
-                >
-                    پیام‌ها به صورت خودکار بروزرسانی می‌شوند.
-                </p>
+                </h3>
 
 
                 <div
-                    id="chatMessages"
+                    id="ticketMessages"
                     style="
-                        max-height:400px;
+                        max-height:450px;
                         overflow-y:auto;
                         margin:15px 0;
-                        padding:10px;
                     "
                 >
 
-                    <p style="color:#aaa;">
-                        ⏳ در حال دریافت پیام‌ها...
-                    </p>
+                    ${chatHTML}
 
                 </div>
 
@@ -295,24 +404,38 @@ function renderTicket(ticket) {
                 >
 
                     <textarea
-                        id="chatInput"
+                        id="ticketMessage"
                         placeholder="پیام خود را برای فرماندهی بنویسید..."
+                        maxlength="2000"
                         style="
                             flex:1;
-                            min-height:80px;
+                            min-width:220px;
+                            min-height:90px;
                             resize:vertical;
                         "
                     ></textarea>
 
 
                     <button
+                        type="button"
                         class="btn primary"
-                        onclick="sendApplicantMessage()"
+                        onclick="sendTicketMessage()"
                     >
-                        📤 ارسال
+                        📤 ارسال پیام
                     </button>
 
                 </div>
+
+
+                <p
+                    style="
+                        color:#888;
+                        font-size:12px;
+                        margin-top:10px;
+                    "
+                >
+                    🔄 پیام‌های جدید به‌صورت خودکار هر ۲ ثانیه بررسی می‌شوند.
+                </p>
 
             </div>
 
@@ -321,236 +444,39 @@ function renderTicket(ticket) {
     `;
 
 
-    loadMessages();
-
-
-}
-
-
-// ===================================
-// LOAD MESSAGES
-// ===================================
-
-async function loadMessages() {
-
-    if (!currentTicket) return;
-
-
-    try {
-
-        const response =
-            await fetch(
-                API_URL +
-                "/tickets/" +
-                encodeURIComponent(
-                    currentTicket._id
-                ) +
-                "/messages"
-            );
-
-
-        if (!response.ok) {
-            return;
-        }
-
-
-        const messages =
-            await response.json();
-
-
-        if (!Array.isArray(messages)) {
-            return;
-        }
-
-
-        /*
-        اگر پیام جدید آمده باشد
-        */
-
-        if (
-            messages.length !==
-            lastMessageCount
-        ) {
-
-            renderMessages(messages);
-
-            lastMessageCount =
-                messages.length;
-
-        }
-
-
-    } catch (error) {
-
-        console.error(
-            "Load Messages Error:",
-            error
-        );
-
-    }
-
-}
-
-
-// ===================================
-// RENDER MESSAGES
-// ===================================
-
-function renderMessages(messages) {
-
-    const box =
-        document.getElementById(
-            "chatMessages"
-        );
-
-
-    if (!box) return;
-
-
-    if (!messages.length) {
-
-        box.innerHTML = `
-            <p style="color:#888;text-align:center;">
-                هنوز پیامی ارسال نشده است.
-            </p>
-        `;
-
-        return;
-
-    }
-
-
-    box.innerHTML = "";
-
-
-    messages.forEach(message => {
-
-        const isCommand =
-            message.sender === "command";
-
-
-        const messageDiv =
-            document.createElement("div");
-
-
-        messageDiv.style.cssText = `
-
-            margin:10px 0;
-
-            padding:12px;
-
-            border-radius:12px;
-
-            ${
-                isCommand
-                ?
-                `
-                background:rgba(0,120,255,.12);
-                border-right:3px solid #008cff;
-                `
-                :
-                `
-                background:rgba(255,255,255,.06);
-                border-left:3px solid #aaa;
-                `
-            }
-
-        `;
-
-
-        const sender =
-            isCommand
-            ?
-            "🚔 فرماندهی"
-            :
-            "👤 شما";
-
-
-        const date =
-            message.createdAt
-            ?
-            new Date(
-                message.createdAt
-            ).toLocaleString("fa-IR")
-            :
-            "";
-
-
-        messageDiv.innerHTML = `
-
-            <div
-                style="
-                    display:flex;
-                    justify-content:space-between;
-                    gap:10px;
-                    margin-bottom:6px;
-                "
-            >
-
-                <strong>
-                    ${sender}
-                </strong>
-
-                <small style="color:#888;">
-                    ${escapeHTML(date)}
-                </small>
-
-            </div>
-
-
-            <div
-                style="
-                    white-space:pre-wrap;
-                    word-break:break-word;
-                "
-            >
-                ${escapeHTML(
-                    message.message
-                )}
-            </div>
-
-        `;
-
-
-        box.appendChild(messageDiv);
-
-    });
-
-
     /*
-    اسکرول به آخرین پیام
-    */
-
-    box.scrollTop =
-        box.scrollHeight;
+     * بعد از Render دوباره به پایین چت اسکرول نمی‌کنیم،
+     * چون این کار هنگام Polling آزاردهنده است.
+     */
 
 }
 
 
 // ===================================
-// SEND APPLICANT MESSAGE
+// SEND MESSAGE
 // ===================================
 
-async function sendApplicantMessage() {
+async function sendTicketMessage() {
 
-    if (!currentTicket) {
+    if (!currentTicketId) {
 
         alert(
-            "ابتدا یک کد پیگیری معتبر وارد کنید."
+            "ابتدا یک کد پیگیری را جستجو کنید."
         );
 
         return;
-
     }
 
 
     const input =
         document.getElementById(
-            "chatInput"
+            "ticketMessage"
         );
 
 
-    if (!input) return;
+    if (!input) {
+        return;
+    }
 
 
     const message =
@@ -564,7 +490,6 @@ async function sendApplicantMessage() {
         );
 
         return;
-
     }
 
 
@@ -575,13 +500,12 @@ async function sendApplicantMessage() {
         );
 
         return;
-
     }
 
 
     const button =
         document.querySelector(
-            ".live-chat .btn.primary"
+            ".command-chat-box button"
         );
 
 
@@ -603,24 +527,26 @@ async function sendApplicantMessage() {
                 API_URL +
                 "/tickets/" +
                 encodeURIComponent(
-                    currentTicket._id
+                    currentTicketId
                 ) +
                 "/messages",
 
                 {
 
-                    method:"POST",
+                    method: "POST",
 
-                    headers:{
+                    headers: {
+
                         "Content-Type":
                             "application/json"
+
                     },
 
-                    body:JSON.stringify({
+                    body: JSON.stringify({
 
-                        sender:"applicant",
+                        message: message,
 
-                        message:message
+                        sender: "applicant"
 
                     })
 
@@ -633,10 +559,7 @@ async function sendApplicantMessage() {
             await response.json();
 
 
-        if (
-            !response.ok ||
-            !data.success
-        ) {
+        if (!response.ok || !data.success) {
 
             throw new Error(
                 data.message ||
@@ -650,10 +573,11 @@ async function sendApplicantMessage() {
 
 
         /*
-        بلافاصله پیام را دریافت کن
-        */
+         * بلافاصله بعد از ارسال،
+         * تیکت را دوباره می‌گیریم.
+         */
 
-        await loadMessages();
+        await refreshTicket();
 
 
     } catch (error) {
@@ -665,9 +589,9 @@ async function sendApplicantMessage() {
 
 
         alert(
-            error.message ||
-            "خطا در ارسال پیام"
+            "❌ ارسال پیام انجام نشد."
         );
+
 
     } finally {
 
@@ -676,7 +600,7 @@ async function sendApplicantMessage() {
             button.disabled = false;
 
             button.innerText =
-                "📤 ارسال";
+                "📤 ارسال پیام";
 
         }
 
@@ -686,66 +610,104 @@ async function sendApplicantMessage() {
 
 
 // ===================================
-// LIVE CHAT POLLING
+// LIVE REFRESH
 // ===================================
 
-function startChatPolling() {
+function startLiveRefresh() {
 
-    /*
-    اگر قبلاً فعال بوده متوقفش کن
-    */
-
-    if (chatInterval) {
-
-        clearInterval(
-            chatInterval
-        );
-
-    }
+    stopLiveRefresh();
 
 
     /*
-    دریافت اولیه
-    */
+     * هر ۲ ثانیه تیکت را بررسی می‌کند.
+     */
 
-    loadMessages();
-
-
-    /*
-    هر ۲ ثانیه بررسی پیام جدید
-    */
-
-    chatInterval =
+    refreshTimer =
         setInterval(
-
-            () => {
-
-                loadMessages();
-
-            },
-
-            2000
-
+            refreshTicket,
+            REFRESH_INTERVAL
         );
 
 }
 
 
-// ===================================
-// STOP POLLING
-// ===================================
+function stopLiveRefresh() {
 
-function stopChatPolling() {
-
-    if (chatInterval) {
+    if (refreshTimer) {
 
         clearInterval(
-            chatInterval
+            refreshTimer
         );
 
-        chatInterval = null;
+        refreshTimer = null;
 
     }
+
+}
+
+
+// ===================================
+// NOT FOUND
+// ===================================
+
+function showNotFound() {
+
+    const box =
+        document.getElementById("result");
+
+    if (!box) {
+        return;
+    }
+
+
+    box.innerHTML = `
+
+        <div class="ticket-card">
+
+            <h2 style="color:#ff3333;">
+                ❌ درخواست پیدا نشد
+            </h2>
+
+            <p>
+                کد پیگیری وارد شده صحیح نیست.
+            </p>
+
+        </div>
+
+    `;
+
+}
+
+
+// ===================================
+// CONNECTION ERROR
+// ===================================
+
+function showConnectionError() {
+
+    const box =
+        document.getElementById("result");
+
+    if (!box) {
+        return;
+    }
+
+
+    box.innerHTML = `
+
+        <div class="ticket-card">
+
+            <p style="color:#ff3333;">
+                ❌ خطا در اتصال به سرور.
+            </p>
+
+            <p style="color:#aaa;">
+                لطفاً چند لحظه بعد دوباره امتحان کنید.
+            </p>
+
+        </div>
+
+    `;
 
 }
 
@@ -852,7 +814,7 @@ function escapeHTML(value) {
 
 
 // ===================================
-// ENTER
+// ENTER TO SEARCH
 // ===================================
 
 document.addEventListener(
@@ -898,7 +860,7 @@ window.addEventListener(
     "beforeunload",
     () => {
 
-        stopChatPolling();
+        stopLiveRefresh();
 
     }
 );
