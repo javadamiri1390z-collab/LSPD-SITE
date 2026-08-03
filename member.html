@@ -4,42 +4,58 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-<title>Vanguard LSPD | Member Profile</title>
+<title>
+Vanguard LSPD | Member Profile
+</title>
 
-<link rel="stylesheet" href="style.css">
+<link
+    rel="stylesheet"
+    href="style.css"
+>
 
 </head>
 
 
 <body>
 
-
 <div class="overlay"></div>
 
 
 <header class="navbar">
 
-<img src="badge.png" class="badge">
+    <img
+        src="badge.png"
+        class="badge"
+        alt="LSPD Badge"
+    >
 
 
-<div class="nav-title">
+    <div class="nav-title">
 
-<h2>Vanguard LSPD</h2>
+        <h2>
+            Vanguard LSPD
+        </h2>
 
-<span>Member Profile</span>
+        <span>
+            Member Profile
+        </span>
 
-</div>
+    </div>
 
 
-<a href="index.html" class="login-btn">
-بازگشت
-</a>
-
+    <a
+        href="index.html"
+        class="login-btn"
+    >
+        بازگشت
+    </a>
 
 </header>
-
 
 
 
@@ -49,125 +65,142 @@
 <div class="profile-card">
 
 
-<img src="badge.png" class="profile-badge">
+    <img
+        src="badge.png"
+        class="profile-badge"
+        alt="LSPD Badge"
+    >
+
+
+    <h1 id="memberName">
+        نام عضو
+    </h1>
+
+
+    <div class="rank-box">
+
+        <h3>
+            Rank
+        </h3>
+
+        <p id="memberRank">
+            Officer
+        </p>
+
+    </div>
 
 
 
-<h1 id="memberName">
-نام عضو
-</h1>
+    <div class="info-box">
 
 
+        <p>
+            🎖 واحد:
+            <span id="department">
+                LSPD Patrol
+            </span>
+        </p>
 
-<div class="rank-box">
+
+        <p>
+            📅 تاریخ عضویت:
+            <span id="joinDate">
+                —
+            </span>
+        </p>
 
 
-<h3>
-Rank
-</h3>
+        <p>
+            ⭐ سطح دسترسی:
+            <span id="access">
+                Officer
+            </span>
+        </p>
 
 
-<p id="memberRank">
-Officer
-</p>
+        <p>
+            📊 وضعیت:
+            <span id="memberStatus">
+                فعال
+            </span>
+        </p>
+
+
+    </div>
 
 
 </div>
-
-
-
-
-<div class="info-box">
-
-
-<p>
-🎖 واحد:
-<span id="department">
-LSPD Patrol
-</span>
-</p>
-
-
-
-<p>
-📅 تاریخ عضویت:
-<span id="joinDate">
-2026
-</span>
-</p>
-
-
-
-<p>
-⭐ سطح دسترسی:
-<span id="access">
-Officer
-</span>
-</p>
-
-
-
-</div>
-
-
-
-</div>
-
 
 
 </main>
 
 
 
-
 <script>
 
 
-// اطلاعات تست عضو
+// ===================================
+// MEMBER DATA
+// ===================================
 
+const member = {
 
-let member = {
+    name: "Javad Amiri",
 
+    rank: "Captain",
 
-name:"Javad Amiri",
+    department: "LSPD Command",
 
-rank:"Captain",
+    joinDate: "01/08/2026",
 
-department:"LSPD Command",
+    access: "Captain",
 
-joinDate:"01/08/2026"
-
+    status: "فعال"
 
 };
 
 
+// ===================================
+// DISPLAY
+// ===================================
+
+document
+.getElementById("memberName")
+.innerText =
+    member.name;
 
 
-document.getElementById("memberName").innerHTML =
-member.name;
+document
+.getElementById("memberRank")
+.innerText =
+    member.rank;
 
 
-document.getElementById("memberRank").innerHTML =
-member.rank;
+document
+.getElementById("department")
+.innerText =
+    member.department;
 
 
-document.getElementById("department").innerHTML =
-member.department;
+document
+.getElementById("joinDate")
+.innerText =
+    member.joinDate;
 
 
-document.getElementById("joinDate").innerHTML =
-member.joinDate;
+document
+.getElementById("access")
+.innerText =
+    member.access;
 
 
-document.getElementById("access").innerHTML =
-member.rank;
-
-
+document
+.getElementById("memberStatus")
+.innerText =
+    member.status;
 
 </script>
 
 
-
 </body>
-
 </html>
