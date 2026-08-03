@@ -2,6 +2,7 @@
 <html lang="fa" dir="rtl">
 
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -62,7 +63,7 @@
     margin-top: 20px;
     padding: 20px;
     border-radius: 14px;
-    background: rgba(0, 150, 80, 0.15);
+    background: rgba(0,150,80,0.15);
     border: 1px solid rgba(0,255,140,0.3);
     text-align: center;
 }
@@ -92,28 +93,23 @@
     text-align: center;
 }
 
-.loading-box {
-    margin-top: 20px;
-    padding: 20px;
-    border-radius: 14px;
-    background: rgba(255,255,255,0.05);
-    text-align: center;
-}
-
 </style>
 
 </head>
 
+
 <body class="form-page">
 
+
 <div class="overlay"></div>
+
 
 <header class="navbar">
 
 <img
-src="badge.png"
-class="badge"
-alt="LSPD Badge"
+    src="badge.png"
+    class="badge"
+    alt="LSPD Badge"
 >
 
 <div class="nav-title">
@@ -124,146 +120,163 @@ alt="LSPD Badge"
 
 </div>
 
+
 <a
-href="index.html"
-class="login-btn"
+    href="index.html"
+    class="login-btn"
 >
-بازگشت
+    بازگشت
 </a>
 
 </header>
 
 
+
 <main class="hero">
+
 
 <div class="form-box">
 
+
 <img
-src="badge.png"
-class="form-badge"
-alt="LSPD Badge"
+    src="badge.png"
+    class="form-badge"
+    alt="LSPD Badge"
 >
 
+
 <h1 class="step-title">
-🚔 درخواست عضویت LSPD
+    🚔 درخواست عضویت LSPD
 </h1>
 
+
 <p id="description">
-ابتدا اطلاعات خود را کامل کنید.
-بعد از تأیید اطلاعات، آزمون قوانین برای شما باز خواهد شد.
+    ابتدا اطلاعات خود را کامل کنید.
+    بعد از تأیید اطلاعات، آزمون قوانین برای شما باز خواهد شد.
 </p>
 
 
-<!-- ========================================= -->
-<!-- مرحله اول -->
-<!-- ========================================= -->
+
+<!-- ================================= -->
+<!-- اطلاعات متقاضی -->
+<!-- ================================= -->
 
 <div id="informationStep">
+
 
 <form id="informationForm">
 
 
 <input
-type="text"
-id="ocName"
-placeholder="OC Name"
-required
+    type="text"
+    id="ocName"
+    placeholder="OC Name"
+    required
 >
 
 
 <input
-type="text"
-id="icName"
-placeholder="IC Name"
-required
+    type="text"
+    id="icName"
+    placeholder="IC Name"
+    required
 >
 
 
 <input
-type="text"
-id="discord"
-placeholder="Discord ID"
-required
+    type="text"
+    id="discord"
+    placeholder="Discord ID"
+    required
 >
 
 
 <input
-type="text"
-id="steamHex"
-placeholder="Steam Hex : steam:110000..."
-required
+    type="text"
+    id="steamHex"
+    placeholder="Steam Hex : steam:110000..."
+    required
 >
 
 
 <input
-type="text"
-id="cmx"
-placeholder="CMX"
-required
+    type="text"
+    id="cmx"
+    placeholder="CMX"
+    required
 >
 
 
 <input
-type="number"
-id="age"
-placeholder="سن"
-min="1"
-max="100"
-required
+    type="number"
+    id="age"
+    placeholder="سن"
+    min="1"
+    max="100"
+    required
 >
 
 
 <textarea
-id="experience"
-placeholder="سابقه رول پلی و تجربه شما"
-required
+    id="experience"
+    placeholder="سابقه رول پلی و تجربه شما"
+    required
 ></textarea>
 
 
 <textarea
-id="reason"
-placeholder="چرا می خواهید عضو LSPD شوید؟"
-required
+    id="reason"
+    placeholder="چرا می خواهید عضو LSPD شوید؟"
+    required
 ></textarea>
 
 
 <button
-type="submit"
-class="btn primary"
+    type="submit"
+    class="btn primary"
 >
-تأیید اطلاعات و شروع آزمون ➜
+    تأیید اطلاعات و شروع آزمون ➜
 </button>
 
+
 </form>
+
 
 </div>
 
 
-<!-- ========================================= -->
-<!-- مرحله دوم -->
-<!-- ========================================= -->
+
+<!-- ================================= -->
+<!-- آزمون -->
+<!-- ================================= -->
 
 <div
-id="examStep"
-class="hidden"
+    id="examStep"
+    class="hidden"
 >
 
+
 <h2 class="exam-title">
-📚 آزمون استخدام LSPD Vanguard RP
+    📚 آزمون استخدام LSPD Vanguard RP
 </h2>
 
+
 <p class="exam-info">
-آزمون شامل ۲۰ سؤال است.
-<br>
-حداقل نمره قبولی:
-<strong>12 از 20</strong>
+
+    آزمون شامل ۲۰ سؤال است.
+
+    <br>
+
+    حداقل نمره قبولی:
+
+    <strong>12 از 20</strong>
+
 </p>
 
 
 <form id="examForm">
 
 
-<!-- سوال 1 -->
 
 <div class="exam-question">
 
@@ -289,7 +302,6 @@ class="hidden"
 </div>
 
 
-<!-- سوال 2 -->
 
 <div class="exam-question">
 
@@ -315,7 +327,6 @@ FailRP
 </div>
 
 
-<!-- سوال 3 -->
 
 <div class="exam-question">
 
@@ -341,7 +352,6 @@ FailRP
 </div>
 
 
-<!-- سوال 4 -->
 
 <div class="exam-question">
 
@@ -367,7 +377,6 @@ FailRP
 </div>
 
 
-<!-- سوال 5 -->
 
 <div class="exam-question">
 
@@ -393,7 +402,6 @@ Fail RP
 </div>
 
 
-<!-- سوال 6 -->
 
 <div class="exam-question">
 
@@ -419,7 +427,6 @@ Fail RP
 </div>
 
 
-<!-- سوال 7 -->
 
 <div class="exam-question">
 
@@ -445,7 +452,6 @@ Fail RP
 </div>
 
 
-<!-- سوال 8 -->
 
 <div class="exam-question">
 
@@ -471,7 +477,6 @@ Fail RP
 </div>
 
 
-<!-- سوال 9 -->
 
 <div class="exam-question">
 
@@ -497,7 +502,6 @@ RP صحیح
 </div>
 
 
-<!-- سوال 10 -->
 
 <div class="exam-question">
 
@@ -523,7 +527,6 @@ RP صحیح
 </div>
 
 
-<!-- سوال 11 -->
 
 <div class="exam-question">
 
@@ -549,7 +552,6 @@ MG Intelligence
 </div>
 
 
-<!-- سوال 12 -->
 
 <div class="exam-question">
 
@@ -575,7 +577,6 @@ Fail RP
 </div>
 
 
-<!-- سوال 13 -->
 
 <div class="exam-question">
 
@@ -601,7 +602,6 @@ Fail RP
 </div>
 
 
-<!-- سوال 14 -->
 
 <div class="exam-question">
 
@@ -627,7 +627,6 @@ Fail RP
 </div>
 
 
-<!-- سوال 15 -->
 
 <div class="exam-question">
 
@@ -653,7 +652,6 @@ Fail RP
 </div>
 
 
-<!-- سوال 16 -->
 
 <div class="exam-question">
 
@@ -679,7 +677,6 @@ Fail RP
 </div>
 
 
-<!-- سوال 17 -->
 
 <div class="exam-question">
 
@@ -705,7 +702,6 @@ Fail RP
 </div>
 
 
-<!-- سوال 18 -->
 
 <div class="exam-question">
 
@@ -731,7 +727,6 @@ Fail RP
 </div>
 
 
-<!-- سوال 19 -->
 
 <div class="exam-question">
 
@@ -757,7 +752,6 @@ Fail RP
 </div>
 
 
-<!-- سوال 20 -->
 
 <div class="exam-question">
 
@@ -783,31 +777,40 @@ Fail RP
 </div>
 
 
+
 <button
-type="submit"
-class="btn primary"
+    type="submit"
+    class="btn primary"
 >
-📨 ثبت آزمون و ارسال درخواست
+    📨 ثبت آزمون و ارسال درخواست
 </button>
 
+
 </form>
+
 
 </div>
 
 
+
 <div id="result"></div>
+
 
 </div>
 
 </main>
 
 
+
 <script>
 
+/* ==================================================
+   CONFIG
+================================================== */
+
 /*
-================================================
-API SERVER
-================================================
+    مهم:
+    درخواست‌ها مستقیماً به سرور Render ارسال می‌شوند.
 */
 
 const API_URL =
@@ -816,120 +819,112 @@ const API_URL =
 const PASSING_SCORE = 12;
 
 
-/*
-================================================
-اطلاعات متقاضی
-================================================
-*/
+/* ==================================================
+   APPLICANT DATA
+================================================== */
 
 let applicantData = null;
 
 
-/*
-================================================
-مرحله اول
-================================================
-*/
+/* ==================================================
+   STEP 1
+================================================== */
 
 document
 .getElementById("informationForm")
-.addEventListener(
-    "submit",
-    function(event) {
+.addEventListener("submit", function(event) {
 
-        event.preventDefault();
+    event.preventDefault();
 
 
-        applicantData = {
+    applicantData = {
 
-            requestType: "membership",
+        requestType: "membership",
 
-            ocName:
-                document
-                .getElementById("ocName")
-                .value
-                .trim(),
+        ocName:
+            document
+            .getElementById("ocName")
+            .value
+            .trim(),
 
-            icName:
-                document
-                .getElementById("icName")
-                .value
-                .trim(),
+        icName:
+            document
+            .getElementById("icName")
+            .value
+            .trim(),
 
-            discord:
-                document
-                .getElementById("discord")
-                .value
-                .trim(),
+        discord:
+            document
+            .getElementById("discord")
+            .value
+            .trim(),
 
-            steamHex:
-                document
-                .getElementById("steamHex")
-                .value
-                .trim(),
+        steamHex:
+            document
+            .getElementById("steamHex")
+            .value
+            .trim(),
 
-            cmx:
-                document
-                .getElementById("cmx")
-                .value
-                .trim(),
+        cmx:
+            document
+            .getElementById("cmx")
+            .value
+            .trim(),
 
-            age:
-                document
-                .getElementById("age")
-                .value
-                .trim(),
+        age:
+            document
+            .getElementById("age")
+            .value
+            .trim(),
 
-            experience:
-                document
-                .getElementById("experience")
-                .value
-                .trim(),
+        experience:
+            document
+            .getElementById("experience")
+            .value
+            .trim(),
 
-            reason:
-                document
-                .getElementById("reason")
-                .value
-                .trim()
+        reason:
+            document
+            .getElementById("reason")
+            .value
+            .trim()
 
-        };
-
-
-        document
-        .getElementById("informationStep")
-        .classList
-        .add("hidden");
+    };
 
 
-        document
-        .getElementById("examStep")
-        .classList
-        .remove("hidden");
+    document
+    .getElementById("informationStep")
+    .classList
+    .add("hidden");
 
 
-        document
-        .getElementById("description")
-        .innerText =
-            "آزمون قوانین استخدامی را کامل کنید. حداقل نمره قبولی 12 از 20 است.";
+    document
+    .getElementById("examStep")
+    .classList
+    .remove("hidden");
 
 
-        window.scrollTo({
-
-            top: 0,
-
-            behavior: "smooth"
-
-        });
-
-    }
-);
+    document
+    .getElementById("description")
+    .innerText =
+        "آزمون قوانین استخدامی را کامل کنید. حداقل نمره قبولی 12 از 20 است.";
 
 
-/*
-================================================
-پاسخ‌های صحیح
-================================================
-*/
+    window.scrollTo({
+
+        top: 0,
+
+        behavior: "smooth"
+
+    });
+
+});
+
+
+
+/* ==================================================
+   ANSWERS
+================================================== */
 
 const correctAnswers = {
 
@@ -957,11 +952,10 @@ const correctAnswers = {
 };
 
 
-/*
-================================================
-ثبت آزمون
-================================================
-*/
+
+/* ==================================================
+   EXAM SUBMIT
+================================================== */
 
 document
 .getElementById("examForm")
@@ -974,6 +968,10 @@ document
 
         if (!applicantData) {
 
+            alert(
+                "اطلاعات متقاضی پیدا نشد."
+            );
+
             return;
 
         }
@@ -984,9 +982,7 @@ document
         let unanswered = 0;
 
 
-        /*
-        بررسی سوالات
-        */
+        /* بررسی سوالات */
 
         for (
             let i = 1;
@@ -1021,9 +1017,7 @@ document
         }
 
 
-        /*
-        سوالات بدون پاسخ
-        */
+        /* همه سوالات الزامی */
 
         if (unanswered > 0) {
 
@@ -1038,22 +1032,20 @@ document
                     <br><br>
 
                     تعداد سوالات بدون پاسخ:
-                    <strong>${unanswered}</strong>
+
+                    <strong>
+                        ${unanswered}
+                    </strong>
 
                 </div>
 
             `;
 
 
-            window.scrollTo({
-
-                top:
-                    document
-                    .getElementById("result")
-                    .offsetTop,
-
+            document
+            .getElementById("result")
+            .scrollIntoView({
                 behavior: "smooth"
-
             });
 
 
@@ -1062,17 +1054,13 @@ document
         }
 
 
-        /*
-        قبولی
-        */
+        /* نتیجه */
 
         const passed =
             score >= PASSING_SCORE;
 
 
-        /*
-        اطلاعات نهایی
-        */
+        /* داده نهایی */
 
         const finalData = {
 
@@ -1084,10 +1072,6 @@ document
 
         };
 
-
-        /*
-        دکمه ارسال
-        */
 
         const submitButton =
             document.querySelector(
@@ -1101,29 +1085,12 @@ document
             "⏳ در حال ثبت درخواست...";
 
 
-        /*
-        نمایش وضعیت
-        */
-
-        document
-        .getElementById("result")
-        .innerHTML = `
-
-            <div class="loading-box">
-
-                ⏳ در حال اتصال به سرور LSPD...
-
-            </div>
-
-        `;
-
-
         try {
 
 
-            /*
-            ارسال به MongoDB Server
-            */
+            /* =====================================
+               POST TO RENDER SERVER
+            ===================================== */
 
             const response =
                 await fetch(
@@ -1140,82 +1107,57 @@ document
                         },
 
                         body:
-                            JSON.stringify(finalData)
+                            JSON.stringify(
+                                finalData
+                            )
 
                     }
                 );
 
 
-            /*
-            بررسی HTTP
-            */
+            /* پاسخ سرور */
 
-            if (!response.ok) {
+            let data;
 
-                let serverMessage =
-                    "خطا در سرور";
 
-                try {
+            try {
 
-                    const errorData =
-                        await response.json();
+                data =
+                    await response.json();
 
-                    if (errorData.message) {
-
-                        serverMessage =
-                            errorData.message;
-
-                    }
-
-                } catch (_) {}
-
+            } catch {
 
                 throw new Error(
-                    serverMessage
+                    "پاسخ نامعتبر از سرور"
                 );
 
             }
 
 
-            /*
-            JSON
-            */
-
-            const data =
-                await response.json();
-
-
-            /*
-            بررسی نتیجه API
-            */
+            /* بررسی پاسخ */
 
             if (
-                !data ||
-                data.success !== true ||
-                !data.id
+                !response.ok ||
+                !data.success
             ) {
 
                 throw new Error(
-                    data?.message ||
-                    "سرور درخواست را ثبت نکرد."
+                    data.message ||
+                    "خطا در ثبت درخواست"
                 );
 
             }
 
 
-            /*
-            مخفی کردن آزمون
-            */
+            /* =====================================
+               SUCCESS
+            ===================================== */
 
             document
             .getElementById("examStep")
             .classList
             .add("hidden");
 
-
-            /*
-            نمایش نتیجه
-            */
 
             document
             .getElementById("result")
@@ -1259,13 +1201,13 @@ document
 
 
                     <p>
-
                         کد پیگیری درخواست شما:
-
                     </p>
 
 
-                    <strong class="tracking-code">
+                    <strong
+                        class="tracking-code"
+                    >
 
                         ${escapeHTML(data.id)}
 
@@ -1314,14 +1256,12 @@ document
 
 
             console.error(
-                "Application Error:",
+                "APPLICATION ERROR:",
                 error
             );
 
 
-            submitButton.disabled =
-                false;
-
+            submitButton.disabled = false;
 
             submitButton.innerText =
                 "📨 ثبت آزمون و ارسال درخواست";
@@ -1338,18 +1278,15 @@ document
                     <br><br>
 
                     <small>
-                        ${
-                            escapeHTML(
-                                error.message ||
-                                "خطای ناشناخته"
-                            )
-                        }
+                        ${escapeHTML(
+                            error.message ||
+                            "خطای نامشخص"
+                        )}
                     </small>
 
                     <br><br>
 
-                    لطفاً اتصال سرور را بررسی کنید
-                    و دوباره تلاش کنید.
+                    لطفاً دوباره تلاش کنید.
 
                 </div>
 
@@ -1361,29 +1298,45 @@ document
 );
 
 
-/*
-================================================
-ESCAPE HTML
-================================================
-*/
+
+/* ==================================================
+   ESCAPE HTML
+================================================== */
 
 function escapeHTML(value) {
 
     return String(value ?? "")
 
-        .replace(/&/g, "&amp;")
+        .replace(
+            /&/g,
+            "&amp;"
+        )
 
-        .replace(/</g, "&lt;")
+        .replace(
+            /</g,
+            "&lt;"
+        )
 
-        .replace(/>/g, "&gt;")
+        .replace(
+            />/g,
+            "&gt;"
+        )
 
-        .replace(/"/g, "&quot;")
+        .replace(
+            /"/g,
+            "&quot;"
+        )
 
-        .replace(/'/g, "&#039;");
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }
 
 </script>
 
+
 </body>
+
 </html>
