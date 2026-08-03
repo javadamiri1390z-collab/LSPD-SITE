@@ -1,385 +1,715 @@
 // ===================================
 // Vanguard LSPD System
 // Main Script
-// Server Ticket Version
+// MongoDB Ticket Server
 // ===================================
-
 
 const API_URL = "https://lspd-site-11.onrender.com";
 
 
+// ===================================
+// PAGE LOAD
+// ===================================
 
-
-// ===============================
-// Page Load Effect
-// ===============================
-
-window.addEventListener("load",()=>{
+window.addEventListener("load", () => {
 
     document.body.classList.add("loaded");
 
 });
 
 
+// ===================================
+// BUTTON EFFECTS
+// ===================================
 
+document.addEventListener("DOMContentLoaded", () => {
 
+    const buttons =
+        document.querySelectorAll(".btn, .login-btn");
 
-// ===============================
-// Button Effects
-// ===============================
+    buttons.forEach(btn => {
 
-document.addEventListener("DOMContentLoaded",()=>{
+        btn.addEventListener("mouseenter", () => {
 
+            btn.style.transform =
+                "translateY(-3px)";
 
-const buttons =
-document.querySelectorAll(".btn,.login-btn");
+        });
 
+        btn.addEventListener("mouseleave", () => {
 
-buttons.forEach(btn=>{
+            btn.style.transform =
+                "translateY(0)";
 
+        });
 
-btn.addEventListener("mouseenter",()=>{
-
-btn.style.transform="translateY(-3px)";
-
-});
-
-
-btn.addEventListener("mouseleave",()=>{
-
-btn.style.transform="translateY(0)";
-
-});
-
+    });
 
 });
 
 
-});
-
-
-
-
-
-
-
-// ===============================
+// ===================================
 // CREATE TICKET
-// ===============================
+// ===================================
+
+async function createTicket(data) {
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL + "/tickets",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(data)
+                }
+            );
 
 
-async function createTicket(data){
+        const result =
+            await response.json();
 
 
-try{
+        if (!response.ok || !result.success) {
+
+            console.error(
+                "Create Ticket Error:",
+                result
+            );
+
+            alert(
+                result.message ||
+                "ارسال درخواست ناموفق بود ❌"
+            );
+
+            return null;
+
+        }
 
 
-let response = await fetch(
+        return result.id;
 
-API_URL + "/tickets",
+    }
 
-{
+    catch (error) {
 
-method:"POST",
+        console.error(
+            "Ticket Error:",
+            error
+        );
 
-headers:{
+        alert(
+            "خطا در اتصال به سرور ❌"
+        );
 
-"Content-Type":"application/json"
+        return null;
 
-},
-
-body:JSON.stringify(data)
-
-}
-
-);
-
-
-
-let result = await response.json();
-
-
-
-if(result.success){
-
-return result.id;
-
-}
-else{
-
-alert("ارسال تیکت ناموفق بود ❌");
-
-return null;
-
-}
-
-
-
-}
-
-catch(error){
-
-
-console.error(
-"Ticket Error:",
-error
-);
-
-
-alert(
-"خطا در اتصال به سرور ❌"
-);
-
-
-return null;
-
+    }
 
 }
 
 
-}
-
-
-
-
-
-
-
-
-
-// ===============================
+// ===================================
 // GET ALL TICKETS
-// ===============================
+// ===================================
+
+async function getTickets() {
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL + "/tickets",
+                {
+                    method: "GET",
+                    cache: "no-store"
+                }
+            );
 
 
-async function getTickets(){
+        if (!response.ok) {
+
+            throw new Error(
+                "Server returned " +
+                response.status
+            );
+
+        }
 
 
-try{
+        const data =
+            await response.json();
 
 
-let response = await fetch(
+        if (!Array.isArray(data)) {
 
-API_URL + "/tickets"
+            console.error(
+                "Invalid tickets response:",
+                data
+            );
 
-);
+            return [];
 
-
-
-let data = await response.json();
-
-
-
-return data;
+        }
 
 
+        return data;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Get Tickets Error:",
+            error
+        );
+
+        return [];
+
+    }
 
 }
 
-catch(error){
+
+// ===================================
+// GET SINGLE TICKET
+// ===================================
+
+async function getTicket(id) {
+
+    if (!id) {
+        return null;
+    }
 
 
-console.error(
-"Get Tickets Error:",
-error
-);
+    try {
+
+        const response =
+            await fetch(
+                API_URL +
+                "/tickets/" +
+                encodeURIComponent(id),
+                {
+                    method: "GET",
+                    cache: "no-store"
+                }
+            );
 
 
-return [];
+        if (!response.ok) {
+
+            return null;
+
+        }
+
+
+        return await response.json();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Get Ticket Error:",
+            error
+        );
+
+        return null;
+
+    }
 
 }
 
 
-}
-
-
-
-
-
-
-
-
-
-// ===============================
+// ===================================
 // DELETE TICKET
-// ===============================
+// ===================================
+
+async function deleteTicket(id) {
+
+    if (!id) {
+
+        return false;
+
+    }
 
 
-async function deleteTicket(id){
+    try {
+
+        const response =
+            await fetch(
+                API_URL +
+                "/tickets/" +
+                encodeURIComponent(id),
+                {
+                    method: "DELETE"
+                }
+            );
 
 
-try{
+        const result =
+            await response.json();
 
 
-let response = await fetch(
+        return (
+            response.ok &&
+            result.success === true
+        );
 
-API_URL + "/tickets/" + id,
+    }
 
-{
+    catch (error) {
 
-method:"DELETE"
+        console.error(
+            "Delete Ticket Error:",
+            error
+        );
+
+        return false;
+
+    }
 
 }
 
-);
 
-
-
-return true;
-
-
-
-}
-
-catch(error){
-
-
-console.error(error);
-
-
-return false;
-
-
-}
-
-
-}
-
-
-
-
-
-
-
-
-
-// ===============================
+// ===================================
 // UPDATE TICKET
-// ===============================
+// ===================================
+
+async function updateTicket(
+    id,
+    status,
+    reply
+) {
+
+    if (!id) {
+
+        return false;
+
+    }
 
 
-async function updateTicket(id,status,reply){
+    try {
+
+        const response =
+            await fetch(
+                API_URL +
+                "/tickets/" +
+                encodeURIComponent(id),
+                {
+
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            status:
+                                status || "Pending",
+
+                            reply:
+                                reply || ""
+
+                        })
+
+                }
+            );
 
 
-try{
+        const result =
+            await response.json();
 
 
-await fetch(
+        return (
+            response.ok &&
+            result.success === true
+        );
 
-API_URL + "/tickets/" + id,
+    }
 
-{
+    catch (error) {
 
-method:"PUT",
+        console.error(
+            "Update Ticket Error:",
+            error
+        );
 
-headers:{
+        return false;
 
-"Content-Type":"application/json"
-
-},
-
-body:JSON.stringify({
-
-status:status,
-
-reply:reply
-
-})
+    }
 
 }
 
-);
+
+// ===================================
+// GET CHAT MESSAGES
+// ===================================
+
+async function getTicketMessages(id) {
+
+    if (!id) {
+
+        return [];
+
+    }
 
 
+    try {
 
-return true;
+        const response =
+            await fetch(
+                API_URL +
+                "/tickets/" +
+                encodeURIComponent(id) +
+                "/messages",
+                {
+                    method: "GET",
+                    cache: "no-store"
+                }
+            );
 
+
+        if (!response.ok) {
+
+            return [];
+
+        }
+
+
+        const messages =
+            await response.json();
+
+
+        return Array.isArray(messages)
+            ? messages
+            : [];
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Get Messages Error:",
+            error
+        );
+
+        return [];
+
+    }
 
 }
 
-catch(error){
+
+// ===================================
+// SEND CHAT MESSAGE
+// ===================================
+
+async function sendTicketMessage(
+    id,
+    message,
+    sender = "applicant"
+) {
+
+    if (!id || !message) {
+
+        return null;
+
+    }
 
 
-console.error(error);
+    try {
+
+        const response =
+            await fetch(
+                API_URL +
+                "/tickets/" +
+                encodeURIComponent(id) +
+                "/messages",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            message:
+                                String(message).trim(),
+
+                            sender:
+                                sender === "command"
+                                    ? "command"
+                                    : "applicant"
+
+                        })
+
+                }
+            );
 
 
-return false;
+        const result =
+            await response.json();
 
+
+        if (
+            !response.ok ||
+            !result.success
+        ) {
+
+            console.error(
+                "Send Message Error:",
+                result
+            );
+
+            return null;
+
+        }
+
+
+        return result.message || null;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Send Message Error:",
+            error
+        );
+
+        return null;
+
+    }
 
 }
 
 
-}
-
-
-
-
-
-
-
-
-
-// ===============================
+// ===================================
 // ADMIN LOGIN CHECK
-// ===============================
+// ===================================
+
+function checkAdmin() {
+
+    const admin =
+        localStorage.getItem(
+            "lspdAdmin"
+        );
 
 
-function checkAdmin(){
+    if (admin !== "true") {
+
+        window.location.href =
+            "login.html";
+
+        return false;
+
+    }
 
 
-let admin =
-localStorage.getItem(
-"lspdAdmin"
-);
-
-
-
-if(admin !== "true"){
-
-
-window.location.href =
-"login.html";
-
+    return true;
 
 }
 
 
+// ===================================
+// ADMIN LOGIN
+// ===================================
+
+function loginAdmin() {
+
+    localStorage.setItem(
+        "lspdAdmin",
+        "true"
+    );
+
 }
 
 
-
-
-
-
-
-
-
-// ===============================
+// ===================================
 // ADMIN LOGOUT
-// ===============================
+// ===================================
+
+function logoutAdmin() {
+
+    localStorage.removeItem(
+        "lspdAdmin"
+    );
 
 
-function logoutAdmin(){
-
-
-localStorage.removeItem(
-"lspdAdmin"
-);
-
-
-
-window.location.href =
-"login.html";
-
+    window.location.href =
+        "login.html";
 
 }
 
 
+// ===================================
+// HTML ESCAPE
+// ===================================
+
+function escapeHTML(value) {
+
+    return String(value ?? "")
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
 
 
+// ===================================
+// REQUEST TYPE TEXT
+// ===================================
+
+function getRequestTypeText(type) {
+
+    switch (type) {
+
+        case "membership":
+            return "🚔 درخواست عضویت";
+
+        case "division":
+            return "🎖️ درخواست دیویژن";
+
+        case "resignation":
+            return "📤 درخواست استعفا";
+
+        case "rankup":
+            return "⬆️ درخواست رنکاپ";
+
+        default:
+            return "📄 درخواست";
+
+    }
+
+}
 
 
+// ===================================
+// STATUS TEXT
+// ===================================
+
+function getStatusText(status) {
+
+    switch (status) {
+
+        case "Accepted":
+            return "🟢 تایید شده";
+
+        case "Rejected":
+            return "🔴 رد شده";
+
+        default:
+            return "🟡 در انتظار بررسی";
+
+    }
+
+}
+
+
+// ===================================
+// STATUS CLASS
+// ===================================
+
+function getStatusClass(status) {
+
+    switch (status) {
+
+        case "Accepted":
+            return "approved-text";
+
+        case "Rejected":
+            return "rejected-text";
+
+        default:
+            return "pending-text";
+
+    }
+
+}
+
+
+// ===================================
+// SERVER STATUS
+// ===================================
+
+async function checkServer() {
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL + "/tickets",
+                {
+                    method: "GET",
+                    cache: "no-store"
+                }
+            );
+
+
+        return response.ok;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Server Check Error:",
+            error
+        );
+
+        return false;
+
+    }
+
+}
+
+
+// ===================================
+// CONSOLE
+// ===================================
 
 console.log(
-"Vanguard LSPD Server System Online"
+    "🚔 Vanguard LSPD System Online"
+);
+
+console.log(
+    "API:",
+    API_URL
 );
