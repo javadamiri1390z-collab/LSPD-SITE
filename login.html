@@ -4,262 +4,623 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
 <title>Vanguard LSPD | Command Login</title>
 
 <link rel="stylesheet" href="style.css">
 
-</head>
+<style>
 
+/* =====================================
+   COMMAND LOGIN
+===================================== */
+
+.login-card {
+
+    width: 460px;
+    max-width: 94%;
+
+    padding: 45px 40px;
+
+    text-align: center;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(8, 18, 32, .92),
+            rgba(0, 0, 0, .78)
+        );
+
+    backdrop-filter: blur(22px);
+
+    border:
+        1px solid rgba(77, 166, 255, .28);
+
+    border-radius: 28px;
+
+    box-shadow:
+        0 25px 70px rgba(0, 0, 0, .55),
+        0 0 45px rgba(0, 110, 255, .18);
+
+    position: relative;
+
+    overflow: hidden;
+
+}
+
+
+/* نور بالای کارت */
+
+.login-card::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 12%;
+    right: 12%;
+
+    height: 2px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #168cff,
+            #66c7ff,
+            #168cff,
+            transparent
+        );
+
+    box-shadow:
+        0 0 18px #168cff;
+
+}
+
+
+/* Badge */
+
+.login-badge {
+
+    width: 125px;
+    height: 125px;
+
+    object-fit: contain;
+
+    margin-bottom: 18px;
+
+    filter:
+        drop-shadow(0 0 12px rgba(22, 140, 255, .7))
+        drop-shadow(0 0 35px rgba(22, 140, 255, .25));
+
+}
+
+
+/* عنوان */
+
+.login-card h1 {
+
+    margin: 5px 0 8px;
+
+    color: #fff;
+
+    font-size: 30px;
+
+    font-weight: 800;
+
+}
+
+
+/* زیرعنوان */
+
+.login-card h3 {
+
+    margin-bottom: 12px;
+
+    color: #4da6ff;
+
+    font-size: 16px;
+
+    letter-spacing: .5px;
+
+}
+
+
+/* توضیحات */
+
+.login-card > p {
+
+    color: #9ca9b8;
+
+    font-size: 14px;
+
+    line-height: 1.8;
+
+    margin-bottom: 25px;
+
+}
+
+
+/* Inputs */
+
+.login-card input {
+
+    width: 100%;
+
+    height: 54px;
+
+    margin-top: 13px;
+
+    padding: 0 17px;
+
+    border-radius: 13px;
+
+    border:
+        1px solid rgba(255,255,255,.12);
+
+    background:
+        rgba(255,255,255,.055);
+
+    color: #fff;
+
+    outline: none;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    text-align: right;
+
+    direction: rtl;
+
+    transition:
+        border-color .25s ease,
+        background .25s ease,
+        box-shadow .25s ease,
+        transform .25s ease;
+
+}
+
+
+/* Placeholder */
+
+.login-card input::placeholder {
+
+    color: #7e8996;
+
+}
+
+
+/* Focus */
+
+.login-card input:focus {
+
+    border-color:
+        rgba(22, 140, 255, .8);
+
+    background:
+        rgba(22, 140, 255, .08);
+
+    box-shadow:
+        0 0 0 3px rgba(22, 140, 255, .08),
+        0 0 20px rgba(22, 140, 255, .12);
+
+    transform:
+        translateY(-1px);
+
+}
+
+
+/* Login Button */
+
+.login-button {
+
+    width: 100%;
+
+    height: 54px;
+
+    margin-top: 22px;
+
+    border-radius: 13px;
+
+    font-size: 15px;
+
+    font-weight: bold;
+
+    background:
+        linear-gradient(
+            135deg,
+            #087cff,
+            #0055cc
+        );
+
+    box-shadow:
+        0 8px 25px rgba(0, 110, 255, .25);
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease,
+        filter .25s ease;
+
+}
+
+
+/* Button Hover */
+
+.login-button:hover {
+
+    transform:
+        translateY(-2px);
+
+    filter:
+        brightness(1.08);
+
+    box-shadow:
+        0 12px 32px rgba(0, 110, 255, .38);
+
+}
+
+
+/* Button Active */
+
+.login-button:active {
+
+    transform:
+        translateY(0);
+
+}
+
+
+/* Login Result */
+
+#loginResult {
+
+    min-height: 25px;
+
+    margin-top: 15px;
+
+}
+
+
+#loginResult p {
+
+    margin: 0;
+
+    padding: 11px;
+
+    border-radius: 10px;
+
+    background:
+        rgba(255, 40, 40, .08);
+
+    border:
+        1px solid rgba(255, 70, 70, .18);
+
+    color: #ff7070 !important;
+
+    font-size: 13px;
+
+}
+
+
+/* Back link */
+
+.back-link {
+
+    display: inline-block;
+
+    margin-top: 20px;
+
+    color: #8fa0b3;
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    transition:
+        color .2s ease;
+
+}
+
+
+.back-link:hover {
+
+    color: #4da6ff;
+
+}
+
+
+/* =====================================
+   MOBILE
+===================================== */
+
+@media (max-width: 600px) {
+
+    .login-card {
+
+        padding: 35px 22px;
+
+        border-radius: 22px;
+
+    }
+
+
+    .login-badge {
+
+        width: 105px;
+        height: 105px;
+
+    }
+
+
+    .login-card h1 {
+
+        font-size: 25px;
+
+    }
+
+
+    .login-card h3 {
+
+        font-size: 14px;
+
+    }
+
+}
+
+</style>
+
+</head>
 
 
 <body class="command-page">
 
-
-
 <div class="overlay"></div>
 
 
-
-
+<!-- =====================================
+     NAVBAR
+===================================== -->
 
 <header class="navbar">
 
-
-<img src="badge.png" class="badge">
-
-
-
-<div class="nav-title">
-
-<h2>
-Vanguard LSPD
-</h2>
+    <img
+        src="badge.png"
+        class="badge"
+        alt="Vanguard LSPD Badge"
+    >
 
 
-<span>
-Command Access
-</span>
+    <div class="nav-title">
+
+        <h2>
+            Vanguard LSPD
+        </h2>
+
+        <span>
+            Command Access
+        </span>
+
+    </div>
 
 
-</div>
-
-
-
-
-<a href="index.html" class="login-btn">
-
-بازگشت
-
-</a>
-
-
-
+    <a
+        href="index.html"
+        class="login-btn"
+    >
+        بازگشت
+    </a>
 
 </header>
 
 
-
-
-
-
-
+<!-- =====================================
+     LOGIN
+===================================== -->
 
 <main class="hero">
 
+    <div class="login-card">
 
 
+        <img
+            src="badge.png"
+            class="login-badge"
+            alt="LSPD Badge"
+        >
 
 
-<div class="login-card">
+        <h1>
+            ورود فرماندهی
+        </h1>
 
 
+        <h3>
+            LSPD Command Center
+        </h3>
 
 
+        <p>
+            فقط اعضای مجاز LSPD اجازه دسترسی به
+            مرکز فرماندهی را دارند.
+        </p>
 
 
-<img 
-src="badge.png"
-class="login-badge">
+        <input
+            type="text"
+            id="username"
+            placeholder="نام کاربری"
+            autocomplete="username"
+        >
 
 
+        <input
+            type="password"
+            id="password"
+            placeholder="رمز عبور"
+            autocomplete="current-password"
+        >
 
 
+        <button
+            type="button"
+            class="btn primary login-button"
+            onclick="loginCommand()"
+        >
+            🔐 ورود به پنل فرماندهی
+        </button>
 
 
-<h1>
-ورود فرماندهی
-</h1>
+        <div id="loginResult"></div>
 
 
+        <a
+            href="index.html"
+            class="back-link"
+        >
+            ← بازگشت به لابی
+        </a>
 
 
-<h3>
-LSPD Command Center
-</h3>
-
-
-
-
-<p>
-فقط اعضای مجاز LSPD دسترسی دارند.
-</p>
-
-
-
-
-
-
-
-
-<input 
-type="text"
-id="username"
-placeholder="نام کاربری">
-
-
-
-
-
-
-<input 
-type="password"
-id="password"
-placeholder="رمز عبور">
-
-
-
-
-
-
-
-
-<button 
-class="btn primary login-button"
-onclick="loginCommand()">
-
-ورود به پنل
-
-</button>
-
-
-
-
-
-
-
-<div id="loginResult"></div>
-
-
-
-
-
-
-<a href="index.html" class="back-link">
-
-بازگشت به لابی
-
-</a>
-
-
-
-
-
-
-
-</div>
-
-
-
-
-
+    </div>
 
 </main>
-
-
-
-
-
-
-
 
 
 <script src="script.js"></script>
 
 
-
-
 <script>
 
+/* =====================================
+   LOGIN
+===================================== */
+
+function loginCommand() {
+
+    const user =
+        document
+        .getElementById("username")
+        .value
+        .trim();
 
 
-function loginCommand(){
+    const pass =
+        document
+        .getElementById("password")
+        .value;
 
 
-
-let user =
-document.getElementById("username").value;
-
-
-
-let pass =
-document.getElementById("password").value;
+    const result =
+        document.getElementById(
+            "loginResult"
+        );
 
 
+    if (!user || !pass) {
+
+        result.innerHTML = `
+
+            <p>
+                ⚠️ لطفاً نام کاربری و رمز عبور را وارد کنید.
+            </p>
+
+        `;
+
+        return;
+
+    }
 
 
+    /*
+     * اطلاعات ورود فعلی پروژه
+     */
+
+    if (
+        user === "LSPD" &&
+        pass === "LSPD00078"
+    ) {
+
+        localStorage.setItem(
+            "lspdAdmin",
+            "true"
+        );
 
 
-if(
-user === "LSPD" &&
-pass === "LSPD00078"
-){
+        window.location.href =
+            "admin.html";
 
 
+        return;
 
-localStorage.setItem(
-"lspdAdmin",
-"true"
-);
+    }
 
 
+    result.innerHTML = `
+
+        <p>
+            ❌ نام کاربری یا رمز عبور اشتباه است.
+        </p>
+
+    `;
 
 
-window.location.href =
-"admin.html";
+    /*
+     * پاک کردن رمز اشتباه
+     */
 
-
-
-
-
-}else{
-
-
-
-document.getElementById("loginResult").innerHTML =
-
-`
-<p style="color:red">
-❌ نام کاربری یا رمز عبور اشتباه است
-</p>
-`;
-
-
+    document
+        .getElementById("password")
+        .value = "";
 
 }
 
 
+/* =====================================
+   ENTER
+===================================== */
 
-}
+document
+    .getElementById("password")
+    .addEventListener(
+        "keydown",
+        function(event) {
+
+            if (
+                event.key === "Enter"
+            ) {
+
+                loginCommand();
+
+            }
+
+        }
+    );
 
 
+document
+    .getElementById("username")
+    .addEventListener(
+        "keydown",
+        function(event) {
 
+            if (
+                event.key === "Enter"
+            ) {
+
+                loginCommand();
+
+            }
+
+        }
+    );
 
 </script>
-
-
-
 
 
 </body>
