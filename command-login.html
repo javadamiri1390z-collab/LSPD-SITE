@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Vanguard LSPD | Command Login</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: inherit;
+        }
+
+        .login-container {
+
+            width: 450px;
+            max-width: 92%;
+
+            background:
+                rgba(5, 10, 18, .82);
+
+            border:
+                1px solid
+                rgba(77,166,255,.25);
+
+            border-radius: 24px;
+
+            padding: 35px;
+
+            backdrop-filter:
+                blur(20px);
+
+            box-shadow:
+                0 20px 70px
+                rgba(0,0,0,.45);
+
+        }
+
+        .login-logo {
+
+            text-align: center;
+
+            margin-bottom: 25px;
+
+        }
+
+        .login-logo img {
+
+            width: 90px;
+            height: 90px;
+
+            object-fit: contain;
+
+            filter:
+                drop-shadow(
+                    0 0 18px
+                    #168cff
+                );
+
+        }
+
+        .login-logo h1 {
+
+            color: #4da6ff;
+
+            margin:
+                15px 0 5px;
+
+        }
+
+        .login-logo p {
+
+            color: #999;
+
+            margin: 0;
+
+        }
+
+        .form-group {
+
+            margin-bottom: 18px;
+
+        }
+
+        .form-group label {
+
+            display: block;
+
+            color: #bbb;
+
+            margin-bottom: 8px;
+
+            font-size: 14px;
+
+        }
+
+        .form-group input {
+
+            width: 100%;
+
+            padding: 14px 15px;
+
+            background:
+                #050a11;
+
+            color: white;
+
+            border:
+                1px solid
+                rgba(255,255,255,.14);
+
+            border-radius: 11px;
+
+            outline: none;
+
+            font-family: inherit;
+
+            font-size: 15px;
+
+            direction: ltr;
+
+            text-align: left;
+
+        }
+
+        .form-group input:focus {
+
+            border-color:
+                #168cff;
+
+            box-shadow:
+                0 0 12px
+                rgba(22,140,255,.2);
+
+        }
+
+        .login-button {
+
+            width: 100%;
+
+            padding: 14px;
+
+            border: none;
+
+            border-radius: 11px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #168cff,
+                    #0066cc
+                );
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            font-family: inherit;
+
+            transition: .2s;
+
+        }
+
+        .login-button:hover {
+
+            transform:
+                translateY(-1px);
+
+            box-shadow:
+                0 8px 25px
+                rgba(22,140,255,.25);
+
+        }
+
+        .login-button:disabled {
+
+            opacity: .6;
+
+            cursor: not-allowed;
+
+            transform: none;
+
+        }
+
+        .error-box {
+
+            display: none;
+
+            margin-top: 15px;
+
+            padding: 12px;
+
+            border-radius: 10px;
+
+            color: #ff6666;
+
+            background:
+                rgba(255,0,0,.08);
+
+            border:
+                1px solid
+                rgba(255,0,0,.18);
+
+            text-align: center;
+
+            font-size: 13px;
+
+        }
+
+        .back-button {
+
+            display: block;
+
+            text-align: center;
+
+            margin-top: 18px;
+
+            color: #888;
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+        }
+
+        .back-button:hover {
+
+            color: #4da6ff;
+
+        }
+
+        .security-note {
+
+            margin-top: 22px;
+
+            padding-top: 15px;
+
+            border-top:
+                1px solid
+                rgba(255,255,255,.08);
+
+            text-align: center;
+
+            color: #666;
+
+            font-size: 11px;
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <div class="overlay"></div>
+
+
+    <div class="login-container">
+
+
+        <div class="login-logo">
+
+            <img
+                src="badge.png"
+                alt="LSPD"
+            >
+
+            <h1>
+                👮 Vanguard LSPD
+            </h1>
+
+            <p>
+                Command Center
+            </p>
+
+        </div>
+
+
+        <form
+            id="loginForm"
+        >
+
+
+            <div class="form-group">
+
+                <label for="username">
+                    نام کاربری
+                </label>
+
+                <input
+                    id="username"
+                    name="username"
+                    type="text"
+                    autocomplete="username"
+                    placeholder="Username"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="password">
+                    رمز عبور
+                </label>
+
+                <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    autocomplete="current-password"
+                    placeholder="Password"
+                    required
+                >
+
+            </div>
+
+
+            <button
+                id="loginButton"
+                class="login-button"
+                type="submit"
+            >
+                🔐 ورود به پنل فرماندهی
+            </button>
+
+
+        </form>
+
+
+        <div
+            id="errorBox"
+            class="error-box"
+        ></div>
+
+
+        <a
+            href="index.html"
+            class="back-button"
+        >
+            ← بازگشت به صفحه اصلی
+        </a>
+
+
+        <div class="security-note">
+
+            🔒 دسترسی این بخش فقط برای کاربران مجاز است.
+
+        </div>
+
+
+    </div>
+
+
+<script>
+
+
+/* =========================================
+   API
+========================================= */
+
+const API_URL =
+    "https://lspd-site-11.onrender.com";
+
+
+/* =========================================
+   Elements
+========================================= */
+
+const loginForm =
+    document.getElementById(
+        "loginForm"
+    );
+
+
+const loginButton =
+    document.getElementById(
+        "loginButton"
+    );
+
+
+const errorBox =
+    document.getElementById(
+        "errorBox"
+    );
+
+
+/* =========================================
+   Error
+========================================= */
+
+function showError(message) {
+
+    errorBox.innerText =
+        message ||
+        "خطا در ورود";
+
+    errorBox.style.display =
+        "block";
+
+}
+
+
+function hideError() {
+
+    errorBox.innerText =
+        "";
+
+    errorBox.style.display =
+        "none";
+
+}
+
+
+/* =========================================
+   Check Existing Login
+========================================= */
+
+async function checkExistingLogin() {
+
+    const token =
+        localStorage.getItem(
+            "lspdCommandToken"
+        );
+
+
+    if (!token) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL +
+                "/auth/me",
+                {
+
+                    method: "GET",
+
+                    headers: {
+
+                        "Authorization":
+                            "Bearer " +
+                            token
+
+                    },
+
+                    cache:
+                        "no-store"
+
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Token expired"
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !data.success ||
+            !data.user
+        ) {
+
+            throw new Error(
+                "Invalid session"
+            );
+
+        }
+
+
+        /*
+        ذخیره مجدد اطلاعات کاربر
+        */
+
+        saveUserData(
+            data.user
+        );
+
+
+        /*
+        ورود قبلی معتبر است
+        */
+
+        window.location.href =
+            "command.html";
+
+
+    } catch (error) {
+
+        /*
+        Token نامعتبر یا منقضی شده
+        */
+
+        localStorage.removeItem(
+            "lspdCommandToken"
+        );
+
+        localStorage.removeItem(
+            "lspdCommander"
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   Save User
+========================================= */
+
+function saveUserData(user) {
+
+    if (!user) {
+
+        return;
+
+    }
+
+
+    /*
+    اطلاعات کامل
+    */
+
+    localStorage.setItem(
+
+        "lspdCommander",
+
+        JSON.stringify({
+
+            username:
+                user.username || "",
+
+            name:
+                user.name || "",
+
+            rank:
+                user.rank || "",
+
+            role:
+                user.role || "command",
+
+            isOwner:
+                user.isOwner === true
+
+        })
+
+    );
+
+
+    /*
+    Legacy keys
+    برای سازگاری با نسخه‌های قبلی
+    */
+
+    localStorage.setItem(
+
+        "lspdAdminUser",
+
+        user.username || ""
+
+    );
+
+
+    localStorage.setItem(
+
+        "lspdAdminName",
+
+        user.name || ""
+
+    );
+
+
+    localStorage.setItem(
+
+        "lspdAdminRank",
+
+        user.rank || ""
+
+    );
+
+
+    localStorage.setItem(
+
+        "lspdAdmin",
+
+        "true"
+
+    );
+
+
+    /*
+    مشخص کردن Owner
+    */
+
+    if (
+        user.role === "owner" ||
+        user.isOwner === true
+    ) {
+
+        localStorage.setItem(
+            "lspdIsOwner",
+            "true"
+        );
+
+    } else {
+
+        localStorage.removeItem(
+            "lspdIsOwner"
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   Login
+========================================= */
+
+loginForm.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+
+        hideError();
+
+
+        const username =
+            document
+                .getElementById(
+                    "username"
+                )
+                .value
+                .trim();
+
+
+        const password =
+            document
+                .getElementById(
+                    "password"
+                )
+                .value
+                .trim();
+
+
+        if (
+            !username ||
+            !password
+        ) {
+
+            showError(
+                "نام کاربری و رمز عبور را وارد کنید."
+            );
+
+            return;
+
+        }
+
+
+        /*
+        جلوگیری از چند بار کلیک
+        */
+
+        loginButton.disabled =
+            true;
+
+        loginButton.innerText =
+            "⏳ در حال ورود...";
+
+
+        try {
+
+            const response =
+                await fetch(
+
+                    API_URL +
+                    "/auth/login",
+
+                    {
+
+                        method: "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json"
+
+                        },
+
+                        body:
+                            JSON.stringify({
+
+                                username,
+
+                                password
+
+                            })
+
+                        }
+
+                    );
+
+
+            let data = null;
+
+
+            try {
+
+                data =
+                    await response.json();
+
+            } catch {
+
+                data = null;
+
+            }
+
+
+            if (
+                !response.ok ||
+                !data ||
+                !data.success
+            ) {
+
+                throw new Error(
+
+                    data?.message ||
+                    "نام کاربری یا رمز عبور اشتباه است."
+
+                );
+
+            }
+
+
+            /*
+            Token واقعی که server.js
+            ساخته است
+            */
+
+            if (!data.token) {
+
+                throw new Error(
+                    "توکن ورود از سرور دریافت نشد."
+                );
+
+            }
+
+
+            /*
+            ذخیره Token
+            */
+
+            localStorage.setItem(
+
+                "lspdCommandToken",
+
+                data.token
+
+            );
+
+
+            /*
+            ذخیره اطلاعات کاربر
+            */
+
+            saveUserData(
+                data.user
+            );
+
+
+            /*
+            ورود موفق
+            */
+
+            loginButton.innerText =
+                "✅ ورود موفق";
+
+
+            window.location.href =
+                "command.html";
+
+
+        } catch (error) {
+
+            console.error(
+                "LOGIN ERROR:",
+                error
+            );
+
+
+            showError(
+                error.message ||
+                "ورود ناموفق بود."
+            );
+
+
+            loginButton.disabled =
+                false;
+
+            loginButton.innerText =
+                "🔐 ورود به پنل فرماندهی";
+
+        }
+
+    }
+);
+
+
+/* =========================================
+   Start
+========================================= */
+
+checkExistingLogin();
+
+
+</script>
+
+</body>
+
+</html>
