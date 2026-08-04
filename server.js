@@ -1,8 +1,10 @@
 // ============================================================
 // VANGUARD LSPD - SERVER.JS
-// MongoDB + Authentication + Command + Owner + Logs
-// نسخه هماهنگ با command-login.html و command.html
+// MongoDB + Authentication + Command + Owner + Tickets + Chat + Logs
+// Compatible with command-login.html + command.html
 // ============================================================
+
+"use strict";
 
 const express = require("express");
 const cors = require("cors");
@@ -16,8 +18,11 @@ const app = express();
 // CONFIG
 // ============================================================
 
-const PORT = process.env.PORT || 3000;
-const MONGO_URI = process.env.MONGODB_URI;
+const PORT = Number(process.env.PORT) || 3000;
+
+const MONGO_URI = String(
+    process.env.MONGODB_URI || ""
+).trim();
 
 if (!MONGO_URI) {
     console.error("❌ MONGODB_URI تنظیم نشده است.");
@@ -30,33 +35,104 @@ if (!MONGO_URI) {
 
 const COMMAND_USERNAME = "LSPD";
 const COMMAND_PASSWORD = "LSPD00078";
-const COMMAND_NAME = process.env.COMMAND_NAME || "Vanguard Command";
-const COMMAND_RANK = process.env.COMMAND_RANK || "Commander";
+
+const COMMAND_NAME =
+    process.env.COMMAND_NAME ||
+    "Vanguard Command";
+
+const COMMAND_RANK =
+    process.env.COMMAND_RANK ||
+    "Commander";
+
 
 const OWNER_USERNAME = "SEDJAVAD";
 const OWNER_PASSWORD = "SEDJAVAD00078";
-const OWNER_NAME = process.env.OWNER_NAME || "SEDJAVAD";
-const OWNER_RANK = process.env.OWNER_RANK || "LSPD High Command";
+
+const OWNER_NAME =
+    process.env.OWNER_NAME ||
+    "SEDJAVAD";
+
+const OWNER_RANK =
+    process.env.OWNER_RANK ||
+    "LSPD High Command";
 
 // ============================================================
 // TOKEN SECRET
 // ============================================================
+//
+// مهم:
+// حتماً در Render یک Environment Variable با نام TOKEN_SECRET
+// قرار بده تا Token بعد از Restart/Deploy معتبر بماند.
+//
+// مثال:
+// TOKEN_SECRET=VANGUARD_LSPD_2026_CHANGE_THIS_TO_A_LONG_RANDOM_VALUE
+//
+// اگر در Render تنظیم نشده باشد، Secret از MONGO_URI ساخته می‌شود
+// و تا زمانی که MONGO_URI ثابت باشد ثابت می‌ماند.
+// ============================================================
 
-const TOKEN_SECRET =
+const TOKEN_SECRET = String(
     process.env.TOKEN_SECRET ||
-    crypto.randomBytes(32).toString("hex");
+    crypto
+        .createHash("sha256")
+        .update(
+            MONGO_URI +
+            "|VANGUARD-LSPD-STABLE-AUTH-2026"
+        )
+        .digest("hex")
+).trim();
+
+if (TOKEN_SECRET.length < 16) {
+    console.error(
+        "❌ TOKEN_SECRET بسیار کوتاه است."
+    );
+
+    process.exit(1);
+}
+
+// ============================================================
+// DATABASE
+// ============================================================
+
+const client = new MongoClient(
+    MONGO_URI
+);
+
+let database = null;
+let tickets = null;
+let logs = null;
 
 // ============================================================
 // MIDDLEWARE
 // ============================================================
 
-app.set("trust proxy", 1);
+app.set(
+    "trust proxy",
+    1
+);
 
 app.use(
     cors({
         origin: true,
-        credentials: false
+        credentials: false,
+        methods: [
+            "GET",
+            "POST",
+            "PUT",
+            "DELETE",
+            "OPTIONS"
+        ],
+        allowedHeaders: [
+            "Content-Type",
+            "Authorization",
+            "X-Admin-Token"
+        ]
     })
+);
+
+app.options(
+    "*",
+    cors()
 );
 
 app.use(
@@ -76,24 +152,18 @@ app.use(
 // STATIC FILES
 // ============================================================
 
-app.use(express.static(__dirname));
+app.use(
+    express.static(__dirname)
+);
 
 // ============================================================
-// MONGODB
-// ============================================================
-
-const client = new MongoClient(MONGO_URI);
-
-let database = null;
-let tickets = null;
-let logs = null;
-
-// ============================================================
-// HELPERS
+// BASIC HELPERS
 // ============================================================
 
 function text(value) {
-    return String(value ?? "").trim();
+    return String(
+        value ?? ""
+    ).trim();
 }
 
 function normalizeUsername(value) {
@@ -105,97 +175,201 @@ function now() {
 }
 
 function safeObjectId(id) {
-    if (!id || !ObjectId.isValid(id)) {
+    if (
+        !id ||
+        !ObjectId.isValid(id)
+    ) {
         return null;
     }
 
     return new ObjectId(id);
 }
 
+// ============================================================
+// PUBLIC USER
+// ============================================================
+
 function publicUser(user) {
+
     return {
-        username: user.username,
-        name: user.name,
-        rank: user.rank,
-        role: user.role,
-        isOwner: user.role === "owner"
+        username:
+            user.username || "",
+
+        name:
+            user.name || "",
+
+        rank:
+            user.rank || "",
+
+        role:
+            user.role || "command",
+
+        isOwner:
+            user.role === "owner"
     };
+
 }
 
 // ============================================================
-// TOKEN SYSTEM
+// TOKEN CREATE
 // ============================================================
 
 function createToken(user) {
+
     const payload = {
-        username: user.username,
-        name: user.name,
-        rank: user.rank,
-        role: user.role,
-        isOwner: user.role === "owner",
-        issuedAt: Date.now()
+
+        username:
+            user.username,
+
+        name:
+            user.name,
+
+        rank:
+            user.rank,
+
+        role:
+            user.role,
+
+        isOwner:
+            user.role === "owner",
+
+        issuedAt:
+            Date.now()
+
     };
 
-    const encoded = Buffer
-        .from(JSON.stringify(payload))
-        .toString("base64url");
+    const encoded =
+        Buffer
+            .from(
+                JSON.stringify(payload)
+            )
+            .toString("base64url");
 
-    const signature = crypto
-        .createHmac("sha256", TOKEN_SECRET)
-        .update(encoded)
-        .digest("base64url");
+    const signature =
+        crypto
+            .createHmac(
+                "sha256",
+                TOKEN_SECRET
+            )
+            .update(encoded)
+            .digest("base64url");
 
-    return `${encoded}.${signature}`;
+    return (
+        encoded +
+        "." +
+        signature
+    );
+
 }
 
+// ============================================================
+// TOKEN VERIFY
+// ============================================================
+
 function verifyToken(token) {
+
     try {
-        token = text(token);
+
+        token =
+            text(token);
 
         if (!token) {
             return null;
         }
 
-        const parts = token.split(".");
+        const parts =
+            token.split(".");
 
-        if (parts.length !== 2) {
+        if (
+            parts.length !== 2
+        ) {
             return null;
         }
 
-        const [encoded, signature] = parts;
+        const encoded =
+            parts[0];
 
-        const expected = crypto
-            .createHmac("sha256", TOKEN_SECRET)
-            .update(encoded)
-            .digest("base64url");
+        const signature =
+            parts[1];
+
+        const expected =
+            crypto
+                .createHmac(
+                    "sha256",
+                    TOKEN_SECRET
+                )
+                .update(encoded)
+                .digest("base64url");
 
         if (
-            signature.length !== expected.length ||
+            signature.length !==
+            expected.length
+        ) {
+            return null;
+        }
+
+        if (
             !crypto.timingSafeEqual(
-                Buffer.from(signature),
-                Buffer.from(expected)
+                Buffer.from(
+                    signature
+                ),
+                Buffer.from(
+                    expected
+                )
             )
         ) {
             return null;
         }
 
-        const payload = JSON.parse(
-            Buffer
-                .from(encoded, "base64url")
-                .toString("utf8")
-        );
+        const payload =
+            JSON.parse(
+                Buffer
+                    .from(
+                        encoded,
+                        "base64url"
+                    )
+                    .toString("utf8")
+            );
 
         if (
-            !payload.issuedAt ||
-            Date.now() - Number(payload.issuedAt) >
-            24 * 60 * 60 * 1000
+            !payload ||
+            !payload.username
         ) {
             return null;
         }
 
         if (
-            !payload.username ||
-            !["command", "owner"].includes(payload.role)
+            ![
+                "command",
+                "owner"
+            ].includes(
+                payload.role
+            )
+        ) {
+            return null;
+        }
+
+        const issuedAt =
+            Number(
+                payload.issuedAt
+            );
+
+        if (
+            !Number.isFinite(
+                issuedAt
+            )
+        ) {
+            return null;
+        }
+
+        // Token اعتبار: 24 ساعت
+        const maxAge =
+            24 * 60 * 60 * 1000;
+
+        if (
+            Date.now() -
+            issuedAt >
+            maxAge
         ) {
             return null;
         }
@@ -203,95 +377,194 @@ function verifyToken(token) {
         return payload;
 
     } catch (error) {
-        console.error("Token Verify Error:", error.message);
+
+        console.error(
+            "❌ Token Verify Error:",
+            error.message
+        );
+
         return null;
     }
+
 }
 
+// ============================================================
+// GET TOKEN
+// ============================================================
+
 function getTokenFromRequest(req) {
-    const authorization = text(req.headers.authorization);
+
+    const authorization =
+        text(
+            req.headers.authorization
+        );
 
     if (
         authorization &&
-        authorization.toLowerCase().startsWith("bearer ")
+        authorization
+            .toLowerCase()
+            .startsWith("bearer ")
     ) {
-        return authorization.substring(7).trim();
+
+        return authorization
+            .substring(7)
+            .trim();
+
     }
 
-    const customToken = text(req.headers["x-admin-token"]);
+    const customToken =
+        text(
+            req.headers[
+                "x-admin-token"
+            ]
+        );
 
     if (customToken) {
         return customToken;
     }
 
     return "";
+
 }
 
 // ============================================================
 // AUTH MIDDLEWARE
 // ============================================================
 
-function requireAuth(req, res, next) {
-    const user = verifyToken(getTokenFromRequest(req));
+function requireAuth(
+    req,
+    res,
+    next
+) {
+
+    const token =
+        getTokenFromRequest(req);
+
+    const user =
+        verifyToken(token);
 
     if (!user) {
+
         return res.status(401).json({
+
             success: false,
-            message: "دسترسی غیرمجاز. لطفاً دوباره وارد شوید."
+
+            message:
+                "Token نامعتبر یا منقضی شده است. دوباره وارد شوید."
+
         });
+
     }
 
     req.user = user;
+
     next();
+
 }
 
-function requireCommand(req, res, next) {
-    const user = verifyToken(getTokenFromRequest(req));
+// ============================================================
+// COMMAND AUTH
+// ============================================================
+
+function requireCommand(
+    req,
+    res,
+    next
+) {
+
+    const token =
+        getTokenFromRequest(req);
+
+    const user =
+        verifyToken(token);
 
     if (!user) {
+
         return res.status(401).json({
+
             success: false,
-            message: "جلسه ورود معتبر نیست. دوباره وارد شوید."
+
+            message:
+                "احراز هویت نامعتبر است. لطفاً دوباره وارد شوید."
+
         });
+
     }
 
     if (
         user.role !== "command" &&
         user.role !== "owner"
     ) {
+
         return res.status(403).json({
+
             success: false,
-            message: "شما دسترسی فرماندهی ندارید."
+
+            message:
+                "شما دسترسی فرماندهی ندارید."
+
         });
+
     }
 
     req.user = user;
+
     next();
-}
 
-function requireOwner(req, res, next) {
-    const user = verifyToken(getTokenFromRequest(req));
-
-    if (!user) {
-        return res.status(401).json({
-            success: false,
-            message: "جلسه ورود معتبر نیست. دوباره وارد شوید."
-        });
-    }
-
-    if (user.role !== "owner") {
-        return res.status(403).json({
-            success: false,
-            message: "این بخش فقط برای مالک سیستم است."
-        });
-    }
-
-    req.user = user;
-    next();
 }
 
 // ============================================================
-// LOG SYSTEM
+// OWNER AUTH
+// ============================================================
+
+function requireOwner(
+    req,
+    res,
+    next
+) {
+
+    const token =
+        getTokenFromRequest(req);
+
+    const user =
+        verifyToken(token);
+
+    if (!user) {
+
+        return res.status(401).json({
+
+            success: false,
+
+            message:
+                "احراز هویت نامعتبر است."
+
+        });
+
+    }
+
+    if (
+        user.role !== "owner"
+    ) {
+
+        return res.status(403).json({
+
+            success: false,
+
+            message:
+                "این بخش فقط برای OWNER است."
+
+        });
+
+    }
+
+    req.user = user;
+
+    next();
+
+}
+
+// ============================================================
+// LOG
 // ============================================================
 
 async function createLog({
@@ -300,340 +573,706 @@ async function createLog({
     actor = null,
     details = {}
 }) {
+
     try {
+
         if (!logs) {
-            console.warn("⚠️ Logs collection آماده نیست.");
+
+            console.warn(
+                "⚠️ Logs collection آماده نیست."
+            );
+
             return;
         }
 
         const log = {
-            action: text(action),
-            ticketId: ticketId ? String(ticketId) : null,
+
+            action:
+                text(action),
+
+            ticketId:
+                ticketId
+                    ? String(ticketId)
+                    : null,
 
             actor: {
-                type: actor?.role || "system",
-                username: actor?.username || "System",
-                name: actor?.name || "System",
-                rank: actor?.rank || "System"
+
+                type:
+                    actor?.role ||
+                    "system",
+
+                username:
+                    actor?.username ||
+                    "System",
+
+                name:
+                    actor?.name ||
+                    "System",
+
+                rank:
+                    actor?.rank ||
+                    "System"
+
             },
 
-            details: details || {},
-            createdAt: now()
+            details:
+                details || {},
+
+            createdAt:
+                now()
+
         };
 
-        await logs.insertOne(log);
+        await logs.insertOne(
+            log
+        );
 
         console.log(
             "📝 LOG:",
             log.action,
             "|",
-            log.actor.username,
-            "|",
-            log.actor.name
+            log.actor.username
         );
 
     } catch (error) {
-        console.error("❌ Create Log Error:", error);
+
+        console.error(
+            "❌ Create Log Error:",
+            error
+        );
+
     }
+
 }
 
 // ============================================================
-// HTML ROUTES
+// ROOT / HTML
 // ============================================================
 
-app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "index.html"));
-});
+app.get(
+    "/",
+    (req, res) => {
 
-app.get("/index.html", (req, res) => {
-    res.sendFile(path.join(__dirname, "index.html"));
-});
+        res.sendFile(
+            path.join(
+                __dirname,
+                "index.html"
+            )
+        );
 
-app.get("/command", (req, res) => {
-    res.sendFile(path.join(__dirname, "command.html"));
-});
+    }
+);
 
-app.get("/command.html", (req, res) => {
-    res.sendFile(path.join(__dirname, "command.html"));
-});
+app.get(
+    "/index.html",
+    (req, res) => {
 
-app.get("/command-login", (req, res) => {
-    res.sendFile(path.join(__dirname, "command-login.html"));
-});
+        res.sendFile(
+            path.join(
+                __dirname,
+                "index.html"
+            )
+        );
 
-app.get("/command-login.html", (req, res) => {
-    res.sendFile(path.join(__dirname, "command-login.html"));
-});
+    }
+);
+
+app.get(
+    "/command",
+    (req, res) => {
+
+        res.sendFile(
+            path.join(
+                __dirname,
+                "command.html"
+            )
+        );
+
+    }
+);
+
+app.get(
+    "/command.html",
+    (req, res) => {
+
+        res.sendFile(
+            path.join(
+                __dirname,
+                "command.html"
+            )
+        );
+
+    }
+);
+
+app.get(
+    "/command-login",
+    (req, res) => {
+
+        res.sendFile(
+            path.join(
+                __dirname,
+                "command-login.html"
+            )
+        );
+
+    }
+);
+
+app.get(
+    "/command-login.html",
+    (req, res) => {
+
+        res.sendFile(
+            path.join(
+                __dirname,
+                "command-login.html"
+            )
+        );
+
+    }
+);
 
 // ============================================================
 // LOGIN
 // ============================================================
 
-app.post("/auth/login", async (req, res) => {
-    try {
-        const usernameRaw = text(req.body?.username);
-        const password = text(req.body?.password);
+app.post(
+    "/auth/login",
+    async (req, res) => {
 
-        const username = normalizeUsername(usernameRaw);
+        try {
 
-        if (!username || !password) {
-            return res.status(400).json({
-                success: false,
-                message: "نام کاربری و رمز عبور الزامی است."
-            });
-        }
+            const usernameRaw =
+                text(
+                    req.body?.username
+                );
 
-        let user = null;
+            const password =
+                text(
+                    req.body?.password
+                );
 
-        if (
-            username === normalizeUsername(OWNER_USERNAME) &&
-            password === OWNER_PASSWORD
-        ) {
-            user = {
-                username: OWNER_USERNAME,
-                name: OWNER_NAME,
-                rank: OWNER_RANK,
-                role: "owner"
-            };
-        }
+            const username =
+                normalizeUsername(
+                    usernameRaw
+                );
 
-        else if (
-            username === normalizeUsername(COMMAND_USERNAME) &&
-            password === COMMAND_PASSWORD
-        ) {
-            user = {
-                username: COMMAND_USERNAME,
-                name: COMMAND_NAME,
-                rank: COMMAND_RANK,
-                role: "command"
-            };
-        }
+            if (
+                !username ||
+                !password
+            ) {
 
-        else {
-            await createLog({
-                action: "LOGIN_FAILED",
-                actor: {
-                    role: "unknown",
-                    username: usernameRaw,
-                    name: usernameRaw,
-                    rank: "Unknown"
-                },
-                details: {
-                    ip: req.ip
-                }
-            });
+                return res.status(400).json({
 
-            return res.status(401).json({
-                success: false,
-                message: "نام کاربری یا رمز عبور اشتباه است."
-            });
-        }
+                    success: false,
 
-        const token = createToken(user);
+                    message:
+                        "نام کاربری و رمز عبور الزامی است."
 
-        await createLog({
-            action: "LOGIN_SUCCESS",
-            actor: user,
-            details: {
-                ip: req.ip
+                });
+
             }
-        });
 
-        return res.json({
-            success: true,
-            token,
-            user: publicUser(user)
-        });
+            let user = null;
 
-    } catch (error) {
-        console.error("LOGIN ERROR:", error);
+            // ====================================================
+            // OWNER
+            // ====================================================
 
-        return res.status(500).json({
-            success: false,
-            message: "خطا در ورود"
-        });
+            if (
+
+                username ===
+                    normalizeUsername(
+                        OWNER_USERNAME
+                    )
+
+                &&
+
+                password ===
+                    OWNER_PASSWORD
+
+            ) {
+
+                user = {
+
+                    username:
+                        OWNER_USERNAME,
+
+                    name:
+                        OWNER_NAME,
+
+                    rank:
+                        OWNER_RANK,
+
+                    role:
+                        "owner"
+
+                };
+
+            }
+
+            // ====================================================
+            // COMMAND
+            // ====================================================
+
+            else if (
+
+                username ===
+                    normalizeUsername(
+                        COMMAND_USERNAME
+                    )
+
+                &&
+
+                password ===
+                    COMMAND_PASSWORD
+
+            ) {
+
+                user = {
+
+                    username:
+                        COMMAND_USERNAME,
+
+                    name:
+                        COMMAND_NAME,
+
+                    rank:
+                        COMMAND_RANK,
+
+                    role:
+                        "command"
+
+                };
+
+            }
+
+            // ====================================================
+            // INVALID
+            // ====================================================
+
+            else {
+
+                await createLog({
+
+                    action:
+                        "LOGIN_FAILED",
+
+                    actor: {
+
+                        role:
+                            "unknown",
+
+                        username:
+                            usernameRaw,
+
+                        name:
+                            usernameRaw,
+
+                        rank:
+                            "Unknown"
+
+                    },
+
+                    details: {
+
+                        ip:
+                            req.ip
+
+                    }
+
+                });
+
+                return res.status(401).json({
+
+                    success: false,
+
+                    message:
+                        "نام کاربری یا رمز عبور اشتباه است."
+
+                });
+
+            }
+
+            // ====================================================
+            // TOKEN
+            // ====================================================
+
+            const token =
+                createToken(user);
+
+            await createLog({
+
+                action:
+                    "LOGIN_SUCCESS",
+
+                actor:
+                    user,
+
+                details: {
+
+                    ip:
+                        req.ip
+
+                }
+
+            });
+
+            return res.json({
+
+                success:
+                    true,
+
+                token,
+
+                user:
+                    publicUser(user)
+
+            });
+
+        } catch (error) {
+
+            console.error(
+                "❌ LOGIN ERROR:",
+                error
+            );
+
+            return res.status(500).json({
+
+                success: false,
+
+                message:
+                    "خطای داخلی هنگام ورود"
+
+            });
+
+        }
+
     }
-});
+);
 
 // ============================================================
 // AUTH ME
 // ============================================================
 
-app.get("/auth/me", requireAuth, async (req, res) => {
-    return res.json({
-        success: true,
-        user: publicUser(req.user)
-    });
-});// ============================================================
-// CREATE TICKET - PUBLIC
-// ============================================================
-
-app.post("/tickets", async (req, res) => {
-    try {
-        const body = req.body || {};
-
-        const requestType = text(
-            body.requestType ||
-            body.type ||
-            "membership"
-        );
-
-        let score = null;
-
-        if (
-            body.score !== undefined &&
-            body.score !== null &&
-            body.score !== ""
-        ) {
-            const numberScore = Number(body.score);
-
-            if (
-                Number.isFinite(numberScore) &&
-                numberScore >= 0 &&
-                numberScore <= 20
-            ) {
-                score = numberScore;
-            }
-        }
-
-        const passed =
-            body.passed === true ||
-            (
-                score !== null &&
-                score >= 12
-            );
-
-        const ticket = {
-            requestType,
-
-            ocName: text(body.ocName),
-
-            icName: text(
-                body.icName ||
-                body.name
-            ),
-
-            name: text(
-                body.icName ||
-                body.name
-            ),
-
-            discord: text(
-                body.discord ||
-                body.discordId
-            ),
-
-            discordId: text(
-                body.discordId ||
-                body.discord
-            ),
-
-            steamHex: text(body.steamHex),
-            cmx: text(body.cmx),
-            age: text(body.age),
-
-            experience: text(body.experience),
-            reason: text(body.reason),
-
-            currentDivision: text(body.currentDivision),
-            requestedDivision: text(body.requestedDivision),
-            reasonForRequest: text(body.reasonForRequest),
-
-            previousDivisionExperience:
-                text(body.previousDivisionExperience),
-
-            additionalInformation:
-                text(body.additionalInformation),
-
-            oocName: text(body.oocName),
-            rank: text(body.rank),
-            callSign: text(body.callSign),
-
-            resignationReason: text(
-                body.resignationReason ||
-                body.reason
-            ),
-
-            requestRank: text(body.requestRank),
-
-            currentRankTimeplay:
-                text(body.currentRankTimeplay),
-
-            note: text(body.note),
-
-            score,
-            passed,
-            passingScore: 12,
-
-            status: "Pending",
-
-            reply: "در انتظار پاسخ فرماندهی",
-
-            messages: [],
-
-            createdAt: now(),
-            updatedAt: now()
-        };
-
-        const result = await tickets.insertOne(ticket);
-
-        const ticketId =
-            result.insertedId.toString();
-
-        await createLog({
-            action: "TICKET_CREATED",
-            ticketId,
-
-            actor: {
-                role: "applicant",
-
-                username:
-                    ticket.discord ||
-                    "Applicant",
-
-                name:
-                    ticket.icName ||
-                    ticket.ocName ||
-                    "Applicant",
-
-                rank: "Applicant"
-            },
-
-            details: {
-                requestType,
-                score,
-                passed,
-
-                icName:
-                    ticket.icName,
-
-                ocName:
-                    ticket.ocName,
-
-                discord:
-                    ticket.discord
-            }
-        });
+app.get(
+    "/auth/me",
+    requireAuth,
+    async (req, res) => {
 
         return res.json({
-            success: true,
-            id: ticketId,
-            score,
-            passed
+
+            success:
+                true,
+
+            user:
+                publicUser(
+                    req.user
+                )
+
         });
 
-    } catch (error) {
-        console.error(
-            "POST /tickets Error:",
-            error
-        );
-
-        return res.status(500).json({
-            success: false,
-            message: "خطا در ثبت درخواست"
-        });
     }
-});
+);
+
+// ============================================================
+// CREATE TICKET
+// PUBLIC
+// ============================================================
+
+app.post(
+    "/tickets",
+    async (req, res) => {
+
+        try {
+
+            const body =
+                req.body || {};
+
+            const requestType =
+                text(
+                    body.requestType ||
+                    body.type ||
+                    "membership"
+                );
+
+            let score = null;
+
+            if (
+                body.score !==
+                    undefined &&
+                body.score !==
+                    null &&
+                body.score !== ""
+            ) {
+
+                const numberScore =
+                    Number(
+                        body.score
+                    );
+
+                if (
+
+                    Number.isFinite(
+                        numberScore
+                    )
+
+                    &&
+
+                    numberScore >= 0
+
+                    &&
+
+                    numberScore <= 20
+
+                ) {
+
+                    score =
+                        numberScore;
+
+                }
+
+            }
+
+            const passed =
+                body.passed === true ||
+                (
+                    score !== null &&
+                    score >= 12
+                );
+
+            const ticket = {
+
+                requestType,
+
+                ocName:
+                    text(
+                        body.ocName
+                    ),
+
+                icName:
+                    text(
+                        body.icName ||
+                        body.name
+                    ),
+
+                name:
+                    text(
+                        body.icName ||
+                        body.name
+                    ),
+
+                discord:
+                    text(
+                        body.discord ||
+                        body.discordId
+                    ),
+
+                discordId:
+                    text(
+                        body.discordId ||
+                        body.discord
+                    ),
+
+                steamHex:
+                    text(
+                        body.steamHex
+                    ),
+
+                cmx:
+                    text(
+                        body.cmx
+                    ),
+
+                age:
+                    text(
+                        body.age
+                    ),
+
+                experience:
+                    text(
+                        body.experience
+                    ),
+
+                reason:
+                    text(
+                        body.reason
+                    ),
+
+                currentDivision:
+                    text(
+                        body.currentDivision
+                    ),
+
+                requestedDivision:
+                    text(
+                        body.requestedDivision
+                    ),
+
+                reasonForRequest:
+                    text(
+                        body.reasonForRequest
+                    ),
+
+                previousDivisionExperience:
+                    text(
+                        body.previousDivisionExperience
+                    ),
+
+                additionalInformation:
+                    text(
+                        body.additionalInformation
+                    ),
+
+                oocName:
+                    text(
+                        body.oocName
+                    ),
+
+                rank:
+                    text(
+                        body.rank
+                    ),
+
+                callSign:
+                    text(
+                        body.callSign
+                    ),
+
+                resignationReason:
+                    text(
+                        body.resignationReason ||
+                        body.reason
+                    ),
+
+                requestRank:
+                    text(
+                        body.requestRank
+                    ),
+
+                currentRankTimeplay:
+                    text(
+                        body.currentRankTimeplay
+                    ),
+
+                note:
+                    text(
+                        body.note
+                    ),
+
+                score,
+
+                passed,
+
+                passingScore:
+                    12,
+
+                status:
+                    "Pending",
+
+                reply:
+                    "در انتظار پاسخ فرماندهی",
+
+                messages: [],
+
+                createdAt:
+                    now(),
+
+                updatedAt:
+                    now()
+
+            };
+
+            const result =
+                await tickets.insertOne(
+                    ticket
+                );
+
+            const ticketId =
+                result.insertedId.toString();
+
+            await createLog({
+
+                action:
+                    "TICKET_CREATED",
+
+                ticketId,
+
+                actor: {
+
+                    role:
+                        "applicant",
+
+                    username:
+                        ticket.discord ||
+                        "Applicant",
+
+                    name:
+                        ticket.icName ||
+                        ticket.ocName ||
+                        "Applicant",
+
+                    rank:
+                        "Applicant"
+
+                },
+
+                details: {
+
+                    requestType,
+
+                    score,
+
+                    passed,
+
+                    icName:
+                        ticket.icName,
+
+                    ocName:
+                        ticket.ocName,
+
+                    discord:
+                        ticket.discord
+
+                }
+
+            });
+
+            return res.json({
+
+                success:
+                    true,
+
+                id:
+                    ticketId,
+
+                score,
+
+                passed
+
+            });
+
+        } catch (error) {
+
+            console.error(
+                "❌ POST /tickets:",
+                error
+            );
+
+            return res.status(500).json({
+
+                success: false,
+
+                message:
+                    "خطا در ثبت درخواست"
+
+            });
+
+        }
+
+    }
+);
 
 // ============================================================
 // GET ALL TICKETS
@@ -647,6 +1286,19 @@ app.get(
 
         try {
 
+            if (!tickets) {
+
+                return res.status(503).json({
+
+                    success: false,
+
+                    message:
+                        "Database هنوز آماده نیست."
+
+                });
+
+            }
+
             const data =
                 await tickets
                     .find({})
@@ -655,21 +1307,28 @@ app.get(
                     })
                     .toArray();
 
-            return res.json(data);
+            return res.json(
+                data
+            );
 
         } catch (error) {
 
             console.error(
-                "GET /tickets Error:",
+                "❌ GET /tickets:",
                 error
             );
 
             return res.status(500).json({
+
                 success: false,
+
                 message:
                     "خطا در دریافت درخواست‌ها"
+
             });
+
         }
+
     }
 );
 
@@ -692,41 +1351,59 @@ app.get(
             if (!id) {
 
                 return res.status(400).json({
+
                     success: false,
+
                     message:
                         "کد پیگیری نامعتبر است."
+
                 });
+
             }
 
             const ticket =
                 await tickets.findOne({
-                    _id: id
+
+                    _id:
+                        id
+
                 });
 
             if (!ticket) {
 
                 return res.status(404).json({
+
                     success: false,
+
                     message:
                         "درخواست پیدا نشد."
+
                 });
+
             }
 
-            return res.json(ticket);
+            return res.json(
+                ticket
+            );
 
         } catch (error) {
 
             console.error(
-                "GET SINGLE TICKET Error:",
+                "❌ GET SINGLE TICKET:",
                 error
             );
 
             return res.status(500).json({
+
                 success: false,
+
                 message:
                     "خطا در دریافت درخواست"
+
             });
+
         }
+
     }
 );
 
@@ -750,24 +1427,35 @@ app.put(
             if (!id) {
 
                 return res.status(400).json({
+
                     success: false,
+
                     message:
                         "شناسه تیکت نامعتبر است"
+
                 });
+
             }
 
             const ticket =
                 await tickets.findOne({
-                    _id: id
+
+                    _id:
+                        id
+
                 });
 
             if (!ticket) {
 
                 return res.status(404).json({
+
                     success: false,
+
                     message:
                         "درخواست پیدا نشد"
+
                 });
+
             }
 
             const oldStatus =
@@ -779,59 +1467,63 @@ app.put(
                 "";
 
             const status =
-                text(req.body?.status) ||
+                text(
+                    req.body?.status
+                ) ||
                 "Pending";
 
             const reply =
-                text(req.body?.reply);
+                text(
+                    req.body?.reply
+                );
 
             if (
                 ![
                     "Pending",
                     "Accepted",
                     "Rejected"
-                ].includes(status)
+                ].includes(
+                    status
+                )
             ) {
 
                 return res.status(400).json({
+
                     success: false,
+
                     message:
                         "وضعیت نامعتبر است"
+
                 });
+
             }
 
-            const result =
-                await tickets.updateOne(
+            await tickets.updateOne(
 
-                    {
-                        _id: id
-                    },
+                {
+                    _id:
+                        id
+                },
 
-                    {
-                        $set: {
+                {
+                    $set: {
 
-                            status,
+                        status,
 
-                            reply,
+                        reply,
 
-                            updatedAt:
-                                now()
+                        updatedAt:
+                            now()
 
-                        }
                     }
-                );
 
-            if (!result.matchedCount) {
+                }
 
-                return res.status(404).json({
-                    success: false,
-                    message:
-                        "درخواست پیدا نشد"
-                });
-            }
+            );
 
             if (
-                oldStatus !== status
+                oldStatus !==
+                status
             ) {
 
                 await createLog({
@@ -847,7 +1539,7 @@ app.put(
 
                     details: {
 
-                        ticketApplicant:
+                        applicant:
                             ticket.icName ||
                             ticket.name ||
                             ticket.ocName ||
@@ -859,11 +1551,14 @@ app.put(
                             status
 
                     }
+
                 });
+
             }
 
             if (
-                oldReply !== reply
+                oldReply !==
+                reply
             ) {
 
                 await createLog({
@@ -879,7 +1574,7 @@ app.put(
 
                     details: {
 
-                        ticketApplicant:
+                        applicant:
                             ticket.icName ||
                             ticket.name ||
                             ticket.ocName ||
@@ -888,26 +1583,36 @@ app.put(
                         reply
 
                     }
+
                 });
+
             }
 
             return res.json({
-                success: true
+
+                success:
+                    true
+
             });
 
         } catch (error) {
 
             console.error(
-                "PUT /tickets Error:",
+                "❌ PUT /tickets:",
                 error
             );
 
             return res.status(500).json({
+
                 success: false,
+
                 message:
                     "خطا در بروزرسانی تیکت"
+
             });
+
         }
+
     }
 );
 
@@ -931,38 +1636,58 @@ app.delete(
             if (!id) {
 
                 return res.status(400).json({
+
                     success: false,
+
                     message:
                         "شناسه تیکت نامعتبر است"
+
                 });
+
             }
 
             const ticket =
                 await tickets.findOne({
-                    _id: id
+
+                    _id:
+                        id
+
                 });
 
             if (!ticket) {
 
                 return res.status(404).json({
+
                     success: false,
+
                     message:
                         "درخواست پیدا نشد"
+
                 });
+
             }
 
             const result =
                 await tickets.deleteOne({
-                    _id: id
+
+                    _id:
+                        id
+
                 });
 
-            if (!result.deletedCount) {
+            if (
+                !result.deletedCount
+            ) {
 
                 return res.status(404).json({
+
                     success: false,
+
                     message:
                         "تیکت حذف نشد"
+
                 });
+
             }
 
             await createLog({
@@ -994,11 +1719,13 @@ app.delete(
                         ""
 
                 }
+
             });
 
             return res.json({
 
-                success: true,
+                success:
+                    true,
 
                 message:
                     "تیکت با موفقیت حذف شد."
@@ -1008,7 +1735,7 @@ app.delete(
         } catch (error) {
 
             console.error(
-                "DELETE /tickets Error:",
+                "❌ DELETE /tickets:",
                 error
             );
 
@@ -1020,11 +1747,15 @@ app.delete(
                     "خطا در حذف تیکت"
 
             });
+
         }
+
     }
-);// ============================================================
+);
+
+// ============================================================
 // GET CHAT MESSAGES
-// PUBLIC READ
+// PUBLIC
 // ============================================================
 
 app.get(
@@ -1048,13 +1779,15 @@ app.get(
                         "کد پیگیری نامعتبر است"
 
                 });
+
             }
 
             const ticket =
                 await tickets.findOne(
 
                     {
-                        _id: id
+                        _id:
+                            id
                     },
 
                     {
@@ -1062,6 +1795,7 @@ app.get(
                             messages: 1
                         }
                     }
+
                 );
 
             if (!ticket) {
@@ -1074,16 +1808,24 @@ app.get(
                         "درخواست پیدا نشد"
 
                 });
+
             }
 
+            const messages =
+                Array.isArray(
+                    ticket.messages
+                )
+                    ? ticket.messages
+                    : [];
+
             return res.json(
-                ticket.messages || []
+                messages
             );
 
         } catch (error) {
 
             console.error(
-                "GET MESSAGES Error:",
+                "❌ GET MESSAGES:",
                 error
             );
 
@@ -1095,15 +1837,20 @@ app.get(
                     "خطا در دریافت چت"
 
             });
+
         }
+
     }
 );
 
 // ============================================================
 // SEND CHAT MESSAGE
 //
-// applicant = public
-// command/owner = requires login
+// اگر sender = command باشد:
+// Token الزامی است.
+//
+// اگر sender = applicant باشد:
+// Public است.
 // ============================================================
 
 app.post(
@@ -1127,6 +1874,7 @@ app.post(
                         "کد پیگیری نامعتبر است"
 
                 });
+
             }
 
             const message =
@@ -1144,9 +1892,13 @@ app.post(
                         "پیام خالی است"
 
                 });
+
             }
 
-            if (message.length > 3000) {
+            if (
+                message.length >
+                3000
+            ) {
 
                 return res.status(400).json({
 
@@ -1156,6 +1908,7 @@ app.post(
                         "پیام بیش از حد طولانی است"
 
                 });
+
             }
 
             const requestedSender =
@@ -1163,61 +1916,68 @@ app.post(
                     req.body?.sender
                 ).toLowerCase();
 
+            // ====================================================
+            // تشخیص خودکار فرمانده از روی Token
+            // ====================================================
+
+            const token =
+                getTokenFromRequest(
+                    req
+                );
+
+            const authenticatedUser =
+                verifyToken(
+                    token
+                );
+
             let sender =
                 "applicant";
 
             let commandUser =
                 null;
 
+            // اگر Token معتبر فرماندهی وجود داشته باشد
+            // پیام به عنوان command ثبت می‌شود.
             if (
+                authenticatedUser &&
+                (
+                    authenticatedUser.role ===
+                        "command" ||
+                    authenticatedUser.role ===
+                        "owner"
+                )
+            ) {
+
+                sender =
+                    "command";
+
+                commandUser =
+                    authenticatedUser;
+
+            }
+
+            // اگر صراحتاً command خواسته شده ولی Token ندارد
+            else if (
                 requestedSender ===
                 "command"
             ) {
 
-                commandUser =
-                    verifyToken(
-                        getTokenFromRequest(
-                            req
-                        )
-                    );
+                return res.status(401).json({
 
-                if (!commandUser) {
+                    success: false,
 
-                    return res.status(401).json({
+                    message:
+                        "برای ارسال پیام فرماندهی ابتدا وارد شوید."
 
-                        success: false,
+                });
 
-                        message:
-                            "برای ارسال پیام فرماندهی ابتدا وارد شوید."
-
-                    });
-                }
-
-                if (
-                    commandUser.role !==
-                        "command" &&
-                    commandUser.role !==
-                        "owner"
-                ) {
-
-                    return res.status(403).json({
-
-                        success: false,
-
-                        message:
-                            "دسترسی فرماندهی ندارید."
-
-                    });
-                }
-
-                sender =
-                    "command";
             }
 
             const ticket =
                 await tickets.findOne({
 
-                    _id: id
+                    _id:
+                        id
 
                 });
 
@@ -1231,7 +1991,12 @@ app.post(
                         "درخواست پیدا نشد"
 
                 });
+
             }
+
+            // ====================================================
+            // پیام
+            // ====================================================
 
             const chatMessage = {
 
@@ -1239,6 +2004,32 @@ app.post(
 
                 sender,
 
+                // نام‌های جدید
+                senderName:
+                    sender === "command"
+                        ? commandUser.name
+                        : (
+                            ticket.icName ||
+                            ticket.name ||
+                            ticket.ocName ||
+                            "متقاضی"
+                        ),
+
+                senderRank:
+                    sender === "command"
+                        ? commandUser.rank
+                        : "Applicant",
+
+                senderUsername:
+                    sender === "command"
+                        ? commandUser.username
+                        : (
+                            ticket.discord ||
+                            ticket.discordId ||
+                            "Applicant"
+                        ),
+
+                // نام‌های قدیمی برای compatibility
                 commanderName:
                     sender === "command"
                         ? commandUser.name
@@ -1262,7 +2053,8 @@ app.post(
             await tickets.updateOne(
 
                 {
-                    _id: id
+                    _id:
+                        id
                 },
 
                 {
@@ -1280,26 +2072,23 @@ app.post(
                             now()
 
                     }
+
                 }
+
             );
 
             await createLog({
 
                 action:
-                    sender ===
-                    "command"
-
+                    sender === "command"
                         ? "COMMAND_MESSAGE_SENT"
-
                         : "APPLICANT_MESSAGE_SENT",
 
                 ticketId:
                     id.toString(),
 
                 actor:
-
-                    sender ===
-                    "command"
+                    sender === "command"
 
                         ? commandUser
 
@@ -1344,7 +2133,7 @@ app.post(
         } catch (error) {
 
             console.error(
-                "POST MESSAGE Error:",
+                "❌ POST MESSAGE:",
                 error
             );
 
@@ -1356,7 +2145,9 @@ app.post(
                     "خطا در ارسال پیام"
 
             });
+
         }
+
     }
 );
 
@@ -1410,7 +2201,7 @@ app.get(
         } catch (error) {
 
             console.error(
-                "GET /logs Error:",
+                "❌ GET /logs:",
                 error
             );
 
@@ -1422,7 +2213,9 @@ app.get(
                     "خطا در دریافت لاگ‌ها"
 
             });
+
         }
+
     }
 );
 
@@ -1431,11 +2224,8 @@ app.get(
 // ============================================================
 
 app.get(
-
     "/logs/ticket/:id",
-
     requireOwner,
-
     async (req, res) => {
 
         try {
@@ -1455,19 +2245,17 @@ app.get(
                         "شناسه تیکت نامعتبر است"
 
                 });
+
             }
 
             const data =
                 await logs
-
                     .find({
                         ticketId
                     })
-
                     .sort({
                         createdAt: 1
                     })
-
                     .toArray();
 
             return res.json({
@@ -1483,11 +2271,8 @@ app.get(
         } catch (error) {
 
             console.error(
-
-                "GET TICKET LOGS Error:",
-
+                "❌ GET TICKET LOGS:",
                 error
-
             );
 
             return res.status(500).json({
@@ -1498,7 +2283,9 @@ app.get(
                     "خطا در دریافت لاگ تیکت"
 
             });
+
         }
+
     }
 );
 
@@ -1516,6 +2303,7 @@ app.delete(
             const result =
                 await logs.deleteMany({});
 
+            // این Log را بعد از حذف می‌سازیم
             await createLog({
 
                 action:
@@ -1530,6 +2318,7 @@ app.delete(
                         result.deletedCount
 
                 }
+
             });
 
             return res.json({
@@ -1545,7 +2334,7 @@ app.delete(
         } catch (error) {
 
             console.error(
-                "DELETE /logs Error:",
+                "❌ DELETE /logs:",
                 error
             );
 
@@ -1557,7 +2346,9 @@ app.delete(
                     "خطا در حذف لاگ‌ها"
 
             });
+
         }
+
     }
 );
 
@@ -1589,13 +2380,17 @@ app.get(
             owner:
                 true,
 
+            tickets:
+                !!tickets,
+
             logs:
-                true,
+                !!logs,
 
             time:
                 now()
 
         });
+
     }
 );
 
@@ -1610,11 +2405,15 @@ app.use(
 
             req.path.startsWith(
                 "/auth/"
-            ) ||
+            )
+
+            ||
 
             req.path.startsWith(
                 "/tickets"
-            ) ||
+            )
+
+            ||
 
             req.path.startsWith(
                 "/logs"
@@ -1624,15 +2423,18 @@ app.use(
 
             return res.status(404).json({
 
-                success: false,
+                success:
+                    false,
 
                 message:
                     "مسیر API پیدا نشد."
 
             });
+
         }
 
         next();
+
     }
 );
 
@@ -1641,10 +2443,15 @@ app.use(
 // ============================================================
 
 app.use(
-    (error, req, res, next) => {
+    (
+        error,
+        req,
+        res,
+        next
+    ) => {
 
         console.error(
-            "GLOBAL ERROR:",
+            "❌ GLOBAL ERROR:",
             error
         );
 
@@ -1656,6 +2463,7 @@ app.use(
                 "خطای داخلی سرور"
 
         });
+
     }
 );
 
@@ -1667,10 +2475,14 @@ async function startServer() {
 
     try {
 
+        console.log(
+            "⏳ Connecting to MongoDB..."
+        );
+
         await client.connect();
 
         console.log(
-            "MongoDB Connected ✅"
+            "✅ MongoDB Connected"
         );
 
         database =
@@ -1685,6 +2497,10 @@ async function startServer() {
             database.collection(
                 "logs"
             );
+
+        // ========================================================
+        // INDEXES
+        // ========================================================
 
         try {
 
@@ -1723,20 +2539,36 @@ async function startServer() {
 
             });
 
+            await tickets.createIndex({
+
+                requestType:
+                    1
+
+            });
+
+            await tickets.createIndex({
+
+                status:
+                    1
+
+            });
+
             console.log(
-                "MongoDB Indexes Ready ✅"
+                "✅ MongoDB Indexes Ready"
             );
 
         } catch (indexError) {
 
             console.warn(
-
                 "⚠️ Index warning:",
-
                 indexError.message
-
             );
+
         }
+
+        // ========================================================
+        // SERVER
+        // ========================================================
 
         app.listen(
             PORT,
@@ -1763,19 +2595,27 @@ async function startServer() {
                 );
 
                 console.log(
-                    "👮 Command: LSPD / LSPD00078"
+                    "👮 Command: LSPD"
                 );
 
                 console.log(
-                    "👑 Owner: SEDJAVAD / SEDJAVAD00078"
+                    "👑 Owner: SEDJAVAD"
                 );
 
                 console.log(
-                    "🗑️ Owner Delete: Enabled"
+                    "🎫 Tickets: Enabled"
                 );
 
                 console.log(
-                    "📋 Owner Logs: Enabled"
+                    "💬 Chat: Enabled"
+                );
+
+                console.log(
+                    "📋 Logs: Enabled"
+                );
+
+                console.log(
+                    "🔑 Stable Token Secret: Enabled"
                 );
 
                 console.log(
@@ -1788,22 +2628,23 @@ async function startServer() {
     } catch (error) {
 
         console.error(
-
             "❌ MongoDB Connection Error:",
-
             error
-
         );
 
         process.exit(1);
+
     }
+
 }
 
 // ============================================================
 // GRACEFUL SHUTDOWN
 // ============================================================
 
-async function shutdown(signal) {
+async function shutdown(
+    signal
+) {
 
     console.log(
         `🛑 ${signal} received. Closing server...`
@@ -1815,23 +2656,30 @@ async function shutdown(signal) {
 
     } catch (error) {
 
-        console.error(error);
+        console.error(
+            error
+        );
 
     }
 
     process.exit(0);
+
 }
 
 process.on(
     "SIGINT",
     () =>
-        shutdown("SIGINT")
+        shutdown(
+            "SIGINT"
+        )
 );
 
 process.on(
     "SIGTERM",
     () =>
-        shutdown("SIGTERM")
+        shutdown(
+            "SIGTERM"
+        )
 );
 
 // ============================================================
