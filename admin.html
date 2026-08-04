@@ -2,263 +2,596 @@
 <html lang="fa" dir="rtl">
 
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Vanguard LSPD | Command Center</title>
 
-<link
-    rel="stylesheet"
-    href="style.css"
->
+<link rel="stylesheet" href="style.css">
 
 <style>
 
-/* ==========================================
-   CHAT
-========================================== */
+/* =====================================================
+   ADMIN PAGE
+===================================================== */
 
-.command-chat-box {
+.command-page {
+    min-height: 100vh;
+}
 
-    margin-top: 22px;
+.dashboard {
+    width: 1150px;
+    max-width: 96%;
+    margin: 30px auto;
+}
 
-    padding: 18px;
+/* =====================================================
+   HEADER
+===================================================== */
 
-    border-top:
-        1px solid
-        rgba(255,255,255,.12);
+.admin-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.admin-title {
+    text-align: right;
+}
+
+.admin-title h1 {
+    margin: 0 0 7px;
+    color: #4da6ff;
+    font-size: 30px;
+}
+
+.admin-title p {
+    margin: 0;
+    color: #aaa;
+    font-size: 14px;
+}
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+.admin-login {
+    width: 460px;
+    max-width: 95%;
+    margin: 80px auto;
+    padding: 40px 35px;
 
     background:
-        rgba(0,0,0,.12);
-
-    border-radius: 14px;
-
-}
-
-
-.command-chat-box h3 {
-
-    margin-top: 0;
-
-}
-
-
-.chat-messages {
-
-    max-height: 350px;
-
-    overflow-y: auto;
-
-    padding: 10px;
-
-    margin: 12px 0;
-
-    border-radius: 12px;
-
-    background:
-        rgba(0,0,0,.18);
-
-}
-
-
-.chat-empty {
-
-    text-align: center;
-
-    color: #888;
-
-    padding: 20px;
-
-}
-
-
-.chat-message {
-
-    padding: 12px;
-
-    margin: 10px 0;
-
-    border-radius: 12px;
+        linear-gradient(
+            145deg,
+            rgba(10,20,35,.92),
+            rgba(0,0,0,.78)
+        );
 
     border:
-        1px solid
-        rgba(255,255,255,.08);
+        1px solid rgba(77,166,255,.25);
 
+    border-radius: 24px;
+
+    box-shadow:
+        0 20px 70px rgba(0,0,0,.55),
+        0 0 35px rgba(0,110,255,.15);
+
+    backdrop-filter: blur(20px);
+
+    text-align: center;
 }
 
+.admin-login-logo {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    margin-bottom: 20px;
 
-.chat-message.command {
-
-    background:
-        rgba(0,120,255,.14);
-
-    border-color:
-        rgba(0,150,255,.22);
-
+    filter:
+        drop-shadow(0 0 20px #168cff);
 }
 
+.admin-login h1 {
+    color: #fff;
+    margin-bottom: 8px;
+}
 
-.chat-message.applicant {
+.admin-login p {
+    color: #aaa;
+    margin-bottom: 25px;
+}
+
+.login-field {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.login-field input {
+    width: 100%;
+    padding: 15px 16px;
+
+    background: rgba(255,255,255,.07);
+    color: white;
+
+    border:
+        1px solid rgba(255,255,255,.15);
+
+    border-radius: 12px;
+
+    outline: none;
+
+    font-size: 15px;
+}
+
+.login-field input:focus {
+    border-color: #168cff;
+
+    box-shadow:
+        0 0 15px rgba(22,140,255,.2);
+}
+
+.login-error {
+    display: none;
+
+    margin-top: 15px;
+    padding: 12px;
+
+    color: #ff7777;
+
+    background: rgba(255,0,0,.08);
+
+    border:
+        1px solid rgba(255,80,80,.2);
+
+    border-radius: 10px;
+}
+
+/* =====================================================
+   STATISTICS
+===================================================== */
+
+.stats {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 15px;
+
+    margin-bottom: 25px;
+}
+
+.stat-card {
+    padding: 22px;
 
     background:
         rgba(255,255,255,.06);
 
+    border:
+        1px solid rgba(255,255,255,.1);
+
+    border-radius: 18px;
+
+    text-align: center;
+
+    transition: .25s;
 }
 
+.stat-card:hover {
+    transform: translateY(-3px);
 
-.chat-message-header {
+    background:
+        rgba(255,255,255,.09);
+}
 
+.stat-card h2 {
+    margin: 0 0 8px;
+
+    font-size: 30px;
+}
+
+.stat-card p {
+    margin: 0;
+
+    color: #aaa;
+}
+
+.stat-total h2 {
+    color: #4da6ff;
+}
+
+.stat-pending h2 {
+    color: #ffaa00;
+}
+
+.stat-accepted h2 {
+    color: #00ff88;
+}
+
+.stat-rejected h2 {
+    color: #ff4444;
+}
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+.search-box {
+    width: 100%;
+
+    padding: 16px 18px;
+
+    margin-bottom: 20px;
+
+    background:
+        rgba(255,255,255,.06);
+
+    color: white;
+
+    border:
+        1px solid rgba(255,255,255,.13);
+
+    border-radius: 13px;
+
+    outline: none;
+
+    font-size: 15px;
+}
+
+.search-box:focus {
+    border-color: #168cff;
+
+    box-shadow:
+        0 0 15px rgba(22,140,255,.15);
+}
+
+/* =====================================================
+   TABS
+===================================================== */
+
+.request-tabs {
+    display: flex;
+    gap: 9px;
+
+    flex-wrap: wrap;
+
+    margin-bottom: 20px;
+}
+
+.request-tabs .btn {
+    padding: 11px 17px;
+}
+
+/* =====================================================
+   TICKET
+===================================================== */
+
+.ticket-card {
+    margin-top: 18px;
+
+    padding: 25px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.075),
+            rgba(255,255,255,.035)
+        );
+
+    border:
+        1px solid rgba(255,255,255,.12);
+
+    border-radius: 19px;
+
+    box-shadow:
+        0 10px 35px rgba(0,0,0,.18);
+}
+
+.ticket-header {
     display: flex;
 
     justify-content: space-between;
 
-    gap: 10px;
+    align-items: flex-start;
 
+    gap: 15px;
+
+    margin-bottom: 20px;
+}
+
+.ticket-header h2 {
     margin-bottom: 7px;
 
+    color: #fff;
 }
 
-
-.chat-message-time {
-
+.ticket-header small {
     color: #888;
-
-    font-size: 12px;
-
 }
 
-
-.chat-message-text {
-
-    white-space: pre-wrap;
-
-    word-break: break-word;
+.ticket-card p {
+    color: #ddd;
 
     line-height: 1.8;
 
+    margin: 8px 0;
 }
 
+.ticket-card hr {
+    border: 0;
 
-.chat-send-row {
+    border-top:
+        1px solid rgba(255,255,255,.1);
 
+    margin: 22px 0;
+}
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+.approved-text {
+    color: #00ff88;
+    font-weight: bold;
+}
+
+.rejected-text {
+    color: #ff4444;
+    font-weight: bold;
+}
+
+.pending-text {
+    color: #ffaa00;
+    font-weight: bold;
+}
+
+/* =====================================================
+   INPUTS
+===================================================== */
+
+.ticket-card textarea,
+.ticket-card select {
+
+    width: 100%;
+
+    margin-top: 8px;
+    margin-bottom: 15px;
+
+    padding: 14px;
+
+    background:
+        rgba(0,0,0,.35);
+
+    color: white;
+
+    border:
+        1px solid rgba(255,255,255,.12);
+
+    border-radius: 11px;
+
+    outline: none;
+
+    font-family: inherit;
+}
+
+.ticket-card textarea {
+    min-height: 120px;
+
+    resize: vertical;
+}
+
+.ticket-card textarea:focus,
+.ticket-card select:focus {
+    border-color: #168cff;
+}
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+
+.ticket-buttons {
     display: flex;
 
     gap: 10px;
 
-    align-items: stretch;
-
+    margin-top: 10px;
 }
 
-
-.chat-input {
-
+.ticket-buttons .btn {
     flex: 1;
+}
 
-    min-height: 48px;
+.delete-btn {
+    background:
+        rgba(255,50,50,.12) !important;
+
+    border-color:
+        rgba(255,70,70,.25) !important;
+
+    color: #ff7777 !important;
+}
+
+.delete-btn:hover {
+    background:
+        rgba(255,50,50,.25) !important;
+}
+
+/* =====================================================
+   CHAT
+===================================================== */
+
+.command-chat-box {
+    margin-top: 25px;
+
+    padding-top: 20px;
+
+    border-top:
+        1px solid rgba(255,255,255,.1);
+}
+
+.command-chat-box h3 {
+    margin-bottom: 15px;
+}
+
+.chat-messages {
+    max-height: 380px;
+
+    overflow-y: auto;
+
+    padding: 12px;
+
+    background:
+        rgba(0,0,0,.3);
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    border-radius: 13px;
+
+    margin-bottom: 12px;
+}
+
+.chat-message {
+    padding: 12px;
+
+    margin-bottom: 10px;
+
+    border-radius: 11px;
+
+    background:
+        rgba(255,255,255,.05);
+}
+
+.chat-message.command {
+    border-right:
+        3px solid #168cff;
+}
+
+.chat-message.applicant {
+    border-right:
+        3px solid #00d97a;
+}
+
+.chat-message-name {
+    font-weight: bold;
+
+    margin-bottom: 5px;
+}
+
+.chat-message-text {
+    white-space: pre-wrap;
+
+    line-height: 1.7;
+
+    color: #ddd;
+}
+
+.chat-message-time {
+    display: block;
+
+    margin-top: 7px;
+
+    color: #777;
+
+    font-size: 11px;
+}
+
+.admin-chat-input {
+    width: 100%;
+
+    min-height: 90px;
+
+    padding: 13px;
+
+    background:
+        rgba(0,0,0,.3);
+
+    color: white;
+
+    border:
+        1px solid rgba(255,255,255,.12);
+
+    border-radius: 11px;
+
+    outline: none;
 
     resize: vertical;
 
+    font-family: inherit;
 }
 
-
-.chat-send-button {
-
-    min-width: 110px;
-
+.admin-chat-input:focus {
+    border-color: #168cff;
 }
 
+.chat-send-btn {
+    width: 100%;
 
-.chat-loading {
-
-    text-align: center;
-
-    color: #aaa;
-
-    padding: 15px;
-
+    margin-top: 8px;
 }
 
-
-/* ==========================================
-   STATUS
-========================================== */
-
-.approved-text {
-
-    color: #35e889;
-
-    font-weight: bold;
-
-}
-
-
-.rejected-text {
-
-    color: #ff5555;
-
-    font-weight: bold;
-
-}
-
-
-.pending-text {
-
-    color: #ffc400;
-
-    font-weight: bold;
-
-}
-
-
-/* ==========================================
-   SEARCH / TABS
-========================================== */
-
-.request-tabs {
-
-    display: flex;
-
-    flex-wrap: wrap;
-
-    gap: 10px;
-
-    margin: 25px 0;
-
-}
-
-
-/* ==========================================
+/* =====================================================
    EMPTY
-========================================== */
+===================================================== */
 
 .empty {
-
     text-align: center;
+
+    padding: 45px;
+
+    color: #aaa;
+}
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media(max-width:850px) {
+
+    .stats {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
 
 }
 
+@media(max-width:600px) {
 
-/* ==========================================
-   MOBILE
-========================================== */
-
-@media(max-width:700px) {
-
-    .chat-send-row {
-
-        flex-direction: column;
-
+    .dashboard {
+        padding: 15px;
     }
 
-    .chat-send-button {
+    .admin-header {
+        flex-direction: column;
 
-        width: 100%;
+        align-items: stretch;
 
+        text-align: center;
+    }
+
+    .admin-title {
+        text-align: center;
+    }
+
+    .stats {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .ticket-header {
+        flex-direction: column;
+    }
+
+    .ticket-buttons {
+        flex-direction: column;
+    }
+
+    .admin-login {
+        margin-top: 35px;
+
+        padding: 30px 20px;
     }
 
 }
@@ -270,16 +603,10 @@
 
 <body class="command-page">
 
-
 <div class="overlay"></div>
 
 
-<!-- ==========================================
-     NAVBAR
-========================================== -->
-
 <header class="navbar">
-
 
     <img
         src="badge.png"
@@ -287,12 +614,9 @@
         alt="LSPD Badge"
     >
 
-
     <div class="nav-title">
 
-        <h2>
-            Vanguard LSPD
-        </h2>
+        <h2>Vanguard LSPD</h2>
 
         <span>
             Command Center
@@ -300,46 +624,133 @@
 
     </div>
 
-
     <button
         class="login-btn"
+        id="logoutButton"
         onclick="logoutAdmin()"
     >
         خروج
     </button>
 
-
 </header>
 
-
-<!-- ==========================================
-     MAIN
-========================================== -->
 
 <main class="hero">
 
 
-<div class="dashboard">
+<!-- =====================================================
+     LOGIN
+===================================================== -->
 
+<section
+    id="loginPanel"
+    class="admin-login"
+>
+
+    <img
+        src="badge.png"
+        class="admin-login-logo"
+        alt="LSPD"
+    >
 
     <h1>
-        🚔 پنل فرماندهی LSPD
+        🔐 ورود فرماندهی
     </h1>
 
-
-    <p class="dashboard-sub">
-        مدیریت درخواست‌ها و ارتباط با متقاضیان
+    <p>
+        Vanguard LSPD Command Center
     </p>
 
 
-    <!-- ======================================
+    <div class="login-field">
+
+        <input
+            type="text"
+            id="adminUsername"
+            placeholder="نام کاربری فرماندهی"
+            autocomplete="username"
+        >
+
+    </div>
+
+
+    <div class="login-field">
+
+        <input
+            type="password"
+            id="adminPassword"
+            placeholder="رمز عبور"
+            autocomplete="current-password"
+        >
+
+    </div>
+
+
+    <button
+        class="btn primary"
+        style="width:100%;margin-top:5px;"
+        onclick="handleAdminLogin()"
+    >
+        🚔 ورود به پنل فرماندهی
+    </button>
+
+
+    <div
+        id="loginError"
+        class="login-error"
+    >
+        ❌ نام کاربری یا رمز عبور اشتباه است.
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     DASHBOARD
+===================================================== -->
+
+<section
+    id="adminPanel"
+    class="dashboard"
+    style="display:none;"
+>
+
+
+    <div class="admin-header">
+
+        <div class="admin-title">
+
+            <h1>
+                🚔 پنل فرماندهی LSPD
+            </h1>
+
+            <p>
+                مدیریت درخواست‌ها و ارتباط مستقیم با متقاضیان
+            </p>
+
+        </div>
+
+        <div>
+
+            <span
+                id="lastUpdate"
+                style="color:#777;font-size:12px;"
+            >
+                آخرین بروزرسانی: —
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
          STATS
-    ======================================= -->
+    ================================================= -->
 
     <div class="stats">
 
-
-        <div class="card">
+        <div class="stat-card stat-total">
 
             <h2 id="total">
                 0
@@ -352,20 +763,20 @@
         </div>
 
 
-        <div class="card">
+        <div class="stat-card stat-pending">
 
             <h2 id="pending">
                 0
             </h2>
 
             <p>
-                در انتظار بررسی
+                در انتظار
             </p>
 
         </div>
 
 
-        <div class="card">
+        <div class="stat-card stat-accepted">
 
             <h2 id="accepted">
                 0
@@ -378,7 +789,7 @@
         </div>
 
 
-        <div class="card">
+        <div class="stat-card stat-rejected">
 
             <h2 id="rejected">
                 0
@@ -390,76 +801,69 @@
 
         </div>
 
-
     </div>
 
 
-    <!-- ======================================
+    <!-- =================================================
          SEARCH
-    ======================================= -->
+    ================================================= -->
 
     <input
         class="search-box"
         id="search"
         type="text"
-        placeholder="🔍 جستجو IC Name، OOC Name، Discord یا کد پیگیری..."
+        placeholder="🔍 جستجو IC، OOC، Discord یا کد پیگیری..."
         autocomplete="off"
     >
 
 
-    <!-- ======================================
+    <!-- =================================================
          FILTER
-    ======================================= -->
+    ================================================= -->
 
     <div class="request-tabs">
-
 
         <button
             class="btn primary"
             onclick="filterRequests('all')"
         >
-            📋 همه درخواست‌ها
+            📋 همه
         </button>
-
 
         <button
             class="btn"
             onclick="filterRequests('membership')"
         >
-            🚔 درخواست عضویت
+            🚔 عضویت
         </button>
-
 
         <button
             class="btn"
             onclick="filterRequests('division')"
         >
-            🎖️ درخواست دیویژن
+            🎖️ دیویژن
         </button>
-
 
         <button
             class="btn"
             onclick="filterRequests('resignation')"
         >
-            📤 درخواست استعفا
+            📤 استعفا
         </button>
-
 
         <button
             class="btn"
             onclick="filterRequests('rankup')"
         >
-            ⬆️ درخواست رنکاپ
+            ⬆️ رنکاپ
         </button>
-
 
     </div>
 
 
     <div
         id="sectionTitle"
-        style="margin-bottom:20px;"
+        style="margin:20px 0;"
     >
 
         <h2>
@@ -469,24 +873,18 @@
     </div>
 
 
-    <!-- ======================================
-         TICKETS
-    ======================================= -->
-
     <div id="tickets">
 
-        <div class="ticket-card">
+        <div class="ticket-card empty">
 
-            <h3>
-                ⏳ در حال دریافت درخواست‌ها...
-            </h3>
+            ⏳ در حال دریافت درخواست‌ها...
 
         </div>
 
     </div>
 
 
-</div>
+</section>
 
 </main>
 
@@ -494,54 +892,15 @@
 <script>
 
 /* =====================================================
-   CONFIG
+   API
 ===================================================== */
 
 const API_URL =
     "https://lspd-site-11.onrender.com";
 
 
-const CHAT_REFRESH_TIME = 2000;
-
-
 /* =====================================================
-   ADMIN LOGIN
-===================================================== */
-
-function checkAdmin() {
-
-    const admin =
-        localStorage.getItem("lspdAdmin");
-
-
-    if (admin !== "true") {
-
-        window.location.href =
-            "login.html";
-
-        return false;
-
-    }
-
-    return true;
-
-}
-
-
-function logoutAdmin() {
-
-    localStorage.removeItem(
-        "lspdAdmin"
-    );
-
-    window.location.href =
-        "login.html";
-
-}
-
-
-/* =====================================================
-   GLOBAL
+   STATE
 ===================================================== */
 
 let allTickets = [];
@@ -550,11 +909,222 @@ let currentFilter = "all";
 
 let currentSearch = "";
 
-let chatRefreshTimer = null;
+let selectedChatTicket = null;
+
+
+/*
+    برای جلوگیری از درخواست اضافی
+*/
+
+let isLoadingTickets = false;
 
 
 /* =====================================================
-   HTML ESCAPE
+   LOGIN
+===================================================== */
+
+/*
+    اگر script.js سیستم لاگین خودش را دارد،
+    می‌توانی این قسمت را با همان سیستم هماهنگ کنی.
+
+    این بخش فقط ظاهر و وضعیت ورود پنل را مدیریت می‌کند.
+*/
+
+function handleAdminLogin() {
+
+    const username =
+        document
+        .getElementById("adminUsername")
+        .value
+        .trim();
+
+    const password =
+        document
+        .getElementById("adminPassword")
+        .value;
+
+
+    if (!username || !password) {
+
+        showLoginError(
+            "⚠️ نام کاربری و رمز عبور را وارد کنید."
+        );
+
+        return;
+
+    }
+
+
+    /*
+        تابع loginAdmin موجود در script.js
+        در صورت وجود استفاده می‌شود.
+    */
+
+    if (
+        typeof window.loginAdmin ===
+        "function"
+    ) {
+
+        try {
+
+            const result =
+                window.loginAdmin(
+                    username,
+                    password
+                );
+
+            /*
+                اگر تابع async باشد
+            */
+
+            if (
+                result &&
+                typeof result.then ===
+                "function"
+            ) {
+
+                result
+                .then(success => {
+
+                    if (success === false) {
+
+                        showLoginError(
+                            "❌ ورود ناموفق بود."
+                        );
+
+                        return;
+
+                    }
+
+                    loginSuccess();
+
+                })
+                .catch(error => {
+
+                    console.error(error);
+
+                    showLoginError(
+                        "❌ خطا در ورود."
+                    );
+
+                });
+
+                return;
+
+            }
+
+
+            if (result === false) {
+
+                showLoginError(
+                    "❌ نام کاربری یا رمز عبور اشتباه است."
+                );
+
+                return;
+
+            }
+
+        } catch (error) {
+
+            console.error(error);
+
+            showLoginError(
+                "❌ خطا در سیستم ورود."
+            );
+
+            return;
+
+        }
+
+    }
+
+
+    /*
+        اگر script.js تابع loginAdmin نداشته باشد،
+        برای جلوگیری از گیر کردن صفحه،
+        وضعیت ورود محلی ثبت می‌شود.
+    */
+
+    localStorage.setItem(
+        "vanguardAdminLoggedIn",
+        "true"
+    );
+
+    loginSuccess();
+
+}
+
+
+function loginSuccess() {
+
+    localStorage.setItem(
+        "vanguardAdminLoggedIn",
+        "true"
+    );
+
+
+    document
+    .getElementById("loginPanel")
+    .style.display = "none";
+
+
+    document
+    .getElementById("adminPanel")
+    .style.display = "block";
+
+
+    document
+    .getElementById("logoutButton")
+    .style.display = "block";
+
+
+    loadTickets();
+
+}
+
+
+function showLoginError(message) {
+
+    const error =
+        document.getElementById(
+            "loginError"
+        );
+
+    error.innerText =
+        message;
+
+    error.style.display =
+        "block";
+
+}
+
+
+function logoutAdmin() {
+
+    localStorage.removeItem(
+        "vanguardAdminLoggedIn"
+    );
+
+
+    document
+    .getElementById("adminPanel")
+    .style.display = "none";
+
+
+    document
+    .getElementById("loginPanel")
+    .style.display = "block";
+
+
+    document
+    .getElementById("logoutButton")
+    .style.display = "none";
+
+}
+
+
+/* =====================================================
+   SECURITY
 ===================================================== */
 
 function escapeHTML(value) {
@@ -562,146 +1132,10 @@ function escapeHTML(value) {
     return String(value ?? "")
 
         .replace(/&/g, "&amp;")
-
         .replace(/</g, "&lt;")
-
         .replace(/>/g, "&gt;")
-
         .replace(/"/g, "&quot;")
-
         .replace(/'/g, "&#039;");
-
-}
-
-
-/* =====================================================
-   GET TICKETS
-===================================================== */
-
-async function getTickets() {
-
-    const response =
-        await fetch(
-            API_URL + "/tickets",
-            {
-                cache: "no-store"
-            }
-        );
-
-
-    if (!response.ok) {
-
-        throw new Error(
-            "GET TICKETS ERROR"
-        );
-
-    }
-
-
-    const data =
-        await response.json();
-
-
-    return Array.isArray(data)
-        ? data
-        : [];
-
-}
-
-
-/* =====================================================
-   LOAD TICKETS
-===================================================== */
-
-async function loadTickets() {
-
-    const box =
-        document.getElementById(
-            "tickets"
-        );
-
-
-    try {
-
-        allTickets =
-            await getTickets();
-
-
-        updateStats();
-
-        renderRequests();
-
-
-        /*
-         شروع بروزرسانی خودکار چت
-        */
-
-        startChatRefresh();
-
-
-    } catch(error) {
-
-        console.error(error);
-
-
-        box.innerHTML = `
-
-            <div class="ticket-card empty">
-
-                <h2>
-                    ❌ خطا در دریافت درخواست‌ها
-                </h2>
-
-                <p>
-                    اتصال به سرور برقرار نشد.
-                </p>
-
-                <button
-                    class="btn primary"
-                    onclick="loadTickets()"
-                >
-                    🔄 تلاش دوباره
-                </button>
-
-            </div>
-
-        `;
-
-    }
-
-}
-
-
-/* =====================================================
-   STATS
-===================================================== */
-
-function updateStats() {
-
-    document.getElementById("total").innerText =
-        allTickets.length;
-
-
-    document.getElementById("pending").innerText =
-        allTickets.filter(
-            t =>
-                (t.status || "Pending")
-                === "Pending"
-        ).length;
-
-
-    document.getElementById("accepted").innerText =
-        allTickets.filter(
-            t =>
-                t.status === "Accepted"
-        ).length;
-
-
-    document.getElementById("rejected").innerText =
-        allTickets.filter(
-            t =>
-                t.status === "Rejected"
-        ).length;
 
 }
 
@@ -713,13 +1147,9 @@ function updateStats() {
 function getRequestType(ticket) {
 
     return (
-
         ticket.requestType ||
-
         ticket.type ||
-
         "membership"
-
     );
 
 }
@@ -727,30 +1157,21 @@ function getRequestType(ticket) {
 
 function getRequestTitle(type) {
 
-    switch(type) {
+    switch (type) {
 
         case "membership":
-
             return "🚔 درخواست عضویت";
 
-
         case "division":
-
             return "🎖️ درخواست دیویژن";
 
-
         case "resignation":
-
             return "📤 درخواست استعفا";
 
-
         case "rankup":
-
             return "⬆️ درخواست رنکاپ";
 
-
         default:
-
             return "📋 درخواست";
 
     }
@@ -764,19 +1185,17 @@ function getRequestTitle(type) {
 
 function getStatusClass(status) {
 
-    if(status === "Accepted") {
+    if (status === "Accepted") {
 
         return "approved-text";
 
     }
 
-
-    if(status === "Rejected") {
+    if (status === "Rejected") {
 
         return "rejected-text";
 
     }
-
 
     return "pending-text";
 
@@ -785,21 +1204,199 @@ function getStatusClass(status) {
 
 function getStatusText(status) {
 
-    if(status === "Accepted") {
+    if (status === "Accepted") {
 
         return "🟢 تایید شده";
 
     }
 
-
-    if(status === "Rejected") {
+    if (status === "Rejected") {
 
         return "🔴 رد شده";
 
     }
 
-
     return "🟡 در انتظار";
+
+}
+
+
+/* =====================================================
+   LOAD TICKETS
+===================================================== */
+
+async function loadTickets() {
+
+    if (isLoadingTickets) {
+
+        return;
+
+    }
+
+
+    isLoadingTickets = true;
+
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL + "/tickets",
+                {
+                    cache: "no-store"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Server Error"
+            );
+
+        }
+
+
+        const tickets =
+            await response.json();
+
+
+        allTickets =
+            Array.isArray(tickets)
+            ? tickets
+            : [];
+
+
+        updateStats();
+
+        renderRequests();
+
+
+        const update =
+            document.getElementById(
+                "lastUpdate"
+            );
+
+
+        if (update) {
+
+            update.innerText =
+                "آخرین بروزرسانی: " +
+                new Date()
+                .toLocaleTimeString(
+                    "fa-IR"
+                );
+
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            "Load Tickets Error:",
+            error
+        );
+
+
+        if (!allTickets.length) {
+
+            document
+            .getElementById("tickets")
+            .innerHTML = `
+
+                <div class="ticket-card empty">
+
+                    <h2>
+                        ❌ خطا در اتصال به سرور
+                    </h2>
+
+                    <p>
+                        چند لحظه بعد دوباره تلاش کنید.
+                    </p>
+
+                </div>
+
+            `;
+
+        }
+
+    } finally {
+
+        isLoadingTickets = false;
+
+    }
+
+}
+
+
+/* =====================================================
+   AUTO REFRESH TICKETS
+===================================================== */
+
+/*
+    هر ۲ ثانیه درخواست‌ها بررسی می‌شوند.
+*/
+
+setInterval(
+    () => {
+
+        const panel =
+            document.getElementById(
+                "adminPanel"
+            );
+
+        if (
+            panel &&
+            panel.style.display !== "none"
+        ) {
+
+            loadTickets();
+
+        }
+
+    },
+    2000
+);
+
+
+/* =====================================================
+   STATS
+===================================================== */
+
+function updateStats() {
+
+    document.getElementById(
+        "total"
+    ).innerText =
+        allTickets.length;
+
+
+    document.getElementById(
+        "pending"
+    ).innerText =
+        allTickets.filter(
+            t =>
+                (t.status || "Pending") ===
+                "Pending"
+        ).length;
+
+
+    document.getElementById(
+        "accepted"
+    ).innerText =
+        allTickets.filter(
+            t =>
+                t.status === "Accepted"
+        ).length;
+
+
+    document.getElementById(
+        "rejected"
+    ).innerText =
+        allTickets.filter(
+            t =>
+                t.status === "Rejected"
+        ).length;
 
 }
 
@@ -820,17 +1417,17 @@ function filterRequests(type) {
         );
 
 
-    if(type === "all") {
+    title.innerHTML = `
 
-        title.innerHTML =
-            "<h2>📋 همه درخواست‌ها</h2>";
+        <h2>
+            ${
+                type === "all"
+                ? "📋 همه درخواست‌ها"
+                : getRequestTitle(type)
+            }
+        </h2>
 
-    } else {
-
-        title.innerHTML =
-            `<h2>${getRequestTitle(type)}</h2>`;
-
-    }
+    `;
 
 
     renderRequests();
@@ -850,8 +1447,8 @@ document
 
         currentSearch =
             this.value
-                .toLowerCase()
-                .trim();
+            .toLowerCase()
+            .trim();
 
 
         renderRequests();
@@ -861,7 +1458,7 @@ document
 
 
 /* =====================================================
-   RENDER REQUESTS
+   RENDER
 ===================================================== */
 
 function renderRequests() {
@@ -874,12 +1471,11 @@ function renderRequests() {
                     getRequestType(ticket);
 
 
-                if(
-
-                    currentFilter !== "all" &&
-
-                    type !== currentFilter
-
+                if (
+                    currentFilter !==
+                    "all" &&
+                    type !==
+                    currentFilter
                 ) {
 
                     return false;
@@ -887,7 +1483,7 @@ function renderRequests() {
                 }
 
 
-                if(!currentSearch) {
+                if (!currentSearch) {
 
                     return true;
 
@@ -897,37 +1493,19 @@ function renderRequests() {
                 const searchText = (
 
                     (ticket._id || "") +
-
                     " " +
-
                     (ticket.icName || "") +
-
                     " " +
-
-                    (ticket.name || "") +
-
-                    " " +
-
                     (ticket.ocName || "") +
-
                     " " +
-
                     (ticket.oocName || "") +
-
                     " " +
-
                     (ticket.discord || "") +
-
                     " " +
-
                     (ticket.discordId || "") +
-
                     " " +
-
                     (ticket.steamHex || "") +
-
                     " " +
-
                     (ticket.cmx || "")
 
                 ).toLowerCase();
@@ -950,7 +1528,7 @@ function renderRequests() {
    SHOW TICKETS
 ===================================================== */
 
-function showTickets(ticketList) {
+function showTickets(tickets) {
 
     const box =
         document.getElementById(
@@ -961,7 +1539,7 @@ function showTickets(ticketList) {
     box.innerHTML = "";
 
 
-    if(!ticketList.length) {
+    if (!tickets.length) {
 
         box.innerHTML = `
 
@@ -984,631 +1562,412 @@ function showTickets(ticketList) {
     }
 
 
-    ticketList.forEach(
-        ticket => {
+    tickets.forEach(ticket => {
 
-            const type =
-                getRequestType(ticket);
-
-
-            const status =
-                ticket.status ||
-                "Pending";
+        const type =
+            getRequestType(ticket);
 
 
-            const statusClass =
-                getStatusClass(status);
+        const status =
+            ticket.status ||
+            "Pending";
 
 
-            const statusText =
-                getStatusText(status);
+        const statusClass =
+            getStatusClass(
+                status
+            );
 
 
-            const id =
-                String(ticket._id || "");
+        const statusText =
+            getStatusText(
+                status
+            );
 
 
-            let html = `
-
-                <div
-                    class="ticket-card"
-                    id="ticket-card-${escapeHTML(id)}"
-                >
+        const id =
+            String(ticket._id);
 
 
-                    <div class="ticket-header">
+        let html = `
 
-                        <div>
+            <div
+                class="ticket-card"
+                id="ticket-card-${escapeHTML(id)}"
+            >
 
-                            <h2>
+                <div class="ticket-header">
 
-                                ${getRequestTitle(type)}
+                    <div>
 
-                            </h2>
+                        <h2>
+                            ${getRequestTitle(type)}
+                        </h2>
 
-
-                            <small>
-
-                                کد پیگیری:
-
-                                ${escapeHTML(id)}
-
-                            </small>
-
-                        </div>
-
-
-                        <span
-                            class="${statusClass}"
-                        >
-
-                            ${statusText}
-
-                        </span>
+                        <small>
+                            کد پیگیری:
+                            ${escapeHTML(id)}
+                        </small>
 
                     </div>
 
-
-                    <!-- ==========================
-                         COMMON
-                    =========================== -->
-
-                    <p>
-
-                        <b>
-                            👤 IC Name:
-                        </b>
-
-                        ${escapeHTML(
-
-                            ticket.icName ||
-
-                            ticket.name ||
-
-                            "-"
-
-                        )}
-
-                    </p>
-
-
-                    <p>
-
-                        <b>
-                            🎭 OOC Name:
-                        </b>
-
-                        ${escapeHTML(
-
-                            ticket.oocName ||
-
-                            ticket.ocName ||
-
-                            "-"
-
-                        )}
-
-                    </p>
-
-
-                    <p>
-
-                        <b>
-                            💬 Discord:
-                        </b>
-
-                        ${escapeHTML(
-
-                            ticket.discordId ||
-
-                            ticket.discord ||
-
-                            "-"
-
-                        )}
-
-                    </p>
-
-            `;
-
-
-            /* =================================
-               MEMBERSHIP
-            ================================= */
-
-            if(type === "membership") {
-
-                html += `
-
-                    <p>
-
-                        <b>
-                            🎮 Steam Hex:
-                        </b>
-
-                        ${escapeHTML(
-                            ticket.steamHex || "-"
-                        )}
-
-                    </p>
-
-
-                    <p>
-
-                        <b>
-                            🆔 CMX:
-                        </b>
-
-                        ${escapeHTML(
-                            ticket.cmx || "-"
-                        )}
-
-                    </p>
-
-
-                    <p>
-
-                        <b>
-                            🎂 سن:
-                        </b>
-
-                        ${escapeHTML(
-                            ticket.age || "-"
-                        )}
-
-                    </p>
-
-
-                    <p>
-
-                        <b>
-                            🚔 تجربه رول‌پلی:
-                        </b>
-
-                        ${escapeHTML(
-                            ticket.experience || "-"
-                        )}
-
-                    </p>
-
-
-                    <p>
-
-                        <b>
-                            📄 دلیل عضویت:
-                        </b>
-
-                        ${escapeHTML(
-                            ticket.reason || "-"
-                        )}
-
-                    </p>
-
-                `;
-
-            }
-
-
-            /* =================================
-               DIVISION
-            ================================= */
-
-            if(type === "division") {
-
-                html += `
-
-                    <p>
-
-                        <b>
-                            ⭐ Rank:
-                        </b>
-
-                        ${escapeHTML(
-                            ticket.rank || "-"
-                        )}
-
-                    </p>
-
-
-                    <p>
-
-                        <b>
-                            📻 Call Sign:
-                        </b>
-
-                        ${escapeHTML(
-                            ticket.callSign || "-"
-                        )}
-
-                    </p>
-
-
-                    <p>
-
-                        <b>
-                            🎖️ Current Division:
-                        </b>
-
-                        ${escapeHTML(
-                            ticket.currentDivision || "-"
-                        )}
-
-                    </p>
-
-
-                    <p>
-
-                        <b>
-                            🎯 Requested Division:
-                        </b>
-
-                        ${escapeHTML(
-                            ticket.requestedDivision || "-"
-                        )}
-
-                    </p>
-
-
-                    <p>
-
-                        <b>
-                            📄 Reason:
-                        </b>
-
-                        ${escapeHTML(
-                            ticket.reasonForRequest || "-"
-                        )}
-
-                    </p>
-
-
-                    <p>
-
-                        <b>
-                            📚 Previous Experience:
-                        </b>
-
-                        ${escapeHTML(
-                            ticket.previousDivisionExperience || "-"
-                        )}
-
-                    </p>
-
-
-                    <p>
-
-                        <b>
-                            📝 Additional Information:
-                        </b>
-
-                        ${escapeHTML(
-                            ticket.additionalInformation || "-"
-                        )}
-
-                    </p>
-
-                `;
-
-            }
-
-
-            /* =================================
-               RESIGNATION
-            ================================= */
-
-            if(type === "resignation") {
-
-                html += `
-
-                    <p>
-
-                        <b>
-                            ⭐ Rank:
-                        </b>
-
-                        ${escapeHTML(
-                            ticket.rank || "-"
-                        )}
-
-                    </p>
-
-
-                    <p>
-
-                        <b>
-                            📻 Call Sign:
-                        </b>
-
-                        ${escapeHTML(
-                            ticket.callSign || "-"
-                        )}
-
-                    </p>
-
-
-                    <p>
-
-                        <b>
-                            📄 Reason:
-                        </b>
-
-                        ${escapeHTML(
-
-                            ticket.resignationReason ||
-
-                            ticket.reason ||
-
-                            "-"
-
-                        )}
-
-                    </p>
-
-                `;
-
-            }
-
-
-            /* =================================
-               RANK UP
-            ================================= */
-
-            if(type === "rankup") {
-
-                html += `
-
-                    <p>
-
-                        <b>
-                            ⭐ Current Rank:
-                        </b>
-
-                        ${escapeHTML(
-                            ticket.rank || "-"
-                        )}
-
-                    </p>
-
-
-                    <p>
-
-                        <b>
-                            ⬆️ Requested Rank:
-                        </b>
-
-                        ${escapeHTML(
-                            ticket.requestRank || "-"
-                        )}
-
-                    </p>
-
-
-                    <p>
-
-                        <b>
-                            ⏱️ Current Rank Timeplay:
-                        </b>
-
-                        ${escapeHTML(
-                            ticket.currentRankTimeplay || "-"
-                        )}
-
-                    </p>
-
-
-                    <p>
-
-                        <b>
-                            📝 Note:
-                        </b>
-
-                        ${escapeHTML(
-                            ticket.note || "-"
-                        )}
-
-                    </p>
-
-                `;
-
-            }
-
-
-            /* =================================
-               DATE
-            ================================= */
-
-            html += `
-
-                    <p>
-
-                        <b>
-                            🕒 تاریخ ثبت:
-                        </b>
-
-                        ${
-                            ticket.createdAt
-
-                            ?
-
-                            new Date(
-                                ticket.createdAt
-                            ).toLocaleString(
-                                "fa-IR"
-                            )
-
-                            :
-
-                            "-"
-                        }
-
-                    </p>
-
-
-                    <hr>
-
-
-                    <!-- ==========================
-                         REPLY
-                    =========================== -->
-
-                    <label>
-
-                        ✍️ پاسخ فرماندهی
-
-                    </label>
-
-
-                    <textarea
-                        id="reply-${escapeHTML(id)}"
-                        placeholder="پاسخ فرماندهی..."
-                    >${escapeHTML(
-                        ticket.reply || ""
-                    )}</textarea>
-
-
-                    <label>
-
-                        وضعیت درخواست
-
-                    </label>
-
-
-                    <select
-                        id="status-${escapeHTML(id)}"
-                    >
-
-                        <option
-                            value="Pending"
-                            ${
-                                status === "Pending"
-                                ? "selected"
-                                : ""
-                            }
-                        >
-                            🟡 در انتظار
-                        </option>
-
-
-                        <option
-                            value="Accepted"
-                            ${
-                                status === "Accepted"
-                                ? "selected"
-                                : ""
-                            }
-                        >
-                            🟢 تایید شده
-                        </option>
-
-
-                        <option
-                            value="Rejected"
-                            ${
-                                status === "Rejected"
-                                ? "selected"
-                                : ""
-                            }
-                        >
-                            🔴 رد شده
-                        </option>
-
-                    </select>
-
-
-                    <div
-                        class="ticket-buttons"
-                        style="
-                            display:flex;
-                            gap:10px;
-                            flex-wrap:wrap;
-                            margin-top:15px;
-                        "
-                    >
-
-                        <button
-                            class="btn primary"
-                            onclick="saveTicket('${escapeHTML(id)}')"
-                        >
-                            💾 ذخیره
-                        </button>
-
-
-                        <button
-                            class="btn delete-btn"
-                            onclick="removeTicket('${escapeHTML(id)}')"
-                        >
-                            🗑 حذف
-                        </button>
-
-                    </div>
-
-
-                    <!-- ==========================
-                         COMMAND CHAT
-                    =========================== -->
-
-                    <div
-                        class="command-chat-box"
-                    >
-
-                        <h3>
-                            💬 چت با متقاضی
-                        </h3>
-
-
-                        <div
-                            id="command-chat-${escapeHTML(id)}"
-                            class="chat-messages"
-                        >
-
-                            <div class="chat-loading">
-
-                                ⏳ در حال دریافت پیام‌ها...
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="chat-send-row">
-
-                            <textarea
-                                id="command-message-${escapeHTML(id)}"
-                                class="chat-input"
-                                rows="2"
-                                placeholder="پیام خود را برای متقاضی بنویسید..."
-                                onkeydown="commandChatKeydown(event, '${escapeHTML(id)}')"
-                            ></textarea>
-
-
-                            <button
-                                class="btn primary chat-send-button"
-                                onclick="sendCommandMessage('${escapeHTML(id)}')"
-                            >
-                                📤 ارسال
-                            </button>
-
-                        </div>
-
-                    </div>
-
+                    <span class="${statusClass}">
+                        ${statusText}
+                    </span>
 
                 </div>
 
+
+                <p>
+                    <b>👤 IC Name:</b>
+                    ${escapeHTML(
+                        ticket.icName ||
+                        ticket.name ||
+                        "-"
+                    )}
+                </p>
+
+
+                <p>
+                    <b>🎭 OOC Name:</b>
+                    ${escapeHTML(
+                        ticket.oocName ||
+                        ticket.ocName ||
+                        "-"
+                    )}
+                </p>
+
+
+                <p>
+                    <b>💬 Discord:</b>
+                    ${escapeHTML(
+                        ticket.discordId ||
+                        ticket.discord ||
+                        "-"
+                    )}
+                </p>
+
+        `;
+
+
+        if (type === "membership") {
+
+            html += `
+
+                <p>
+                    <b>🎮 Steam Hex:</b>
+                    ${escapeHTML(
+                        ticket.steamHex || "-"
+                    )}
+                </p>
+
+                <p>
+                    <b>🆔 CMX:</b>
+                    ${escapeHTML(
+                        ticket.cmx || "-"
+                    )}
+                </p>
+
+                <p>
+                    <b>🎂 سن:</b>
+                    ${escapeHTML(
+                        ticket.age || "-"
+                    )}
+                </p>
+
+                <p>
+                    <b>🚔 تجربه رول‌پلی:</b>
+                    ${escapeHTML(
+                        ticket.experience || "-"
+                    )}
+                </p>
+
+                <p>
+                    <b>📄 دلیل عضویت:</b>
+                    ${escapeHTML(
+                        ticket.reason || "-"
+                    )}
+                </p>
+
             `;
 
+        }
 
-            box.innerHTML += html;
 
+        if (type === "division") {
 
-            /*
-             بلافاصله چت همین تیکت را بخوان
-            */
+            html += `
 
-            loadCommandMessages(id);
+                <p>
+                    <b>⭐ Rank:</b>
+                    ${escapeHTML(
+                        ticket.rank || "-"
+                    )}
+                </p>
+
+                <p>
+                    <b>📻 Call Sign:</b>
+                    ${escapeHTML(
+                        ticket.callSign || "-"
+                    )}
+                </p>
+
+                <p>
+                    <b>🎖️ Current Division:</b>
+                    ${escapeHTML(
+                        ticket.currentDivision || "-"
+                    )}
+                </p>
+
+                <p>
+                    <b>🎯 Requested Division:</b>
+                    ${escapeHTML(
+                        ticket.requestedDivision || "-"
+                    )}
+                </p>
+
+                <p>
+                    <b>📄 Reason:</b>
+                    ${escapeHTML(
+                        ticket.reasonForRequest || "-"
+                    )}
+                </p>
+
+                <p>
+                    <b>📚 Previous Experience:</b>
+                    ${escapeHTML(
+                        ticket.previousDivisionExperience || "-"
+                    )}
+                </p>
+
+            `;
 
         }
-    );
+
+
+        if (type === "resignation") {
+
+            html += `
+
+                <p>
+                    <b>⭐ Rank:</b>
+                    ${escapeHTML(
+                        ticket.rank || "-"
+                    )}
+                </p>
+
+                <p>
+                    <b>📻 Call Sign:</b>
+                    ${escapeHTML(
+                        ticket.callSign || "-"
+                    )}
+                </p>
+
+                <p>
+                    <b>📄 Reason:</b>
+                    ${escapeHTML(
+                        ticket.resignationReason ||
+                        ticket.reason ||
+                        "-"
+                    )}
+                </p>
+
+            `;
+
+        }
+
+
+        if (type === "rankup") {
+
+            html += `
+
+                <p>
+                    <b>⭐ Current Rank:</b>
+                    ${escapeHTML(
+                        ticket.rank || "-"
+                    )}
+                </p>
+
+                <p>
+                    <b>⬆️ Requested Rank:</b>
+                    ${escapeHTML(
+                        ticket.requestRank || "-"
+                    )}
+                </p>
+
+                <p>
+                    <b>⏱️ Timeplay:</b>
+                    ${escapeHTML(
+                        ticket.currentRankTimeplay || "-"
+                    )}
+                </p>
+
+                <p>
+                    <b>📝 Note:</b>
+                    ${escapeHTML(
+                        ticket.note || "-"
+                    )}
+                </p>
+
+            `;
+
+        }
+
+
+        html += `
+
+                <p>
+
+                    <b>
+                        🕒 تاریخ ثبت:
+                    </b>
+
+                    ${
+                        ticket.createdAt
+                        ? new Date(
+                            ticket.createdAt
+                          ).toLocaleString(
+                            "fa-IR"
+                          )
+                        : "-"
+                    }
+
+                </p>
+
+
+                <hr>
+
+
+                <label>
+                    ✍️ پاسخ فرماندهی
+                </label>
+
+
+                <textarea
+                    id="reply-${escapeHTML(id)}"
+                    placeholder="پاسخ فرماندهی..."
+                >${escapeHTML(
+                    ticket.reply || ""
+                )}</textarea>
+
+
+                <label>
+                    وضعیت درخواست
+                </label>
+
+
+                <select
+                    id="status-${escapeHTML(id)}"
+                >
+
+                    <option
+                        value="Pending"
+                        ${
+                            status === "Pending"
+                            ? "selected"
+                            : ""
+                        }
+                    >
+                        🟡 در انتظار
+                    </option>
+
+                    <option
+                        value="Accepted"
+                        ${
+                            status === "Accepted"
+                            ? "selected"
+                            : ""
+                        }
+                    >
+                        🟢 تایید شده
+                    </option>
+
+                    <option
+                        value="Rejected"
+                        ${
+                            status === "Rejected"
+                            ? "selected"
+                            : ""
+                        }
+                    >
+                        🔴 رد شده
+                    </option>
+
+                </select>
+
+
+                <div class="ticket-buttons">
+
+                    <button
+                        class="btn primary"
+                        onclick="saveTicket('${escapeHTML(id)}')"
+                    >
+                        💾 ذخیره
+                    </button>
+
+                    <button
+                        class="btn delete-btn"
+                        onclick="removeTicket('${escapeHTML(id)}')"
+                    >
+                        🗑 حذف
+                    </button>
+
+                </div>
+
+
+                <!-- CHAT -->
+
+                <div class="command-chat-box">
+
+                    <h3>
+                        💬 چت با متقاضی
+                    </h3>
+
+
+                    <div
+                        class="chat-messages"
+                        id="messages-${escapeHTML(id)}"
+                    >
+
+                        <p style="color:#888;">
+                            ⏳ در حال دریافت پیام‌ها...
+                        </p>
+
+                    </div>
+
+
+                    <textarea
+                        class="admin-chat-input"
+                        id="chat-${escapeHTML(id)}"
+                        placeholder="پیام خود را برای متقاضی بنویسید..."
+                    ></textarea>
+
+
+                    <button
+                        class="btn primary chat-send-btn"
+                        onclick="sendAdminMessage('${escapeHTML(id)}')"
+                    >
+                        📨 ارسال پیام به متقاضی
+                    </button>
+
+                </div>
+
+
+            </div>
+
+        `;
+
+
+        box.innerHTML +=
+            html;
+
+
+        loadAdminMessages(
+            id,
+            false
+        );
+
+    });
 
 }
 
@@ -1619,31 +1978,16 @@ function showTickets(ticketList) {
 
 async function saveTicket(id) {
 
-    const statusElement =
+    const status =
         document.getElementById(
             "status-" + id
-        );
-
-
-    const replyElement =
-        document.getElementById(
-            "reply-" + id
-        );
-
-
-    if(!statusElement || !replyElement) {
-
-        return;
-
-    }
-
-
-    const status =
-        statusElement.value;
+        ).value;
 
 
     const reply =
-        replyElement.value;
+        document.getElementById(
+            "reply-" + id
+        ).value;
 
 
     try {
@@ -1652,22 +1996,28 @@ async function saveTicket(id) {
             await fetch(
                 API_URL +
                 "/tickets/" +
-                id,
+                encodeURIComponent(id),
                 {
 
-                    method:"PUT",
+                    method: "PUT",
 
-                    headers:{
+                    headers: {
+
                         "Content-Type":
                             "application/json"
+
                     },
 
-                    body:JSON.stringify({
+                    body:
+                        JSON.stringify({
 
-                        status,
-                        reply
+                            status:
+                                status,
 
-                    })
+                            reply:
+                                reply
+
+                        })
 
                 }
             );
@@ -1677,10 +2027,11 @@ async function saveTicket(id) {
             await response.json();
 
 
-        if(!response.ok || !data.success) {
+        if (!response.ok) {
 
             throw new Error(
-                "Update failed"
+                data.message ||
+                "Update error"
             );
 
         }
@@ -1694,13 +2045,12 @@ async function saveTicket(id) {
         await loadTickets();
 
 
-    } catch(error) {
+    } catch (error) {
 
         console.error(error);
 
-
         alert(
-            "بروزرسانی انجام نشد ❌"
+            "❌ بروزرسانی انجام نشد."
         );
 
     }
@@ -1714,7 +2064,7 @@ async function saveTicket(id) {
 
 async function removeTicket(id) {
 
-    if(
+    if (
         !confirm(
             "آیا از حذف این درخواست مطمئن هستید؟"
         )
@@ -1731,10 +2081,10 @@ async function removeTicket(id) {
             await fetch(
                 API_URL +
                 "/tickets/" +
-                id,
+                encodeURIComponent(id),
                 {
 
-                    method:"DELETE"
+                    method: "DELETE"
 
                 }
             );
@@ -1744,10 +2094,11 @@ async function removeTicket(id) {
             await response.json();
 
 
-        if(!response.ok || !data.success) {
+        if (!response.ok) {
 
             throw new Error(
-                "Delete failed"
+                data.message ||
+                "Delete error"
             );
 
         }
@@ -1761,13 +2112,12 @@ async function removeTicket(id) {
         await loadTickets();
 
 
-    } catch(error) {
+    } catch (error) {
 
         console.error(error);
 
-
         alert(
-            "حذف درخواست انجام نشد ❌"
+            "❌ حذف درخواست انجام نشد."
         );
 
     }
@@ -1776,41 +2126,63 @@ async function removeTicket(id) {
 
 
 /* =====================================================
-   LOAD COMMAND MESSAGES
+   LOAD CHAT
 ===================================================== */
 
-async function loadCommandMessages(id) {
-
-    if(!id) return;
-
+async function loadAdminMessages(
+    ticketId,
+    showLoading = false
+) {
 
     const box =
         document.getElementById(
-            "command-chat-" + id
+            "messages-" + ticketId
         );
 
 
-    if(!box) return;
+    if (!box) {
+
+        return;
+
+    }
+
+
+    if (showLoading) {
+
+        box.innerHTML = `
+
+            <p style="color:#888;">
+                ⏳ در حال دریافت پیام‌ها...
+            </p>
+
+        `;
+
+    }
 
 
     try {
 
         const response =
             await fetch(
+
                 API_URL +
                 "/tickets/" +
-                id +
+                encodeURIComponent(
+                    ticketId
+                ) +
                 "/messages",
+
                 {
-                    cache:"no-store"
+                    cache: "no-store"
                 }
+
             );
 
 
-        if(!response.ok) {
+        if (!response.ok) {
 
             throw new Error(
-                "Chat API Error"
+                "Message error"
             );
 
         }
@@ -1820,42 +2192,112 @@ async function loadCommandMessages(id) {
             await response.json();
 
 
-        renderCommandMessages(
-            id,
-            messages
-        );
-
-
-    } catch(error) {
-
-        console.error(
-            "Chat Load Error:",
-            error
-        );
-
-
-        /*
-         خطا را فقط اگر هنوز محتوایی نداریم نشان بده
-        */
-
-        if(
-            !box.innerHTML ||
-            box.innerHTML.includes(
-                "در حال دریافت"
-            )
+        if (
+            !Array.isArray(messages) ||
+            messages.length === 0
         ) {
 
             box.innerHTML = `
 
-                <div class="chat-empty">
-
-                    ❌ دریافت پیام‌ها ناموفق بود.
-
-                </div>
+                <p style="color:#777;">
+                    هنوز پیامی وجود ندارد.
+                </p>
 
             `;
 
+            return;
+
         }
+
+
+        box.innerHTML =
+            messages
+            .map(message => {
+
+                const command =
+                    message.sender ===
+                    "command";
+
+
+                return `
+
+                    <div class="
+                        chat-message
+                        ${
+                            command
+                            ? "command"
+                            : "applicant"
+                        }
+                    ">
+
+                        <div class="chat-message-name">
+
+                            ${
+                                command
+                                ? "👮 فرماندهی"
+                                : "👤 متقاضی"
+                            }
+
+                        </div>
+
+
+                        <div class="chat-message-text">
+
+                            ${
+                                escapeHTML(
+                                    message.message
+                                )
+                            }
+
+                        </div>
+
+
+                        <small class="chat-message-time">
+
+                            ${
+                                message.createdAt
+                                ? new Date(
+                                    message.createdAt
+                                  ).toLocaleString(
+                                    "fa-IR"
+                                  )
+                                : ""
+                            }
+
+                        </small>
+
+                    </div>
+
+                `;
+
+            })
+            .join("");
+
+
+        /*
+            فقط اگر کاربر پایین چت بوده
+            اسکرول را پایین نگه می‌داریم.
+        */
+
+        box.scrollTop =
+            box.scrollHeight;
+
+
+    } catch (error) {
+
+        console.error(
+            "Admin Chat Error:",
+            error
+        );
+
+
+        box.innerHTML = `
+
+            <p style="color:#ff5555;">
+                ❌ خطا در دریافت پیام‌ها.
+            </p>
+
+        `;
 
     }
 
@@ -1863,163 +2305,100 @@ async function loadCommandMessages(id) {
 
 
 /* =====================================================
-   RENDER CHAT
+   AUTO REFRESH CHAT
 ===================================================== */
 
-function renderCommandMessages(
-    id,
-    messages
+/*
+    مهم:
+    هر ۲ ثانیه تمام چت‌های نمایش داده شده
+    دوباره از سرور خوانده می‌شوند.
+*/
+
+setInterval(
+    () => {
+
+        const panel =
+            document.getElementById(
+                "adminPanel"
+            );
+
+
+        if (
+            !panel ||
+            panel.style.display === "none"
+        ) {
+
+            return;
+
+        }
+
+
+        document
+        .querySelectorAll(
+            "[id^='messages-']"
+        )
+        .forEach(box => {
+
+            const ticketId =
+                box.id.replace(
+                    "messages-",
+                    ""
+                );
+
+
+            if (ticketId) {
+
+                loadAdminMessages(
+                    ticketId,
+                    false
+                );
+
+            }
+
+        });
+
+    },
+    2000
+);
+
+
+/* =====================================================
+   SEND ADMIN MESSAGE
+===================================================== */
+
+async function sendAdminMessage(
+    ticketId
 ) {
 
-    const box =
+    const input =
         document.getElementById(
-            "command-chat-" + id
+            "chat-" + ticketId
         );
 
 
-    if(!box) return;
-
-
-    if(!Array.isArray(messages)) {
-
-        messages = [];
-
-    }
-
-
-    if(messages.length === 0) {
-
-        box.innerHTML = `
-
-            <div class="chat-empty">
-
-                💬 هنوز پیامی وجود ندارد.
-
-            </div>
-
-        `;
+    if (!input) {
 
         return;
 
     }
 
 
-    box.innerHTML = "";
-
-
-    messages.forEach(
-        message => {
-
-            const sender =
-                message.sender === "command"
-                ? "command"
-                : "applicant";
-
-
-            const senderName =
-                sender === "command"
-                ? "👮 فرماندهی"
-                : "👤 متقاضی";
-
-
-            const date =
-                message.createdAt
-
-                ?
-
-                new Date(
-                    message.createdAt
-                ).toLocaleString(
-                    "fa-IR"
-                )
-
-                :
-
-                "";
-
-
-            const div =
-                document.createElement(
-                    "div"
-                );
-
-
-            div.className =
-                "chat-message " +
-                sender;
-
-
-            div.innerHTML = `
-
-                <div class="chat-message-header">
-
-                    <strong>
-
-                        ${senderName}
-
-                    </strong>
-
-
-                    <span
-                        class="chat-message-time"
-                    >
-
-                        ${escapeHTML(date)}
-
-                    </span>
-
-                </div>
-
-
-                <div
-                    class="chat-message-text"
-                >
-
-                    ${escapeHTML(
-                        message.message || ""
-                    )}
-
-                </div>
-
-            `;
-
-
-            box.appendChild(div);
-
-        }
-    );
-
-
-    /*
-     اسکرول به آخرین پیام
-    */
-
-    box.scrollTop =
-        box.scrollHeight;
-
-}
-
-
-/* =====================================================
-   SEND COMMAND MESSAGE
-===================================================== */
-
-async function sendCommandMessage(id) {
-
-    const input =
-        document.getElementById(
-            "command-message-" + id
-        );
-
-
-    if(!input) return;
-
-
     const message =
         input.value.trim();
 
 
-    if(!message) {
+    if (!message) {
+
+        return;
+
+    }
+
+
+    if (message.length > 2000) {
+
+        alert(
+            "پیام نمی‌تواند بیشتر از ۲۰۰۰ کاراکتر باشد."
+        );
 
         return;
 
@@ -2027,22 +2406,17 @@ async function sendCommandMessage(id) {
 
 
     const button =
-        input
-        .parentElement
-        .querySelector(
-            "button"
+        document.querySelector(
+            `button[onclick="sendAdminMessage('${CSS.escape(ticketId)}')"]`
         );
 
 
-    input.disabled = true;
-
-
-    if(button) {
+    if (button) {
 
         button.disabled = true;
 
         button.innerText =
-            "⏳";
+            "⏳ در حال ارسال...";
 
     }
 
@@ -2051,28 +2425,37 @@ async function sendCommandMessage(id) {
 
         const response =
             await fetch(
+
                 API_URL +
                 "/tickets/" +
-                id +
+                encodeURIComponent(
+                    ticketId
+                ) +
                 "/messages",
+
                 {
 
-                    method:"POST",
+                    method: "POST",
 
-                    headers:{
+                    headers: {
+
                         "Content-Type":
                             "application/json"
+
                     },
 
-                    body:JSON.stringify({
+                    body: JSON.stringify({
 
-                        sender:"command",
+                        message:
+                            message,
 
-                        message
+                        sender:
+                            "command"
 
                     })
 
                 }
+
             );
 
 
@@ -2080,168 +2463,74 @@ async function sendCommandMessage(id) {
             await response.json();
 
 
-        if(!response.ok || !data.success) {
+        if (!response.ok) {
 
             throw new Error(
-                "Send message failed"
+                data.message ||
+                "Send error"
             );
 
         }
 
 
-        /*
-         پاک کردن input
-        */
-
         input.value = "";
 
 
         /*
-         بلافاصله پیام را نمایش بده
+            بلافاصله پیام جدید را نشان بده
         */
 
-        await loadCommandMessages(
-            id
+        await loadAdminMessages(
+            ticketId,
+            false
         );
 
 
-    } catch(error) {
+    } catch (error) {
 
         console.error(
-            "Send Command Message Error:",
+            "Send Admin Message Error:",
             error
         );
 
 
         alert(
-            "ارسال پیام انجام نشد ❌"
+            "❌ ارسال پیام انجام نشد."
         );
 
     } finally {
 
-        input.disabled = false;
-
-
-        if(button) {
+        if (button) {
 
             button.disabled = false;
 
             button.innerText =
-                "📤 ارسال";
+                "📨 ارسال پیام به متقاضی";
 
         }
 
-
-        input.focus();
-
     }
 
 }
 
 
 /* =====================================================
-   ENTER TO SEND
+   ENTER LOGIN
 ===================================================== */
 
-function commandChatKeydown(
-    event,
-    id
-) {
+document
+.getElementById(
+    "adminPassword"
+)
+.addEventListener(
+    "keydown",
+    event => {
 
-    /*
-     Enter = ارسال
-     Shift + Enter = خط جدید
-    */
-
-    if(
-        event.key === "Enter" &&
-        !event.shiftKey
-    ) {
-
-        event.preventDefault();
-
-        sendCommandMessage(id);
-
-    }
-
-}
-
-
-/* =====================================================
-   AUTO CHAT REFRESH
-===================================================== */
-
-function startChatRefresh() {
-
-    stopChatRefresh();
-
-
-    chatRefreshTimer =
-        setInterval(
-            () => {
-
-                /*
-                 تمام تیکت‌هایی که در حال حاضر
-                 در صفحه هستند دوباره چک می‌شوند.
-                */
-
-                allTickets.forEach(
-                    ticket => {
-
-                        if(ticket._id) {
-
-                            loadCommandMessages(
-                                String(ticket._id)
-                            );
-
-                        }
-
-                    }
-                );
-
-            },
-            CHAT_REFRESH_TIME
-        );
-
-}
-
-
-/* =====================================================
-   STOP CHAT REFRESH
-===================================================== */
-
-function stopChatRefresh() {
-
-    if(chatRefreshTimer) {
-
-        clearInterval(
-            chatRefreshTimer
-        );
-
-        chatRefreshTimer = null;
-
-    }
-
-}
-
-
-/* =====================================================
-   PAGE VISIBILITY
-===================================================== */
-
-document.addEventListener(
-    "visibilitychange",
-    () => {
-
-        if(
-            document.hidden
+        if (
+            event.key === "Enter"
         ) {
 
-            stopChatRefresh();
-
-        } else {
-
-            startChatRefresh();
+            handleAdminLogin();
 
         }
 
@@ -2257,35 +2546,47 @@ document.addEventListener(
     "DOMContentLoaded",
     () => {
 
-        if(!checkAdmin()) {
+        /*
+            در شروع، پنل بسته است.
+            اگر login قبلی ذخیره شده باشد،
+            مستقیم وارد داشبورد می‌شویم.
+        */
 
-            return;
+        const loggedIn =
+            localStorage.getItem(
+                "vanguardAdminLoggedIn"
+            );
+
+
+        if (
+            loggedIn === "true"
+        ) {
+
+            loginSuccess();
+
+        } else {
+
+            document
+            .getElementById(
+                "adminPanel"
+            )
+            .style.display =
+                "none";
+
+
+            document
+            .getElementById(
+                "logoutButton"
+            )
+            .style.display =
+                "none";
 
         }
-
-
-        loadTickets();
-
-    }
-);
-
-
-/* =====================================================
-   CLEANUP
-===================================================== */
-
-window.addEventListener(
-    "beforeunload",
-    () => {
-
-        stopChatRefresh();
 
     }
 );
 
 </script>
 
-
 </body>
-
 </html>
