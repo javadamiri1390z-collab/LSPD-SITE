@@ -2,6 +2,7 @@
 <html lang="fa" dir="rtl">
 
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -11,149 +12,179 @@
 
 <style>
 
-/* =====================================================
-   ADMIN PAGE
-===================================================== */
+/* =========================================================
+   ADMIN PANEL - VANGUARD LSPD
+========================================================= */
 
-.command-page {
+* {
+    box-sizing: border-box;
+}
+
+body.command-page {
     min-height: 100vh;
 }
 
-.dashboard {
-    width: 1150px;
-    max-width: 96%;
-    margin: 30px auto;
-}
+/* =========================
+   NAVBAR
+========================= */
 
-/* =====================================================
-   HEADER
-===================================================== */
+.admin-navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 
-.admin-header {
+    width: 100%;
+
+    padding: 14px 35px;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 20px;
-    margin-bottom: 25px;
-}
 
-.admin-title {
-    text-align: right;
-}
-
-.admin-title h1 {
-    margin: 0 0 7px;
-    color: #4da6ff;
-    font-size: 30px;
-}
-
-.admin-title p {
-    margin: 0;
-    color: #aaa;
-    font-size: 14px;
-}
-
-/* =====================================================
-   LOGIN
-===================================================== */
-
-.admin-login {
-    width: 460px;
-    max-width: 95%;
-    margin: 80px auto;
-    padding: 40px 35px;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(10,20,35,.92),
-            rgba(0,0,0,.78)
-        );
-
-    border:
-        1px solid rgba(77,166,255,.25);
-
-    border-radius: 24px;
-
-    box-shadow:
-        0 20px 70px rgba(0,0,0,.55),
-        0 0 35px rgba(0,110,255,.15);
+    background: rgba(3, 8, 15, 0.88);
 
     backdrop-filter: blur(20px);
 
-    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,.10);
+
+    box-shadow: 0 10px 40px rgba(0,0,0,.25);
 }
 
-.admin-login-logo {
-    width: 100px;
-    height: 100px;
+.admin-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.admin-brand img {
+    width: 52px;
+    height: 52px;
     object-fit: contain;
-    margin-bottom: 20px;
 
     filter:
-        drop-shadow(0 0 20px #168cff);
+        drop-shadow(0 0 12px rgba(30,145,255,.75));
 }
 
-.admin-login h1 {
-    color: #fff;
-    margin-bottom: 8px;
+.admin-brand-text h2 {
+    margin: 0;
+
+    color: #4da6ff;
+
+    font-size: 22px;
 }
 
-.admin-login p {
-    color: #aaa;
+.admin-brand-text span {
+    color: #8e9baa;
+    font-size: 12px;
+}
+
+.admin-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.admin-btn {
+    border: 1px solid rgba(255,255,255,.12);
+
+    background: rgba(255,255,255,.06);
+
+    color: white;
+
+    padding: 10px 18px;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    transition: .25s;
+}
+
+.admin-btn:hover {
+    background: rgba(255,255,255,.12);
+    transform: translateY(-2px);
+}
+
+.admin-btn.logout {
+    background: rgba(255,55,55,.12);
+    border-color: rgba(255,70,70,.25);
+}
+
+.admin-btn.logout:hover {
+    background: rgba(255,55,55,.25);
+}
+
+/* =========================
+   MAIN
+========================= */
+
+.admin-main {
+    width: 1250px;
+    max-width: 94%;
+
+    margin: 35px auto 70px;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
     margin-bottom: 25px;
 }
 
-.login-field {
-    width: 100%;
-    margin-bottom: 15px;
-}
+.admin-header h1 {
+    margin: 0;
 
-.login-field input {
-    width: 100%;
-    padding: 15px 16px;
+    font-size: 30px;
 
-    background: rgba(255,255,255,.07);
     color: white;
-
-    border:
-        1px solid rgba(255,255,255,.15);
-
-    border-radius: 12px;
-
-    outline: none;
-
-    font-size: 15px;
 }
 
-.login-field input:focus {
-    border-color: #168cff;
+.admin-header p {
+    margin-top: 8px;
 
-    box-shadow:
-        0 0 15px rgba(22,140,255,.2);
+    color: #8995a3;
 }
 
-.login-error {
-    display: none;
+.live-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 
-    margin-top: 15px;
-    padding: 12px;
+    padding: 9px 14px;
 
-    color: #ff7777;
+    border-radius: 20px;
 
-    background: rgba(255,0,0,.08);
+    background: rgba(0,255,140,.08);
 
-    border:
-        1px solid rgba(255,80,80,.2);
+    border: 1px solid rgba(0,255,140,.18);
 
-    border-radius: 10px;
+    color: #53e89a;
+
+    font-size: 13px;
 }
 
-/* =====================================================
-   STATISTICS
-===================================================== */
+.live-dot {
+    width: 8px;
+    height: 8px;
 
-.stats {
+    border-radius: 50%;
+
+    background: #00ff88;
+
+    box-shadow: 0 0 10px #00ff88;
+}
+
+/* =========================
+   STATS
+========================= */
+
+.admin-stats {
     display: grid;
 
     grid-template-columns:
@@ -161,437 +192,862 @@
 
     gap: 15px;
 
-    margin-bottom: 25px;
+    margin-bottom: 22px;
 }
 
-.stat-card {
-    padding: 22px;
+.admin-stat {
+    position: relative;
 
-    background:
-        rgba(255,255,255,.06);
+    padding: 20px;
 
-    border:
-        1px solid rgba(255,255,255,.1);
+    min-height: 120px;
 
-    border-radius: 18px;
-
-    text-align: center;
-
-    transition: .25s;
-}
-
-.stat-card:hover {
-    transform: translateY(-3px);
-
-    background:
-        rgba(255,255,255,.09);
-}
-
-.stat-card h2 {
-    margin: 0 0 8px;
-
-    font-size: 30px;
-}
-
-.stat-card p {
-    margin: 0;
-
-    color: #aaa;
-}
-
-.stat-total h2 {
-    color: #4da6ff;
-}
-
-.stat-pending h2 {
-    color: #ffaa00;
-}
-
-.stat-accepted h2 {
-    color: #00ff88;
-}
-
-.stat-rejected h2 {
-    color: #ff4444;
-}
-
-/* =====================================================
-   SEARCH
-===================================================== */
-
-.search-box {
-    width: 100%;
-
-    padding: 16px 18px;
-
-    margin-bottom: 20px;
-
-    background:
-        rgba(255,255,255,.06);
-
-    color: white;
-
-    border:
-        1px solid rgba(255,255,255,.13);
-
-    border-radius: 13px;
-
-    outline: none;
-
-    font-size: 15px;
-}
-
-.search-box:focus {
-    border-color: #168cff;
-
-    box-shadow:
-        0 0 15px rgba(22,140,255,.15);
-}
-
-/* =====================================================
-   TABS
-===================================================== */
-
-.request-tabs {
-    display: flex;
-    gap: 9px;
-
-    flex-wrap: wrap;
-
-    margin-bottom: 20px;
-}
-
-.request-tabs .btn {
-    padding: 11px 17px;
-}
-
-/* =====================================================
-   TICKET
-===================================================== */
-
-.ticket-card {
-    margin-top: 18px;
-
-    padding: 25px;
+    border-radius: 17px;
 
     background:
         linear-gradient(
             145deg,
             rgba(255,255,255,.075),
-            rgba(255,255,255,.035)
+            rgba(255,255,255,.025)
         );
 
-    border:
-        1px solid rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.10);
 
-    border-radius: 19px;
+    overflow: hidden;
 
     box-shadow:
-        0 10px 35px rgba(0,0,0,.18);
+        0 15px 35px rgba(0,0,0,.18);
 }
 
-.ticket-header {
-    display: flex;
+.admin-stat::after {
+    content: "";
 
-    justify-content: space-between;
+    position: absolute;
 
-    align-items: flex-start;
+    width: 100px;
+    height: 100px;
 
-    gap: 15px;
+    left: -40px;
+    bottom: -50px;
+
+    background: rgba(0,120,255,.12);
+
+    border-radius: 50%;
+
+    filter: blur(15px);
+}
+
+.stat-icon {
+    font-size: 22px;
+}
+
+.stat-number {
+    display: block;
+
+    margin-top: 10px;
+
+    font-size: 28px;
+
+    color: #4da6ff;
+
+    font-weight: bold;
+}
+
+.stat-label {
+    color: #9ba6b2;
+
+    font-size: 13px;
+}
+
+/* =========================
+   CONTROL PANEL
+========================= */
+
+.control-panel {
+    padding: 18px;
+
+    border-radius: 18px;
+
+    background: rgba(3,8,15,.72);
+
+    border: 1px solid rgba(255,255,255,.10);
+
+    backdrop-filter: blur(15px);
 
     margin-bottom: 20px;
 }
 
-.ticket-header h2 {
-    margin-bottom: 7px;
-
-    color: #fff;
+.search-wrapper {
+    position: relative;
 }
 
-.ticket-header small {
-    color: #888;
-}
-
-.ticket-card p {
-    color: #ddd;
-
-    line-height: 1.8;
-
-    margin: 8px 0;
-}
-
-.ticket-card hr {
-    border: 0;
-
-    border-top:
-        1px solid rgba(255,255,255,.1);
-
-    margin: 22px 0;
-}
-
-/* =====================================================
-   STATUS
-===================================================== */
-
-.approved-text {
-    color: #00ff88;
-    font-weight: bold;
-}
-
-.rejected-text {
-    color: #ff4444;
-    font-weight: bold;
-}
-
-.pending-text {
-    color: #ffaa00;
-    font-weight: bold;
-}
-
-/* =====================================================
-   INPUTS
-===================================================== */
-
-.ticket-card textarea,
-.ticket-card select {
-
+.search-wrapper input {
     width: 100%;
 
-    margin-top: 8px;
-    margin-bottom: 15px;
+    padding: 15px 18px;
 
-    padding: 14px;
+    border-radius: 12px;
 
-    background:
-        rgba(0,0,0,.35);
-
-    color: white;
-
-    border:
-        1px solid rgba(255,255,255,.12);
-
-    border-radius: 11px;
+    border: 1px solid rgba(255,255,255,.12);
 
     outline: none;
 
-    font-family: inherit;
+    background: rgba(255,255,255,.055);
+
+    color: white;
+
+    font-size: 14px;
 }
 
-.ticket-card textarea {
-    min-height: 120px;
+.search-wrapper input:focus {
+    border-color: rgba(50,150,255,.7);
 
-    resize: vertical;
+    box-shadow:
+        0 0 0 3px rgba(0,120,255,.10);
 }
 
-.ticket-card textarea:focus,
-.ticket-card select:focus {
-    border-color: #168cff;
+.filter-buttons {
+    display: flex;
+
+    gap: 8px;
+
+    flex-wrap: wrap;
+
+    margin-top: 13px;
 }
 
-/* =====================================================
-   BUTTONS
-===================================================== */
+.filter-btn {
+    border: 1px solid rgba(255,255,255,.12);
 
-.ticket-buttons {
+    background: rgba(255,255,255,.05);
+
+    color: #d9e0e8;
+
+    padding: 9px 15px;
+
+    border-radius: 9px;
+
+    cursor: pointer;
+
+    transition: .2s;
+}
+
+.filter-btn:hover {
+    background: rgba(255,255,255,.10);
+}
+
+.filter-btn.active {
+    background: #087cff;
+
+    border-color: #087cff;
+
+    color: white;
+
+    box-shadow:
+        0 5px 18px rgba(0,120,255,.25);
+}
+
+/* =========================
+   REQUESTS
+========================= */
+
+.requests-header {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin: 20px 0 12px;
+}
+
+.requests-header h2 {
+    margin: 0;
+
+    font-size: 20px;
+}
+
+.refresh-info {
+    color: #758190;
+
+    font-size: 12px;
+}
+
+.requests {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0,1fr));
+
+    gap: 15px;
+}
+
+/* =========================
+   TICKET CARD
+========================= */
+
+.ticket {
+    position: relative;
+
+    padding: 20px;
+
+    border-radius: 17px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(18,25,34,.92),
+            rgba(7,12,19,.92)
+        );
+
+    border: 1px solid rgba(255,255,255,.10);
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,.20);
+
+    transition: .25s;
+
+    overflow: hidden;
+}
+
+.ticket:hover {
+    transform: translateY(-3px);
+
+    border-color:
+        rgba(55,155,255,.30);
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,.32);
+}
+
+.ticket.unread {
+    border-color:
+        rgba(0,150,255,.45);
+
+    box-shadow:
+        0 0 25px rgba(0,120,255,.10);
+}
+
+.ticket-top {
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    align-items: flex-start;
+
+    margin-bottom: 16px;
+}
+
+.ticket-title {
     display: flex;
 
     gap: 10px;
 
-    margin-top: 10px;
+    align-items: center;
 }
 
-.ticket-buttons .btn {
-    flex: 1;
+.ticket-type-icon {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 12px;
+
+    background: rgba(0,120,255,.10);
+
+    border: 1px solid rgba(0,140,255,.18);
+
+    font-size: 20px;
 }
 
-.delete-btn {
-    background:
-        rgba(255,50,50,.12) !important;
+.ticket-title h3 {
+    margin: 0;
 
-    border-color:
-        rgba(255,70,70,.25) !important;
-
-    color: #ff7777 !important;
+    font-size: 16px;
 }
 
-.delete-btn:hover {
-    background:
-        rgba(255,50,50,.25) !important;
+.ticket-code {
+    color: #718092;
+
+    font-size: 11px;
+
+    margin-top: 4px;
+
+    direction: ltr;
+
+    text-align: right;
 }
 
-/* =====================================================
-   CHAT
-===================================================== */
+.status {
+    padding: 6px 10px;
 
-.command-chat-box {
-    margin-top: 25px;
+    border-radius: 20px;
 
-    padding-top: 20px;
+    font-size: 11px;
 
-    border-top:
-        1px solid rgba(255,255,255,.1);
+    white-space: nowrap;
 }
 
-.command-chat-box h3 {
+.status.pending {
+    background: rgba(255,180,0,.10);
+
+    border: 1px solid rgba(255,180,0,.18);
+
+    color: #ffc44d;
+}
+
+.status.accepted {
+    background: rgba(0,255,130,.09);
+
+    border: 1px solid rgba(0,255,130,.18);
+
+    color: #45e996;
+}
+
+.status.rejected {
+    background: rgba(255,50,50,.09);
+
+    border: 1px solid rgba(255,50,50,.18);
+
+    color: #ff6565;
+}
+
+.ticket-info {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 9px;
+
     margin-bottom: 15px;
 }
 
-.chat-messages {
-    max-height: 380px;
+.info-item {
+    padding: 10px;
+
+    background: rgba(255,255,255,.035);
+
+    border-radius: 9px;
+
+    border: 1px solid rgba(255,255,255,.055);
+}
+
+.info-item small {
+    display: block;
+
+    color: #738091;
+
+    font-size: 10px;
+
+    margin-bottom: 4px;
+}
+
+.info-item span {
+    color: #e4e8ed;
+
+    font-size: 12px;
+
+    word-break: break-word;
+}
+
+.ticket-exam {
+    padding: 12px;
+
+    border-radius: 10px;
+
+    background: rgba(0,120,255,.06);
+
+    border: 1px solid rgba(0,120,255,.10);
+
+    margin-bottom: 13px;
+}
+
+.ticket-exam strong {
+    color: #4da6ff;
+}
+
+.ticket-footer {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding-top: 13px;
+
+    border-top: 1px solid rgba(255,255,255,.07);
+}
+
+.ticket-date {
+    color: #687483;
+
+    font-size: 10px;
+}
+
+.ticket-actions {
+    display: flex;
+
+    gap: 7px;
+
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    border: 1px solid rgba(255,255,255,.10);
+
+    background: rgba(255,255,255,.06);
+
+    color: white;
+
+    padding: 8px 12px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-family: inherit;
+
+    transition: .2s;
+}
+
+.action-btn:hover {
+    background: rgba(255,255,255,.12);
+}
+
+.action-btn.blue {
+    background: rgba(0,120,255,.15);
+
+    border-color: rgba(0,140,255,.25);
+}
+
+.action-btn.green {
+    background: rgba(0,200,100,.10);
+
+    border-color: rgba(0,220,110,.20);
+}
+
+.action-btn.red {
+    background: rgba(255,50,50,.10);
+
+    border-color: rgba(255,70,70,.20);
+}
+
+/* =========================
+   EMPTY
+========================= */
+
+.empty-box {
+    grid-column: 1 / -1;
+
+    padding: 50px 25px;
+
+    text-align: center;
+
+    border-radius: 17px;
+
+    background: rgba(255,255,255,.035);
+
+    border: 1px dashed rgba(255,255,255,.12);
+
+    color: #7d8997;
+}
+
+.empty-icon {
+    font-size: 40px;
+
+    margin-bottom: 10px;
+}
+
+/* =========================
+   MODAL
+========================= */
+
+.modal {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 3000;
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(0,0,0,.72);
+
+    backdrop-filter: blur(8px);
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-box {
+    width: 750px;
+
+    max-width: 100%;
+
+    max-height: 90vh;
 
     overflow-y: auto;
 
-    padding: 12px;
+    padding: 25px;
+
+    border-radius: 20px;
 
     background:
-        rgba(0,0,0,.3);
+        linear-gradient(
+            145deg,
+            #101821,
+            #050a10
+        );
 
-    border:
-        1px solid rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.12);
 
-    border-radius: 13px;
-
-    margin-bottom: 12px;
+    box-shadow:
+        0 30px 80px rgba(0,0,0,.60);
 }
 
-.chat-message {
+.modal-header {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 20px;
+}
+
+.modal-header h2 {
+    margin: 0;
+}
+
+.close-modal {
+    width: 36px;
+    height: 36px;
+
+    border: none;
+
+    border-radius: 9px;
+
+    background: rgba(255,255,255,.07);
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 18px;
+}
+
+.detail-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 10px;
+}
+
+.detail {
     padding: 12px;
 
-    margin-bottom: 10px;
+    border-radius: 10px;
 
-    border-radius: 11px;
+    background: rgba(255,255,255,.04);
 
-    background:
-        rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.06);
 }
 
-.chat-message.command {
-    border-right:
-        3px solid #168cff;
+.detail.full {
+    grid-column: 1 / -1;
 }
 
-.chat-message.applicant {
-    border-right:
-        3px solid #00d97a;
-}
+.detail label {
+    display: block;
 
-.chat-message-name {
-    font-weight: bold;
+    color: #718091;
+
+    font-size: 11px;
 
     margin-bottom: 5px;
 }
 
-.chat-message-text {
+.detail div {
+    color: #e7ebef;
+
     white-space: pre-wrap;
 
     line-height: 1.7;
-
-    color: #ddd;
 }
 
-.chat-message-time {
-    display: block;
-
-    margin-top: 7px;
-
-    color: #777;
-
-    font-size: 11px;
+.reply-area {
+    margin-top: 20px;
 }
 
-.admin-chat-input {
+.reply-area textarea {
     width: 100%;
 
-    min-height: 90px;
+    min-height: 110px;
 
     padding: 13px;
 
-    background:
-        rgba(0,0,0,.3);
-
-    color: white;
-
-    border:
-        1px solid rgba(255,255,255,.12);
+    resize: vertical;
 
     border-radius: 11px;
 
-    outline: none;
+    background: rgba(255,255,255,.045);
 
-    resize: vertical;
+    border: 1px solid rgba(255,255,255,.10);
+
+    color: white;
+
+    outline: none;
 
     font-family: inherit;
 }
 
-.admin-chat-input:focus {
-    border-color: #168cff;
+.reply-area textarea:focus {
+    border-color: #198cff;
+
+    box-shadow:
+        0 0 0 3px rgba(0,120,255,.10);
 }
 
-.chat-send-btn {
-    width: 100%;
+.modal-buttons {
+    display: flex;
+
+    gap: 8px;
+
+    flex-wrap: wrap;
+
+    margin-top: 12px;
+}
+
+/* =========================
+   CHAT
+========================= */
+
+.chat-container {
+    margin-top: 20px;
+
+    padding-top: 20px;
+
+    border-top: 1px solid rgba(255,255,255,.08);
+}
+
+.chat-container h3 {
+    margin-bottom: 12px;
+}
+
+.chat-messages {
+    max-height: 280px;
+
+    overflow-y: auto;
+
+    padding: 10px;
+
+    border-radius: 12px;
+
+    background: #03070c;
+
+    border: 1px solid rgba(255,255,255,.08);
+}
+
+.chat-message {
+    padding: 10px 12px;
+
+    border-radius: 10px;
+
+    margin-bottom: 8px;
+
+    background: rgba(255,255,255,.045);
+}
+
+.chat-message.command {
+    border-right: 3px solid #3aa0ff;
+}
+
+.chat-message.applicant {
+    border-right: 3px solid #35d07f;
+}
+
+.chat-message strong {
+    display: block;
+
+    margin-bottom: 4px;
+}
+
+.chat-message p {
+    white-space: pre-wrap;
+
+    line-height: 1.6;
+
+    margin: 0;
+}
+
+.chat-message small {
+    display: block;
+
+    margin-top: 5px;
+
+    color: #687483;
+
+    font-size: 10px;
+}
+
+.chat-send-row {
+    display: flex;
+
+    gap: 8px;
 
     margin-top: 8px;
 }
 
-/* =====================================================
-   EMPTY
-===================================================== */
+.chat-send-row textarea {
+    flex: 1;
 
-.empty {
-    text-align: center;
+    min-height: 65px;
 
-    padding: 45px;
+    padding: 12px;
 
-    color: #aaa;
+    border-radius: 10px;
+
+    border: 1px solid rgba(255,255,255,.10);
+
+    background: rgba(255,255,255,.04);
+
+    color: white;
+
+    font-family: inherit;
+
+    resize: vertical;
+
+    outline: none;
 }
 
-/* =====================================================
-   MOBILE
-===================================================== */
+/* =========================
+   TOAST
+========================= */
+
+.toast {
+    position: fixed;
+
+    left: 25px;
+
+    bottom: 25px;
+
+    z-index: 5000;
+
+    min-width: 250px;
+
+    padding: 14px 18px;
+
+    border-radius: 12px;
+
+    background: rgba(10,18,28,.95);
+
+    border: 1px solid rgba(255,255,255,.12);
+
+    box-shadow: 0 15px 40px rgba(0,0,0,.4);
+
+    transform: translateY(120px);
+
+    opacity: 0;
+
+    transition: .3s;
+}
+
+.toast.show {
+    transform: translateY(0);
+
+    opacity: 1;
+}
+
+.toast.success {
+    border-color: rgba(0,255,130,.25);
+}
+
+.toast.error {
+    border-color: rgba(255,50,50,.25);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
 
 @media(max-width:850px) {
 
-    .stats {
+    .admin-stats {
         grid-template-columns:
             repeat(2, 1fr);
+    }
+
+    .requests {
+        grid-template-columns: 1fr;
     }
 
 }
 
 @media(max-width:600px) {
 
-    .dashboard {
-        padding: 15px;
+    .admin-navbar {
+        padding: 12px 15px;
+    }
+
+    .admin-brand-text {
+        display: none;
+    }
+
+    .admin-main {
+        max-width: 94%;
+        margin-top: 20px;
     }
 
     .admin-header {
         flex-direction: column;
 
-        align-items: stretch;
+        align-items: flex-start;
 
-        text-align: center;
+        gap: 12px;
     }
 
-    .admin-title {
-        text-align: center;
+    .admin-stats {
+        grid-template-columns: 1fr;
     }
 
-    .stats {
-        grid-template-columns: 1fr 1fr;
+    .ticket-info {
+        grid-template-columns: 1fr;
     }
 
-    .ticket-header {
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .detail.full {
+        grid-column: auto;
+    }
+
+    .ticket-footer {
         flex-direction: column;
+
+        align-items: flex-start;
     }
 
-    .ticket-buttons {
+    .chat-send-row {
         flex-direction: column;
-    }
-
-    .admin-login {
-        margin-top: 35px;
-
-        padding: 30px 20px;
     }
 
 }
@@ -603,122 +1059,69 @@
 
 <body class="command-page">
 
+
 <div class="overlay"></div>
 
 
-<header class="navbar">
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
 
-    <img
-        src="badge.png"
-        class="badge"
-        alt="LSPD Badge"
-    >
+<header class="admin-navbar">
 
-    <div class="nav-title">
+    <div class="admin-brand">
 
-        <h2>Vanguard LSPD</h2>
+        <img
+            src="badge.png"
+            alt="LSPD"
+        >
 
-        <span>
-            Command Center
-        </span>
+        <div class="admin-brand-text">
+
+            <h2>
+                Vanguard LSPD
+            </h2>
+
+            <span>
+                Command Center
+            </span>
+
+        </div>
 
     </div>
 
-    <button
-        class="login-btn"
-        id="logoutButton"
-        onclick="logoutAdmin()"
-    >
-        خروج
-    </button>
+
+    <div class="admin-actions">
+
+        <button
+            class="admin-btn"
+            onclick="manualRefresh()"
+        >
+            🔄 بروزرسانی
+        </button>
+
+        <button
+            class="admin-btn logout"
+            onclick="logout()"
+        >
+            خروج
+        </button>
+
+    </div>
 
 </header>
 
 
-<main class="hero">
-
-
 <!-- =====================================================
-     LOGIN
+     MAIN
 ===================================================== -->
 
-<section
-    id="loginPanel"
-    class="admin-login"
->
-
-    <img
-        src="badge.png"
-        class="admin-login-logo"
-        alt="LSPD"
-    >
-
-    <h1>
-        🔐 ورود فرماندهی
-    </h1>
-
-    <p>
-        Vanguard LSPD Command Center
-    </p>
-
-
-    <div class="login-field">
-
-        <input
-            type="text"
-            id="adminUsername"
-            placeholder="نام کاربری فرماندهی"
-            autocomplete="username"
-        >
-
-    </div>
-
-
-    <div class="login-field">
-
-        <input
-            type="password"
-            id="adminPassword"
-            placeholder="رمز عبور"
-            autocomplete="current-password"
-        >
-
-    </div>
-
-
-    <button
-        class="btn primary"
-        style="width:100%;margin-top:5px;"
-        onclick="handleAdminLogin()"
-    >
-        🚔 ورود به پنل فرماندهی
-    </button>
-
-
-    <div
-        id="loginError"
-        class="login-error"
-    >
-        ❌ نام کاربری یا رمز عبور اشتباه است.
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     DASHBOARD
-===================================================== -->
-
-<section
-    id="adminPanel"
-    class="dashboard"
-    style="display:none;"
->
+<main class="admin-main">
 
 
     <div class="admin-header">
 
-        <div class="admin-title">
+        <div>
 
             <h1>
                 🚔 پنل فرماندهی LSPD
@@ -730,14 +1133,12 @@
 
         </div>
 
-        <div>
 
-            <span
-                id="lastUpdate"
-                style="color:#777;font-size:12px;"
-            >
-                آخرین بروزرسانی: —
-            </span>
+        <div class="live-status">
+
+            <span class="live-dot"></span>
+
+            سیستم آنلاین
 
         </div>
 
@@ -748,389 +1149,298 @@
          STATS
     ================================================= -->
 
-    <div class="stats">
+    <section class="admin-stats">
 
-        <div class="stat-card stat-total">
 
-            <h2 id="total">
+        <div class="admin-stat">
+
+            <span class="stat-icon">
+                📋
+            </span>
+
+            <span
+                id="totalCount"
+                class="stat-number"
+            >
                 0
-            </h2>
+            </span>
 
-            <p>
+            <span class="stat-label">
                 کل درخواست‌ها
-            </p>
+            </span>
 
         </div>
 
 
-        <div class="stat-card stat-pending">
+        <div class="admin-stat">
 
-            <h2 id="pending">
+            <span class="stat-icon">
+                ⏳
+            </span>
+
+            <span
+                id="pendingCount"
+                class="stat-number"
+            >
                 0
-            </h2>
+            </span>
 
-            <p>
-                در انتظار
-            </p>
+            <span class="stat-label">
+                در انتظار بررسی
+            </span>
 
         </div>
 
 
-        <div class="stat-card stat-accepted">
+        <div class="admin-stat">
 
-            <h2 id="accepted">
+            <span class="stat-icon">
+                ✅
+            </span>
+
+            <span
+                id="acceptedCount"
+                class="stat-number"
+            >
                 0
-            </h2>
+            </span>
 
-            <p>
+            <span class="stat-label">
                 تایید شده
-            </p>
+            </span>
 
         </div>
 
 
-        <div class="stat-card stat-rejected">
+        <div class="admin-stat">
 
-            <h2 id="rejected">
+            <span class="stat-icon">
+                ❌
+            </span>
+
+            <span
+                id="rejectedCount"
+                class="stat-number"
+            >
                 0
-            </h2>
+            </span>
 
-            <p>
+            <span class="stat-label">
                 رد شده
-            </p>
+            </span>
 
         </div>
 
-    </div>
+
+    </section>
 
 
     <!-- =================================================
-         SEARCH
+         CONTROL
     ================================================= -->
 
-    <input
-        class="search-box"
-        id="search"
-        type="text"
-        placeholder="🔍 جستجو IC، OOC، Discord یا کد پیگیری..."
-        autocomplete="off"
-    >
+    <section class="control-panel">
+
+
+        <div class="search-wrapper">
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="🔎 جستجو بر اساس کد، IC Name، OC Name، Discord..."
+                autocomplete="off"
+            >
+
+        </div>
+
+
+        <div class="filter-buttons">
+
+            <button
+                class="filter-btn active"
+                data-filter="all"
+            >
+                همه درخواست‌ها
+            </button>
+
+            <button
+                class="filter-btn"
+                data-filter="membership"
+            >
+                🚔 عضویت
+            </button>
+
+            <button
+                class="filter-btn"
+                data-filter="division"
+            >
+                🎖️ دیویژن
+            </button>
+
+            <button
+                class="filter-btn"
+                data-filter="resignation"
+            >
+                📤 استعفا
+            </button>
+
+            <button
+                class="filter-btn"
+                data-filter="rankup"
+            >
+                ⬆️ Rankup
+            </button>
+
+            <button
+                class="filter-btn"
+                data-filter="pending"
+            >
+                ⏳ در انتظار
+            </button>
+
+        </div>
+
+
+    </section>
 
 
     <!-- =================================================
-         FILTER
+         REQUESTS
     ================================================= -->
 
-    <div class="request-tabs">
-
-        <button
-            class="btn primary"
-            onclick="filterRequests('all')"
-        >
-            📋 همه
-        </button>
-
-        <button
-            class="btn"
-            onclick="filterRequests('membership')"
-        >
-            🚔 عضویت
-        </button>
-
-        <button
-            class="btn"
-            onclick="filterRequests('division')"
-        >
-            🎖️ دیویژن
-        </button>
-
-        <button
-            class="btn"
-            onclick="filterRequests('resignation')"
-        >
-            📤 استعفا
-        </button>
-
-        <button
-            class="btn"
-            onclick="filterRequests('rankup')"
-        >
-            ⬆️ رنکاپ
-        </button>
-
-    </div>
-
-
-    <div
-        id="sectionTitle"
-        style="margin:20px 0;"
-    >
+    <div class="requests-header">
 
         <h2>
-            📋 همه درخواست‌ها
+            📄 درخواست‌ها
         </h2>
+
+        <span
+            id="refreshInfo"
+            class="refresh-info"
+        >
+            بروزرسانی خودکار فعال است
+        </span>
 
     </div>
 
 
-    <div id="tickets">
+    <section
+        id="requests"
+        class="requests"
+    >
 
-        <div class="ticket-card empty">
+        <div class="empty-box">
 
-            ⏳ در حال دریافت درخواست‌ها...
+            <div class="empty-icon">
+                ⏳
+            </div>
+
+            در حال دریافت درخواست‌ها...
 
         </div>
 
-    </div>
+    </section>
 
-
-</section>
 
 </main>
 
 
+<!-- =====================================================
+     MODAL
+===================================================== -->
+
+<div
+    id="ticketModal"
+    class="modal"
+>
+
+
+    <div class="modal-box">
+
+
+        <div class="modal-header">
+
+            <h2>
+                📄 جزئیات درخواست
+            </h2>
+
+            <button
+                class="close-modal"
+                onclick="closeModal()"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div id="modalContent">
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     TOAST
+===================================================== -->
+
+<div
+    id="toast"
+    class="toast"
+>
+</div>
+
+
 <script>
 
-/* =====================================================
-   API
-===================================================== */
+/* =========================================================
+   CONFIG
+========================================================= */
 
 const API_URL =
     "https://lspd-site-11.onrender.com";
 
 
-/* =====================================================
-   STATE
-===================================================== */
-
-let allTickets = [];
-
-let currentFilter = "all";
-
-let currentSearch = "";
-
-let selectedChatTicket = null;
+const REFRESH_INTERVAL =
+    2000;
 
 
-/*
-    برای جلوگیری از درخواست اضافی
-*/
+let tickets = [];
 
-let isLoadingTickets = false;
+let activeFilter = "all";
 
+let selectedTicketId = null;
 
-/* =====================================================
-   LOGIN
-===================================================== */
+let refreshTimer = null;
 
-/*
-    اگر script.js سیستم لاگین خودش را دارد،
-    می‌توانی این قسمت را با همان سیستم هماهنگ کنی.
-
-    این بخش فقط ظاهر و وضعیت ورود پنل را مدیریت می‌کند.
-*/
-
-function handleAdminLogin() {
-
-    const username =
-        document
-        .getElementById("adminUsername")
-        .value
-        .trim();
-
-    const password =
-        document
-        .getElementById("adminPassword")
-        .value;
+let firstLoad = true;
 
 
-    if (!username || !password) {
+/* =========================================================
+   AUTH
+========================================================= */
 
-        showLoginError(
-            "⚠️ نام کاربری و رمز عبور را وارد کنید."
-        );
+if (
+    localStorage.getItem("lspdAdmin") !== "true"
+) {
 
-        return;
-
-    }
-
-
-    /*
-        تابع loginAdmin موجود در script.js
-        در صورت وجود استفاده می‌شود.
-    */
-
-    if (
-        typeof window.loginAdmin ===
-        "function"
-    ) {
-
-        try {
-
-            const result =
-                window.loginAdmin(
-                    username,
-                    password
-                );
-
-            /*
-                اگر تابع async باشد
-            */
-
-            if (
-                result &&
-                typeof result.then ===
-                "function"
-            ) {
-
-                result
-                .then(success => {
-
-                    if (success === false) {
-
-                        showLoginError(
-                            "❌ ورود ناموفق بود."
-                        );
-
-                        return;
-
-                    }
-
-                    loginSuccess();
-
-                })
-                .catch(error => {
-
-                    console.error(error);
-
-                    showLoginError(
-                        "❌ خطا در ورود."
-                    );
-
-                });
-
-                return;
-
-            }
-
-
-            if (result === false) {
-
-                showLoginError(
-                    "❌ نام کاربری یا رمز عبور اشتباه است."
-                );
-
-                return;
-
-            }
-
-        } catch (error) {
-
-            console.error(error);
-
-            showLoginError(
-                "❌ خطا در سیستم ورود."
-            );
-
-            return;
-
-        }
-
-    }
-
-
-    /*
-        اگر script.js تابع loginAdmin نداشته باشد،
-        برای جلوگیری از گیر کردن صفحه،
-        وضعیت ورود محلی ثبت می‌شود.
-    */
-
-    localStorage.setItem(
-        "vanguardAdminLoggedIn",
-        "true"
-    );
-
-    loginSuccess();
+    window.location.href =
+        "login.html";
 
 }
 
 
-function loginSuccess() {
-
-    localStorage.setItem(
-        "vanguardAdminLoggedIn",
-        "true"
-    );
-
-
-    document
-    .getElementById("loginPanel")
-    .style.display = "none";
-
-
-    document
-    .getElementById("adminPanel")
-    .style.display = "block";
-
-
-    document
-    .getElementById("logoutButton")
-    .style.display = "block";
-
-
-    loadTickets();
-
-}
-
-
-function showLoginError(message) {
-
-    const error =
-        document.getElementById(
-            "loginError"
-        );
-
-    error.innerText =
-        message;
-
-    error.style.display =
-        "block";
-
-}
-
-
-function logoutAdmin() {
-
-    localStorage.removeItem(
-        "vanguardAdminLoggedIn"
-    );
-
-
-    document
-    .getElementById("adminPanel")
-    .style.display = "none";
-
-
-    document
-    .getElementById("loginPanel")
-    .style.display = "block";
-
-
-    document
-    .getElementById("logoutButton")
-    .style.display = "none";
-
-}
-
-
-/* =====================================================
+/* =========================================================
    SECURITY
-===================================================== */
+========================================================= */
 
 function escapeHTML(value) {
 
     return String(value ?? "")
-
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
@@ -1140,102 +1450,110 @@ function escapeHTML(value) {
 }
 
 
-/* =====================================================
+/* =========================================================
    REQUEST TYPE
-===================================================== */
+========================================================= */
 
-function getRequestType(ticket) {
-
-    return (
-        ticket.requestType ||
-        ticket.type ||
-        "membership"
-    );
-
-}
-
-
-function getRequestTitle(type) {
+function getRequestType(type) {
 
     switch (type) {
 
         case "membership":
-            return "🚔 درخواست عضویت";
+            return {
+                text: "درخواست عضویت",
+                icon: "🚔"
+            };
 
         case "division":
-            return "🎖️ درخواست دیویژن";
+            return {
+                text: "درخواست دیویژن",
+                icon: "🎖️"
+            };
 
         case "resignation":
-            return "📤 درخواست استعفا";
+            return {
+                text: "درخواست استعفا",
+                icon: "📤"
+            };
 
         case "rankup":
-            return "⬆️ درخواست رنکاپ";
+            return {
+                text: "درخواست Rankup",
+                icon: "⬆️"
+            };
 
         default:
-            return "📋 درخواست";
+            return {
+                text: "درخواست",
+                icon: "📄"
+            };
 
     }
 
 }
 
 
-/* =====================================================
+/* =========================================================
    STATUS
-===================================================== */
+========================================================= */
 
-function getStatusClass(status) {
+function getStatus(status) {
 
     if (status === "Accepted") {
 
-        return "approved-text";
+        return {
+            text: "تایید شده",
+            className: "accepted"
+        };
 
     }
 
     if (status === "Rejected") {
 
-        return "rejected-text";
+        return {
+            text: "رد شده",
+            className: "rejected"
+        };
 
     }
 
-    return "pending-text";
+    return {
+        text: "در انتظار بررسی",
+        className: "pending"
+    };
 
 }
 
 
-function getStatusText(status) {
+/* =========================================================
+   FORMAT DATE
+========================================================= */
 
-    if (status === "Accepted") {
+function formatDate(date) {
 
-        return "🟢 تایید شده";
-
+    if (!date) {
+        return "—";
     }
 
-    if (status === "Rejected") {
+    try {
 
-        return "🔴 رد شده";
+        return new Date(date)
+            .toLocaleString("fa-IR");
+
+    } catch {
+
+        return "—";
 
     }
-
-    return "🟡 در انتظار";
 
 }
 
 
-/* =====================================================
+/* =========================================================
    LOAD TICKETS
-===================================================== */
+========================================================= */
 
-async function loadTickets() {
-
-    if (isLoadingTickets) {
-
-        return;
-
-    }
-
-
-    isLoadingTickets = true;
-
+async function loadTickets(silent = false) {
 
     try {
 
@@ -1243,7 +1561,14 @@ async function loadTickets() {
             await fetch(
                 API_URL + "/tickets",
                 {
-                    cache: "no-store"
+                    method: "GET",
+
+                    cache: "no-store",
+
+                    headers: {
+                        "Cache-Control":
+                            "no-cache"
+                    }
                 }
             );
 
@@ -1251,43 +1576,98 @@ async function loadTickets() {
         if (!response.ok) {
 
             throw new Error(
-                "Server Error"
+                "HTTP " +
+                response.status
             );
 
         }
 
 
-        const tickets =
+        const data =
             await response.json();
 
 
-        allTickets =
-            Array.isArray(tickets)
-            ? tickets
-            : [];
+        if (!Array.isArray(data)) {
+
+            throw new Error(
+                "Invalid tickets response"
+            );
+
+        }
+
+
+        /*
+         * مرتب‌سازی:
+         * جدیدترین درخواست اول
+         */
+
+        data.sort(
+            (a, b) =>
+                new Date(
+                    b.createdAt || 0
+                ) -
+                new Date(
+                    a.createdAt || 0
+                )
+        );
+
+
+        const oldIds =
+            new Set(
+                tickets.map(
+                    ticket =>
+                        String(ticket._id)
+                )
+            );
+
+
+        const newTicket =
+            data.find(
+                ticket =>
+                    !oldIds.has(
+                        String(ticket._id)
+                    )
+            );
+
+
+        tickets = data;
 
 
         updateStats();
 
-        renderRequests();
+        renderTickets();
 
 
-        const update =
-            document.getElementById(
-                "lastUpdate"
+        /*
+         * اگر درخواست جدید آمده باشد
+         */
+
+        if (
+            !firstLoad &&
+            newTicket
+        ) {
+
+            showToast(
+                "📨 درخواست جدید دریافت شد.",
+                "success"
             );
 
+        }
 
-        if (update) {
 
-            update.innerText =
+        firstLoad = false;
+
+
+        document
+            .getElementById(
+                "refreshInfo"
+            )
+            .innerText =
                 "آخرین بروزرسانی: " +
                 new Date()
-                .toLocaleTimeString(
-                    "fa-IR"
-                );
-
-        }
+                    .toLocaleTimeString(
+                        "fa-IR"
+                    );
 
 
     } catch (error) {
@@ -1298,260 +1678,249 @@ async function loadTickets() {
         );
 
 
-        if (!allTickets.length) {
+        if (!silent) {
 
             document
-            .getElementById("tickets")
-            .innerHTML = `
+                .getElementById(
+                    "requests"
+                )
+                .innerHTML = `
 
-                <div class="ticket-card empty">
+                    <div class="empty-box">
 
-                    <h2>
-                        ❌ خطا در اتصال به سرور
-                    </h2>
+                        <div class="empty-icon">
+                            ⚠️
+                        </div>
 
-                    <p>
-                        چند لحظه بعد دوباره تلاش کنید.
-                    </p>
+                        دریافت درخواست‌ها ناموفق بود.
 
-                </div>
+                        <br><br>
 
-            `;
+                        <small>
+                            ${escapeHTML(
+                                error.message
+                            )}
+                        </small>
+
+                    </div>
+
+                `;
 
         }
-
-    } finally {
-
-        isLoadingTickets = false;
 
     }
 
 }
 
 
-/* =====================================================
-   AUTO REFRESH TICKETS
-===================================================== */
-
-/*
-    هر ۲ ثانیه درخواست‌ها بررسی می‌شوند.
-*/
-
-setInterval(
-    () => {
-
-        const panel =
-            document.getElementById(
-                "adminPanel"
-            );
-
-        if (
-            panel &&
-            panel.style.display !== "none"
-        ) {
-
-            loadTickets();
-
-        }
-
-    },
-    2000
-);
-
-
-/* =====================================================
+/* =========================================================
    STATS
-===================================================== */
+========================================================= */
 
 function updateStats() {
 
-    document.getElementById(
-        "total"
-    ).innerText =
-        allTickets.length;
+    const total =
+        tickets.length;
 
 
-    document.getElementById(
-        "pending"
-    ).innerText =
-        allTickets.filter(
-            t =>
-                (t.status || "Pending") ===
-                "Pending"
+    const pending =
+        tickets.filter(
+            ticket =>
+                !ticket.status ||
+                ticket.status === "Pending"
         ).length;
 
 
-    document.getElementById(
-        "accepted"
-    ).innerText =
-        allTickets.filter(
-            t =>
-                t.status === "Accepted"
+    const accepted =
+        tickets.filter(
+            ticket =>
+                ticket.status ===
+                "Accepted"
         ).length;
 
 
-    document.getElementById(
-        "rejected"
-    ).innerText =
-        allTickets.filter(
-            t =>
-                t.status === "Rejected"
+    const rejected =
+        tickets.filter(
+            ticket =>
+                ticket.status ===
+                "Rejected"
         ).length;
+
+
+    document
+        .getElementById(
+            "totalCount"
+        )
+        .innerText =
+            total;
+
+
+    document
+        .getElementById(
+            "pendingCount"
+        )
+        .innerText =
+            pending;
+
+
+    document
+        .getElementById(
+            "acceptedCount"
+        )
+        .innerText =
+            accepted;
+
+
+    document
+        .getElementById(
+            "rejectedCount"
+        )
+        .innerText =
+            rejected;
 
 }
 
 
-/* =====================================================
+/* =========================================================
    FILTER
-===================================================== */
+========================================================= */
 
-function filterRequests(type) {
+function getFilteredTickets() {
 
-    currentFilter =
-        type;
-
-
-    const title =
-        document.getElementById(
-            "sectionTitle"
-        );
-
-
-    title.innerHTML = `
-
-        <h2>
-            ${
-                type === "all"
-                ? "📋 همه درخواست‌ها"
-                : getRequestTitle(type)
-            }
-        </h2>
-
-    `;
+    const search =
+        document
+            .getElementById(
+                "searchInput"
+            )
+            .value
+            .trim()
+            .toLowerCase();
 
 
-    renderRequests();
+    return tickets.filter(
+        ticket => {
 
-}
-
-
-/* =====================================================
-   SEARCH
-===================================================== */
-
-document
-.getElementById("search")
-.addEventListener(
-    "input",
-    function() {
-
-        currentSearch =
-            this.value
-            .toLowerCase()
-            .trim();
+            const type =
+                ticket.requestType ||
+                "";
 
 
-        renderRequests();
+            const status =
+                ticket.status ||
+                "Pending";
 
-    }
-);
+
+            let matchesFilter =
+                true;
 
 
-/* =====================================================
-   RENDER
-===================================================== */
-
-function renderRequests() {
-
-    let filtered =
-        allTickets.filter(
-            ticket => {
-
-                const type =
-                    getRequestType(ticket);
-
+            if (
+                activeFilter !==
+                "all"
+            ) {
 
                 if (
-                    currentFilter !==
-                    "all" &&
-                    type !==
-                    currentFilter
+                    activeFilter ===
+                    "pending"
                 ) {
 
-                    return false;
+                    matchesFilter =
+                        !ticket.status ||
+                        ticket.status ===
+                            "Pending";
+
+                } else {
+
+                    matchesFilter =
+                        type ===
+                        activeFilter;
 
                 }
-
-
-                if (!currentSearch) {
-
-                    return true;
-
-                }
-
-
-                const searchText = (
-
-                    (ticket._id || "") +
-                    " " +
-                    (ticket.icName || "") +
-                    " " +
-                    (ticket.ocName || "") +
-                    " " +
-                    (ticket.oocName || "") +
-                    " " +
-                    (ticket.discord || "") +
-                    " " +
-                    (ticket.discordId || "") +
-                    " " +
-                    (ticket.steamHex || "") +
-                    " " +
-                    (ticket.cmx || "")
-
-                ).toLowerCase();
-
-
-                return searchText.includes(
-                    currentSearch
-                );
 
             }
-        );
 
 
-    showTickets(filtered);
+            if (!matchesFilter) {
+
+                return false;
+
+            }
+
+
+            if (!search) {
+
+                return true;
+
+            }
+
+
+            const searchable = [
+
+                ticket._id,
+
+                ticket.icName,
+
+                ticket.name,
+
+                ticket.oocName,
+
+                ticket.ocName,
+
+                ticket.discord,
+
+                ticket.discordId,
+
+                ticket.steamHex,
+
+                ticket.cmx,
+
+                ticket.requestType,
+
+                ticket.status
+
+            ]
+            .join(" ")
+            .toLowerCase();
+
+
+            return searchable
+                .includes(search);
+
+        }
+    );
 
 }
 
 
-/* =====================================================
-   SHOW TICKETS
-===================================================== */
+/* =========================================================
+   RENDER TICKETS
+========================================================= */
 
-function showTickets(tickets) {
+function renderTickets() {
 
-    const box =
+    const container =
         document.getElementById(
-            "tickets"
+            "requests"
         );
 
 
-    box.innerHTML = "";
+    const filtered =
+        getFilteredTickets();
 
 
-    if (!tickets.length) {
+    if (
+        filtered.length === 0
+    ) {
 
-        box.innerHTML = `
+        container.innerHTML = `
 
-            <div class="ticket-card empty">
+            <div class="empty-box">
 
-                <h2>
-                    📭 درخواستی وجود ندارد
-                </h2>
+                <div class="empty-icon">
+                    📭
+                </div>
 
-                <p>
-                    در این بخش درخواستی پیدا نشد.
-                </p>
+                درخواستی پیدا نشد.
 
             </div>
 
@@ -1562,435 +1931,741 @@ function showTickets(tickets) {
     }
 
 
-    tickets.forEach(ticket => {
+    container.innerHTML =
+        filtered
+            .map(
+                ticket =>
+                    createTicketHTML(
+                        ticket
+                    )
+            )
+            .join("");
 
-        const type =
-            getRequestType(ticket);
-
-
-        const status =
-            ticket.status ||
-            "Pending";
-
-
-        const statusClass =
-            getStatusClass(
-                status
-            );
+}
 
 
-        const statusText =
-            getStatusText(
-                status
-            );
+/* =========================================================
+   CREATE TICKET
+========================================================= */
+
+function createTicketHTML(ticket) {
+
+    const type =
+        getRequestType(
+            ticket.requestType
+        );
 
 
-        const id =
-            String(ticket._id);
+    const status =
+        getStatus(
+            ticket.status
+        );
 
 
-        let html = `
+    const id =
+        escapeHTML(
+            ticket._id
+        );
 
-            <div
-                class="ticket-card"
-                id="ticket-card-${escapeHTML(id)}"
-            >
 
-                <div class="ticket-header">
+    const ic =
+        escapeHTML(
+            ticket.icName ||
+            ticket.name ||
+            "—"
+        );
 
-                    <div>
 
-                        <h2>
-                            ${getRequestTitle(type)}
-                        </h2>
+    const oc =
+        escapeHTML(
+            ticket.ocName ||
+            ticket.oocName ||
+            "—"
+        );
 
-                        <small>
-                            کد پیگیری:
-                            ${escapeHTML(id)}
-                        </small>
+
+    const discord =
+        escapeHTML(
+            ticket.discord ||
+            ticket.discordId ||
+            "—"
+        );
+
+
+    let examHTML = "";
+
+
+    if (
+        ticket.score !==
+            undefined &&
+        ticket.score !== null
+    ) {
+
+        const score =
+            Number(ticket.score);
+
+
+        const passed =
+            score >= 12;
+
+
+        examHTML = `
+
+            <div class="ticket-exam">
+
+                📚 نمره آزمون:
+
+                <strong>
+                    ${score} / 20
+                </strong>
+
+                —
+
+                ${
+                    passed
+                    ? "🟢 قبول"
+                    : "🔴 رد"
+                }
+
+            </div>
+
+        `;
+
+    }
+
+
+    return `
+
+        <article class="ticket">
+
+
+            <div class="ticket-top">
+
+
+                <div class="ticket-title">
+
+
+                    <div class="ticket-type-icon">
+
+                        ${type.icon}
 
                     </div>
 
-                    <span class="${statusClass}">
-                        ${statusText}
+
+                    <div>
+
+                        <h3>
+
+                            ${type.text}
+
+                        </h3>
+
+
+                        <div class="ticket-code">
+
+                            ${id}
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <span
+                    class="status ${status.className}"
+                >
+
+                    ${status.text}
+
+                </span>
+
+
+            </div>
+
+
+            <div class="ticket-info">
+
+
+                <div class="info-item">
+
+                    <small>
+                        IC Name
+                    </small>
+
+                    <span>
+                        ${ic}
                     </span>
 
                 </div>
 
 
-                <p>
-                    <b>👤 IC Name:</b>
-                    ${escapeHTML(
-                        ticket.icName ||
-                        ticket.name ||
-                        "-"
-                    )}
-                </p>
-
-
-                <p>
-                    <b>🎭 OOC Name:</b>
-                    ${escapeHTML(
-                        ticket.oocName ||
-                        ticket.ocName ||
-                        "-"
-                    )}
-                </p>
-
-
-                <p>
-                    <b>💬 Discord:</b>
-                    ${escapeHTML(
-                        ticket.discordId ||
-                        ticket.discord ||
-                        "-"
-                    )}
-                </p>
-
-        `;
-
-
-        if (type === "membership") {
-
-            html += `
-
-                <p>
-                    <b>🎮 Steam Hex:</b>
-                    ${escapeHTML(
-                        ticket.steamHex || "-"
-                    )}
-                </p>
-
-                <p>
-                    <b>🆔 CMX:</b>
-                    ${escapeHTML(
-                        ticket.cmx || "-"
-                    )}
-                </p>
-
-                <p>
-                    <b>🎂 سن:</b>
-                    ${escapeHTML(
-                        ticket.age || "-"
-                    )}
-                </p>
-
-                <p>
-                    <b>🚔 تجربه رول‌پلی:</b>
-                    ${escapeHTML(
-                        ticket.experience || "-"
-                    )}
-                </p>
-
-                <p>
-                    <b>📄 دلیل عضویت:</b>
-                    ${escapeHTML(
-                        ticket.reason || "-"
-                    )}
-                </p>
-
-            `;
-
-        }
-
-
-        if (type === "division") {
-
-            html += `
-
-                <p>
-                    <b>⭐ Rank:</b>
-                    ${escapeHTML(
-                        ticket.rank || "-"
-                    )}
-                </p>
-
-                <p>
-                    <b>📻 Call Sign:</b>
-                    ${escapeHTML(
-                        ticket.callSign || "-"
-                    )}
-                </p>
-
-                <p>
-                    <b>🎖️ Current Division:</b>
-                    ${escapeHTML(
-                        ticket.currentDivision || "-"
-                    )}
-                </p>
-
-                <p>
-                    <b>🎯 Requested Division:</b>
-                    ${escapeHTML(
-                        ticket.requestedDivision || "-"
-                    )}
-                </p>
-
-                <p>
-                    <b>📄 Reason:</b>
-                    ${escapeHTML(
-                        ticket.reasonForRequest || "-"
-                    )}
-                </p>
-
-                <p>
-                    <b>📚 Previous Experience:</b>
-                    ${escapeHTML(
-                        ticket.previousDivisionExperience || "-"
-                    )}
-                </p>
-
-            `;
-
-        }
-
-
-        if (type === "resignation") {
-
-            html += `
-
-                <p>
-                    <b>⭐ Rank:</b>
-                    ${escapeHTML(
-                        ticket.rank || "-"
-                    )}
-                </p>
-
-                <p>
-                    <b>📻 Call Sign:</b>
-                    ${escapeHTML(
-                        ticket.callSign || "-"
-                    )}
-                </p>
-
-                <p>
-                    <b>📄 Reason:</b>
-                    ${escapeHTML(
-                        ticket.resignationReason ||
-                        ticket.reason ||
-                        "-"
-                    )}
-                </p>
-
-            `;
-
-        }
-
-
-        if (type === "rankup") {
-
-            html += `
-
-                <p>
-                    <b>⭐ Current Rank:</b>
-                    ${escapeHTML(
-                        ticket.rank || "-"
-                    )}
-                </p>
-
-                <p>
-                    <b>⬆️ Requested Rank:</b>
-                    ${escapeHTML(
-                        ticket.requestRank || "-"
-                    )}
-                </p>
-
-                <p>
-                    <b>⏱️ Timeplay:</b>
-                    ${escapeHTML(
-                        ticket.currentRankTimeplay || "-"
-                    )}
-                </p>
-
-                <p>
-                    <b>📝 Note:</b>
-                    ${escapeHTML(
-                        ticket.note || "-"
-                    )}
-                </p>
-
-            `;
-
-        }
-
-
-        html += `
-
-                <p>
-
-                    <b>
-                        🕒 تاریخ ثبت:
-                    </b>
-
-                    ${
-                        ticket.createdAt
-                        ? new Date(
-                            ticket.createdAt
-                          ).toLocaleString(
-                            "fa-IR"
-                          )
-                        : "-"
-                    }
-
-                </p>
-
-
-                <hr>
-
-
-                <label>
-                    ✍️ پاسخ فرماندهی
-                </label>
-
-
-                <textarea
-                    id="reply-${escapeHTML(id)}"
-                    placeholder="پاسخ فرماندهی..."
-                >${escapeHTML(
-                    ticket.reply || ""
-                )}</textarea>
-
-
-                <label>
-                    وضعیت درخواست
-                </label>
-
-
-                <select
-                    id="status-${escapeHTML(id)}"
-                >
-
-                    <option
-                        value="Pending"
-                        ${
-                            status === "Pending"
-                            ? "selected"
-                            : ""
-                        }
-                    >
-                        🟡 در انتظار
-                    </option>
-
-                    <option
-                        value="Accepted"
-                        ${
-                            status === "Accepted"
-                            ? "selected"
-                            : ""
-                        }
-                    >
-                        🟢 تایید شده
-                    </option>
-
-                    <option
-                        value="Rejected"
-                        ${
-                            status === "Rejected"
-                            ? "selected"
-                            : ""
-                        }
-                    >
-                        🔴 رد شده
-                    </option>
-
-                </select>
-
-
-                <div class="ticket-buttons">
-
-                    <button
-                        class="btn primary"
-                        onclick="saveTicket('${escapeHTML(id)}')"
-                    >
-                        💾 ذخیره
-                    </button>
-
-                    <button
-                        class="btn delete-btn"
-                        onclick="removeTicket('${escapeHTML(id)}')"
-                    >
-                        🗑 حذف
-                    </button>
+                <div class="info-item">
+
+                    <small>
+                        OC Name
+                    </small>
+
+                    <span>
+                        ${oc}
+                    </span>
 
                 </div>
 
 
-                <!-- CHAT -->
+                <div class="info-item">
 
-                <div class="command-chat-box">
+                    <small>
+                        Discord
+                    </small>
 
-                    <h3>
-                        💬 چت با متقاضی
-                    </h3>
+                    <span>
+                        ${discord}
+                    </span>
 
-
-                    <div
-                        class="chat-messages"
-                        id="messages-${escapeHTML(id)}"
-                    >
-
-                        <p style="color:#888;">
-                            ⏳ در حال دریافت پیام‌ها...
-                        </p>
-
-                    </div>
+                </div>
 
 
-                    <textarea
-                        class="admin-chat-input"
-                        id="chat-${escapeHTML(id)}"
-                        placeholder="پیام خود را برای متقاضی بنویسید..."
-                    ></textarea>
+                <div class="info-item">
 
+                    <small>
+                        نوع درخواست
+                    </small>
 
-                    <button
-                        class="btn primary chat-send-btn"
-                        onclick="sendAdminMessage('${escapeHTML(id)}')"
-                    >
-                        📨 ارسال پیام به متقاضی
-                    </button>
+                    <span>
+                        ${type.text}
+                    </span>
 
                 </div>
 
 
             </div>
 
-        `;
+
+            ${examHTML}
 
 
-        box.innerHTML +=
-            html;
+            <div class="ticket-footer">
 
 
-        loadAdminMessages(
-            id,
-            false
-        );
+                <span class="ticket-date">
 
-    });
+                    ثبت شده:
+                    ${formatDate(
+                        ticket.createdAt
+                    )}
+
+                </span>
+
+
+                <div class="ticket-actions">
+
+
+                    <button
+                        class="action-btn blue"
+                        onclick="openTicket('${id}')"
+                    >
+
+                        👁 مشاهده
+
+                    </button>
+
+
+                    <button
+                        class="action-btn green"
+                        onclick="changeStatus('${id}','Accepted')"
+                    >
+
+                        ✅ تایید
+
+                    </button>
+
+
+                    <button
+                        class="action-btn red"
+                        onclick="changeStatus('${id}','Rejected')"
+                    >
+
+                        ❌ رد
+
+                    </button>
+
+
+                </div>
+
+
+            </div>
+
+
+        </article>
+
+    `;
 
 }
 
 
-/* =====================================================
-   SAVE TICKET
-===================================================== */
+/* =========================================================
+   OPEN TICKET
+========================================================= */
 
-async function saveTicket(id) {
+async function openTicket(id) {
+
+    const ticket =
+        tickets.find(
+            item =>
+                String(item._id) ===
+                String(id)
+        );
+
+
+    if (!ticket) {
+
+        showToast(
+            "درخواست پیدا نشد.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    selectedTicketId =
+        String(id);
+
+
+    const type =
+        getRequestType(
+            ticket.requestType
+        );
+
 
     const status =
-        document.getElementById(
-            "status-" + id
-        ).value;
+        getStatus(
+            ticket.status
+        );
 
 
-    const reply =
+    const modal =
         document.getElementById(
-            "reply-" + id
-        ).value;
+            "ticketModal"
+        );
+
+
+    const content =
+        document.getElementById(
+            "modalContent"
+        );
+
+
+    content.innerHTML = `
+
+        <div class="detail-grid">
+
+
+            <div class="detail">
+
+                <label>
+                    کد پیگیری
+                </label>
+
+                <div dir="ltr">
+                    ${escapeHTML(
+                        ticket._id
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="detail">
+
+                <label>
+                    وضعیت
+                </label>
+
+                <div>
+                    ${status.text}
+                </div>
+
+            </div>
+
+
+            <div class="detail">
+
+                <label>
+                    نوع درخواست
+                </label>
+
+                <div>
+                    ${type.icon}
+                    ${type.text}
+                </div>
+
+            </div>
+
+
+            <div class="detail">
+
+                <label>
+                    IC Name
+                </label>
+
+                <div>
+                    ${escapeHTML(
+                        ticket.icName ||
+                        ticket.name ||
+                        "—"
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="detail">
+
+                <label>
+                    OC Name
+                </label>
+
+                <div>
+                    ${escapeHTML(
+                        ticket.ocName ||
+                        ticket.oocName ||
+                        "—"
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="detail">
+
+                <label>
+                    Discord
+                </label>
+
+                <div>
+                    ${escapeHTML(
+                        ticket.discord ||
+                        ticket.discordId ||
+                        "—"
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="detail">
+
+                <label>
+                    Steam Hex
+                </label>
+
+                <div dir="ltr">
+                    ${escapeHTML(
+                        ticket.steamHex
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="detail">
+
+                <label>
+                    CMX
+                </label>
+
+                <div>
+                    ${escapeHTML(
+                        ticket.cmx
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="detail">
+
+                <label>
+                    سن
+                </label>
+
+                <div>
+                    ${escapeHTML(
+                        ticket.age
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="detail">
+
+                <label>
+                    نمره آزمون
+                </label>
+
+                <div>
+
+                    ${
+                        ticket.score !==
+                        undefined &&
+                        ticket.score !==
+                        null
+
+                        ? escapeHTML(
+                            ticket.score
+                        ) +
+                        " / 20"
+
+                        : "—"
+                    }
+
+                </div>
+
+            </div>
+
+
+            <div class="detail full">
+
+                <label>
+                    سابقه رول پلی
+                </label>
+
+                <div>
+                    ${escapeHTML(
+                        ticket.experience
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="detail full">
+
+                <label>
+                    دلیل درخواست
+                </label>
+
+                <div>
+                    ${escapeHTML(
+                        ticket.reason
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="detail full">
+
+                <label>
+                    پاسخ فعلی فرماندهی
+                </label>
+
+                <div>
+                    ${escapeHTML(
+                        ticket.reply ||
+                        "هنوز پاسخی ثبت نشده است."
+                    )}
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="reply-area">
+
+            <h3>
+                ✍️ پاسخ فرماندهی
+            </h3>
+
+            <textarea
+                id="replyInput"
+                placeholder="پاسخ خود را برای متقاضی بنویسید..."
+            >${escapeHTML(
+                ticket.reply || ""
+            )}</textarea>
+
+
+            <div class="modal-buttons">
+
+
+                <button
+                    class="action-btn green"
+                    onclick="saveTicket('${escapeHTML(id)}','Accepted')"
+                >
+
+                    ✅ تایید و ارسال پاسخ
+
+                </button>
+
+
+                <button
+                    class="action-btn red"
+                    onclick="saveTicket('${escapeHTML(id)}','Rejected')"
+                >
+
+                    ❌ رد و ارسال پاسخ
+
+                </button>
+
+
+                <button
+                    class="action-btn blue"
+                    onclick="saveTicket('${escapeHTML(id)}','Pending')"
+                >
+
+                    ⏳ در انتظار
+
+                </button>
+
+
+            </div>
+
+        </div>
+
+
+        <div class="chat-container">
+
+            <h3>
+                💬 گفتگوی زنده با متقاضی
+            </h3>
+
+
+            <div
+                id="adminChatMessages"
+                class="chat-messages"
+            >
+
+                در حال دریافت پیام‌ها...
+
+            </div>
+
+
+            <div class="chat-send-row">
+
+                <textarea
+                    id="adminChatInput"
+                    placeholder="پیام خود را برای متقاضی بنویسید..."
+                ></textarea>
+
+
+                <button
+                    class="action-btn blue"
+                    onclick="sendCommandMessage()"
+                >
+
+                    📨 ارسال
+
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    modal.classList.add(
+        "show"
+    );
+
+
+    await loadAdminMessages();
+
+}
+
+
+/* =========================================================
+   CLOSE MODAL
+========================================================= */
+
+function closeModal() {
+
+    document
+        .getElementById(
+            "ticketModal"
+        )
+        .classList
+        .remove("show");
+
+
+    selectedTicketId =
+        null;
+
+}
+
+
+/* =========================================================
+   CHANGE STATUS
+========================================================= */
+
+async function changeStatus(
+    id,
+    status
+) {
+
+    const text =
+        status === "Accepted"
+            ? "تایید"
+            : "رد";
+
+
+    if (
+        !confirm(
+            `آیا از ${text} این درخواست مطمئن هستید؟`
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    await saveTicket(
+        id,
+        status
+    );
+
+}
+
+
+/* =========================================================
+   SAVE TICKET
+========================================================= */
+
+async function saveTicket(
+    id,
+    status
+) {
+
+    let reply = "";
+
+
+    const replyInput =
+        document.getElementById(
+            "replyInput"
+        );
+
+
+    if (replyInput) {
+
+        reply =
+            replyInput.value.trim();
+
+    }
 
 
     try {
+
+        /*
+         * Endpoint اصلی
+         */
 
         const response =
             await fetch(
@@ -2031,26 +2706,50 @@ async function saveTicket(id) {
 
             throw new Error(
                 data.message ||
-                "Update error"
+                "خطا در بروزرسانی"
             );
 
         }
 
 
-        alert(
-            "درخواست با موفقیت بروزرسانی شد ✅"
+        showToast(
+            "✅ درخواست با موفقیت بروزرسانی شد.",
+            "success"
         );
 
 
-        await loadTickets();
+        await loadTickets(
+            true
+        );
+
+
+        /*
+         * اگر Modal باز است
+         * دوباره اطلاعات را تازه می‌کنیم
+         */
+
+        if (
+            selectedTicketId
+        ) {
+
+            await openTicket(
+                selectedTicketId
+            );
+
+        }
 
 
     } catch (error) {
 
-        console.error(error);
+        console.error(
+            "Update Ticket Error:",
+            error
+        );
 
-        alert(
-            "❌ بروزرسانی انجام نشد."
+
+        showToast(
+            "❌ بروزرسانی درخواست انجام نشد.",
+            "error"
         );
 
     }
@@ -2058,104 +2757,28 @@ async function saveTicket(id) {
 }
 
 
-/* =====================================================
-   DELETE
-===================================================== */
+/* =========================================================
+   LOAD CHAT
+========================================================= */
 
-async function removeTicket(id) {
+async function loadAdminMessages() {
 
-    if (
-        !confirm(
-            "آیا از حذف این درخواست مطمئن هستید؟"
-        )
-    ) {
+    if (!selectedTicketId) {
 
         return;
 
     }
 
 
-    try {
-
-        const response =
-            await fetch(
-                API_URL +
-                "/tickets/" +
-                encodeURIComponent(id),
-                {
-
-                    method: "DELETE"
-
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                data.message ||
-                "Delete error"
-            );
-
-        }
-
-
-        alert(
-            "درخواست حذف شد ✅"
-        );
-
-
-        await loadTickets();
-
-
-    } catch (error) {
-
-        console.error(error);
-
-        alert(
-            "❌ حذف درخواست انجام نشد."
-        );
-
-    }
-
-}
-
-
-/* =====================================================
-   LOAD CHAT
-===================================================== */
-
-async function loadAdminMessages(
-    ticketId,
-    showLoading = false
-) {
-
     const box =
         document.getElementById(
-            "messages-" + ticketId
+            "adminChatMessages"
         );
 
 
     if (!box) {
 
         return;
-
-    }
-
-
-    if (showLoading) {
-
-        box.innerHTML = `
-
-            <p style="color:#888;">
-                ⏳ در حال دریافت پیام‌ها...
-            </p>
-
-        `;
 
     }
 
@@ -2168,12 +2791,23 @@ async function loadAdminMessages(
                 API_URL +
                 "/tickets/" +
                 encodeURIComponent(
-                    ticketId
+                    selectedTicketId
                 ) +
                 "/messages",
 
                 {
-                    cache: "no-store"
+
+                    method: "GET",
+
+                    cache: "no-store",
+
+                    headers: {
+
+                        "Cache-Control":
+                            "no-cache"
+
+                    }
+
                 }
 
             );
@@ -2182,7 +2816,7 @@ async function loadAdminMessages(
         if (!response.ok) {
 
             throw new Error(
-                "Message error"
+                "Chat request failed"
             );
 
         }
@@ -2199,8 +2833,13 @@ async function loadAdminMessages(
 
             box.innerHTML = `
 
-                <p style="color:#777;">
+                <p style="
+                    color:#697583;
+                    text-align:center;
+                ">
+
                     هنوز پیامی وجود ندارد.
+
                 </p>
 
             `;
@@ -2212,72 +2851,65 @@ async function loadAdminMessages(
 
         box.innerHTML =
             messages
-            .map(message => {
+                .map(
+                    message => {
 
-                const command =
-                    message.sender ===
-                    "command";
-
-
-                return `
-
-                    <div class="
-                        chat-message
-                        ${
-                            command
-                            ? "command"
-                            : "applicant"
-                        }
-                    ">
-
-                        <div class="chat-message-name">
-
-                            ${
-                                command
-                                ? "👮 فرماندهی"
-                                : "👤 متقاضی"
-                            }
-
-                        </div>
+                        const command =
+                            message.sender ===
+                            "command";
 
 
-                        <div class="chat-message-text">
+                        return `
 
-                            ${
-                                escapeHTML(
-                                    message.message
-                                )
-                            }
+                            <div class="
+                                chat-message
+                                ${
+                                    command
+                                    ? "command"
+                                    : "applicant"
+                                }
+                            ">
 
-                        </div>
+                                <strong>
 
+                                    ${
+                                        command
+                                        ? "👮 فرماندهی"
+                                        : "👤 متقاضی"
+                                    }
 
-                        <small class="chat-message-time">
-
-                            ${
-                                message.createdAt
-                                ? new Date(
-                                    message.createdAt
-                                  ).toLocaleString(
-                                    "fa-IR"
-                                  )
-                                : ""
-                            }
-
-                        </small>
-
-                    </div>
-
-                `;
-
-            })
-            .join("");
+                                </strong>
 
 
-        /*
-            فقط اگر کاربر پایین چت بوده
-            اسکرول را پایین نگه می‌داریم.
-        */
+                                <p>
+
+                                    ${
+                                        escapeHTML(
+                                            message.message
+                                        )
+                                    }
+
+                                </p>
+
+
+                                <small>
+
+                                    ${
+                                        formatDate(
+                                            message.createdAt
+                                        )
+                                    }
+
+                                </small>
+
+                            </div>
+
+                        `;
+
+                    }
+                )
+                .join("");
+
 
         box.scrollTop =
             box.scrollHeight;
@@ -2290,89 +2922,29 @@ async function loadAdminMessages(
             error
         );
 
-
-        box.innerHTML = `
-
-            <p style="color:#ff5555;">
-                ❌ خطا در دریافت پیام‌ها.
-            </p>
-
-        `;
-
     }
 
 }
 
 
-/* =====================================================
-   AUTO REFRESH CHAT
-===================================================== */
+/* =========================================================
+   SEND COMMAND MESSAGE
+========================================================= */
 
-/*
-    مهم:
-    هر ۲ ثانیه تمام چت‌های نمایش داده شده
-    دوباره از سرور خوانده می‌شوند.
-*/
+async function sendCommandMessage() {
 
-setInterval(
-    () => {
+    if (
+        !selectedTicketId
+    ) {
 
-        const panel =
-            document.getElementById(
-                "adminPanel"
-            );
+        return;
 
+    }
 
-        if (
-            !panel ||
-            panel.style.display === "none"
-        ) {
-
-            return;
-
-        }
-
-
-        document
-        .querySelectorAll(
-            "[id^='messages-']"
-        )
-        .forEach(box => {
-
-            const ticketId =
-                box.id.replace(
-                    "messages-",
-                    ""
-                );
-
-
-            if (ticketId) {
-
-                loadAdminMessages(
-                    ticketId,
-                    false
-                );
-
-            }
-
-        });
-
-    },
-    2000
-);
-
-
-/* =====================================================
-   SEND ADMIN MESSAGE
-===================================================== */
-
-async function sendAdminMessage(
-    ticketId
-) {
 
     const input =
         document.getElementById(
-            "chat-" + ticketId
+            "adminChatInput"
         );
 
 
@@ -2394,33 +2966,6 @@ async function sendAdminMessage(
     }
 
 
-    if (message.length > 2000) {
-
-        alert(
-            "پیام نمی‌تواند بیشتر از ۲۰۰۰ کاراکتر باشد."
-        );
-
-        return;
-
-    }
-
-
-    const button =
-        document.querySelector(
-            `button[onclick="sendAdminMessage('${CSS.escape(ticketId)}')"]`
-        );
-
-
-    if (button) {
-
-        button.disabled = true;
-
-        button.innerText =
-            "⏳ در حال ارسال...";
-
-    }
-
-
     try {
 
         const response =
@@ -2429,7 +2974,7 @@ async function sendAdminMessage(
                 API_URL +
                 "/tickets/" +
                 encodeURIComponent(
-                    ticketId
+                    selectedTicketId
                 ) +
                 "/messages",
 
@@ -2444,15 +2989,16 @@ async function sendAdminMessage(
 
                     },
 
-                    body: JSON.stringify({
+                    body:
+                        JSON.stringify({
 
-                        message:
-                            message,
+                            message:
+                                message,
 
-                        sender:
-                            "command"
+                            sender:
+                                "command"
 
-                    })
+                        })
 
                 }
 
@@ -2476,117 +3022,307 @@ async function sendAdminMessage(
         input.value = "";
 
 
-        /*
-            بلافاصله پیام جدید را نشان بده
-        */
+        await loadAdminMessages();
 
-        await loadAdminMessages(
-            ticketId,
-            false
+
+        showToast(
+            "📨 پیام ارسال شد.",
+            "success"
         );
 
 
     } catch (error) {
 
         console.error(
-            "Send Admin Message Error:",
+            "Send Command Message Error:",
             error
         );
 
 
-        alert(
-            "❌ ارسال پیام انجام نشد."
+        showToast(
+            "❌ ارسال پیام ناموفق بود.",
+            "error"
         );
-
-    } finally {
-
-        if (button) {
-
-            button.disabled = false;
-
-            button.innerText =
-                "📨 ارسال پیام به متقاضی";
-
-        }
 
     }
 
 }
 
 
-/* =====================================================
-   ENTER LOGIN
-===================================================== */
+/* =========================================================
+   AUTO REFRESH
+========================================================= */
+
+function startAutoRefresh() {
+
+    if (refreshTimer) {
+
+        clearInterval(
+            refreshTimer
+        );
+
+    }
+
+
+    refreshTimer =
+        setInterval(
+            async () => {
+
+                /*
+                 * درخواست‌ها هر ۲ ثانیه
+                 */
+
+                await loadTickets(
+                    true
+                );
+
+
+                /*
+                 * اگر Modal باز است،
+                 * پیام‌های چت هم هر ۲ ثانیه
+                 */
+
+                if (
+                    selectedTicketId
+                ) {
+
+                    await loadAdminMessages();
+
+                }
+
+            },
+
+            REFRESH_INTERVAL
+
+        );
+
+}
+
+
+/* =========================================================
+   MANUAL REFRESH
+========================================================= */
+
+async function manualRefresh() {
+
+    showToast(
+        "🔄 در حال بروزرسانی...",
+        "success"
+    );
+
+
+    await loadTickets(
+        true
+    );
+
+
+    if (
+        selectedTicketId
+    ) {
+
+        await loadAdminMessages();
+
+    }
+
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
 
 document
-.getElementById(
-    "adminPassword"
-)
-.addEventListener(
-    "keydown",
-    event => {
+    .getElementById(
+        "searchInput"
+    )
+    .addEventListener(
+        "input",
+        function() {
 
-        if (
-            event.key === "Enter"
-        ) {
-
-            handleAdminLogin();
+            renderTickets();
 
         }
-
-    }
-);
+    );
 
 
-/* =====================================================
-   START
-===================================================== */
+/* =========================================================
+   FILTER BUTTONS
+========================================================= */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
+document
+    .querySelectorAll(
+        ".filter-btn"
+    )
+    .forEach(
+        button => {
 
-        /*
-            در شروع، پنل بسته است.
-            اگر login قبلی ذخیره شده باشد،
-            مستقیم وارد داشبورد می‌شویم.
-        */
+            button.addEventListener(
+                "click",
+                function() {
 
-        const loggedIn =
-            localStorage.getItem(
-                "vanguardAdminLoggedIn"
+                    document
+                        .querySelectorAll(
+                            ".filter-btn"
+                        )
+                        .forEach(
+                            btn =>
+                                btn.classList
+                                    .remove(
+                                        "active"
+                                    )
+                        );
+
+
+                    this.classList
+                        .add("active");
+
+
+                    activeFilter =
+                        this.dataset.filter;
+
+
+                    renderTickets();
+
+                }
             );
 
+        }
+    );
+
+
+/* =========================================================
+   ESC CLOSE MODAL
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
 
         if (
-            loggedIn === "true"
+            event.key ===
+            "Escape"
         ) {
 
-            loginSuccess();
-
-        } else {
-
-            document
-            .getElementById(
-                "adminPanel"
-            )
-            .style.display =
-                "none";
-
-
-            document
-            .getElementById(
-                "logoutButton"
-            )
-            .style.display =
-                "none";
+            closeModal();
 
         }
 
     }
 );
+
+
+/* =========================================================
+   CLICK OUTSIDE MODAL
+========================================================= */
+
+document
+    .getElementById(
+        "ticketModal"
+    )
+    .addEventListener(
+        "click",
+        function(event) {
+
+            if (
+                event.target ===
+                this
+            ) {
+
+                closeModal();
+
+            }
+
+        }
+    );
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+let toastTimer = null;
+
+
+function showToast(
+    message,
+    type = "success"
+) {
+
+    const toast =
+        document.getElementById(
+            "toast"
+        );
+
+
+    toast.innerText =
+        message;
+
+
+    toast.className =
+        "toast " +
+        type +
+        " show";
+
+
+    if (toastTimer) {
+
+        clearTimeout(
+            toastTimer
+        );
+
+    }
+
+
+    toastTimer =
+        setTimeout(
+            () => {
+
+                toast.classList
+                    .remove(
+                        "show"
+                    );
+
+            },
+
+            3000
+
+        );
+
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+function logout() {
+
+    localStorage.removeItem(
+        "lspdAdmin"
+    );
+
+
+    window.location.href =
+        "login.html";
+
+}
+
+
+/* =========================================================
+   INITIAL LOAD
+========================================================= */
+
+(async function init() {
+
+    await loadTickets();
+
+    startAutoRefresh();
+
+})();
 
 </script>
 
+
 </body>
+
 </html>
