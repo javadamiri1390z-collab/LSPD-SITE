@@ -3,397 +3,440 @@
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-    <title>Vanguard LSPD | Command Login</title>
+<title>Vanguard LSPD | Command Login</title>
 
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
+<link
+    rel="stylesheet"
+    href="style.css"
+>
 
-    <style>
+<style>
 
-        * {
-            box-sizing: border-box;
-        }
+* {
+    box-sizing: border-box;
+}
 
-        body {
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: inherit;
-        }
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+}
 
-        .login-container {
+.login-container {
 
-            width: 450px;
-            max-width: 92%;
+    width: 450px;
+    max-width: 92%;
 
-            background:
-                rgba(5, 10, 18, .82);
+    background:
+        rgba(5, 10, 18, .82);
 
-            border:
-                1px solid
-                rgba(77,166,255,.25);
+    border:
+        1px solid
+        rgba(77,166,255,.25);
 
-            border-radius: 24px;
+    border-radius: 24px;
 
-            padding: 35px;
+    padding: 35px;
 
-            backdrop-filter:
-                blur(20px);
+    backdrop-filter:
+        blur(20px);
 
-            box-shadow:
-                0 20px 70px
-                rgba(0,0,0,.45);
+    box-shadow:
+        0 20px 70px
+        rgba(0,0,0,.45);
 
-        }
+}
 
-        .login-logo {
+.login-logo {
 
-            text-align: center;
+    text-align: center;
 
-            margin-bottom: 25px;
+    margin-bottom: 25px;
 
-        }
+}
 
-        .login-logo img {
+.login-logo img {
 
-            width: 90px;
-            height: 90px;
+    width: 90px;
+    height: 90px;
 
-            object-fit: contain;
+    object-fit: contain;
 
-            filter:
-                drop-shadow(
-                    0 0 18px
-                    #168cff
-                );
+    filter:
+        drop-shadow(
+            0 0 18px
+            #168cff
+        );
 
-        }
+}
 
-        .login-logo h1 {
+.login-logo h1 {
 
-            color: #4da6ff;
+    color: #4da6ff;
 
-            margin:
-                15px 0 5px;
+    margin:
+        15px 0 5px;
 
-        }
+}
 
-        .login-logo p {
+.login-logo p {
 
-            color: #999;
+    color: #999;
 
-            margin: 0;
+    margin: 0;
 
-        }
+}
 
-        .form-group {
+.form-group {
 
-            margin-bottom: 18px;
+    margin-bottom: 18px;
 
-        }
+}
 
-        .form-group label {
+.form-group label {
 
-            display: block;
+    display: block;
 
-            color: #bbb;
+    color: #bbb;
 
-            margin-bottom: 8px;
+    margin-bottom: 8px;
 
-            font-size: 14px;
+    font-size: 14px;
 
-        }
+}
 
-        .form-group input {
+.form-group input {
 
-            width: 100%;
+    width: 100%;
 
-            padding: 14px 15px;
+    padding: 14px 15px;
 
-            background:
-                #050a11;
+    background:
+        #050a11;
 
-            color: white;
+    color: white;
 
-            border:
-                1px solid
-                rgba(255,255,255,.14);
+    border:
+        1px solid
+        rgba(255,255,255,.14);
 
-            border-radius: 11px;
+    border-radius: 11px;
 
-            outline: none;
+    outline: none;
 
-            font-family: inherit;
+    font-family: inherit;
 
-            font-size: 15px;
+    font-size: 15px;
 
-            direction: ltr;
+    direction: ltr;
 
-            text-align: left;
+    text-align: left;
 
-        }
+}
 
-        .form-group input:focus {
+.form-group input:focus {
 
-            border-color:
-                #168cff;
+    border-color:
+        #168cff;
 
-            box-shadow:
-                0 0 12px
-                rgba(22,140,255,.2);
+    box-shadow:
+        0 0 12px
+        rgba(22,140,255,.2);
 
-        }
+}
 
-        .login-button {
+.login-button {
 
-            width: 100%;
+    width: 100%;
 
-            padding: 14px;
+    padding: 14px;
 
-            border: none;
+    border: none;
 
-            border-radius: 11px;
+    border-radius: 11px;
 
-            background:
-                linear-gradient(
-                    135deg,
-                    #168cff,
-                    #0066cc
-                );
+    background:
+        linear-gradient(
+            135deg,
+            #168cff,
+            #0066cc
+        );
 
-            color: white;
+    color: white;
 
-            font-size: 16px;
+    font-size: 16px;
 
-            font-weight: bold;
+    font-weight: bold;
 
-            cursor: pointer;
+    cursor: pointer;
 
-            font-family: inherit;
+    font-family: inherit;
 
-            transition: .2s;
+    transition: .2s;
 
-        }
+}
 
-        .login-button:hover {
+.login-button:hover {
 
-            transform:
-                translateY(-1px);
+    transform:
+        translateY(-1px);
 
-            box-shadow:
-                0 8px 25px
-                rgba(22,140,255,.25);
+    box-shadow:
+        0 8px 25px
+        rgba(22,140,255,.25);
 
-        }
+}
 
-        .login-button:disabled {
+.login-button:disabled {
 
-            opacity: .6;
+    opacity: .6;
 
-            cursor: not-allowed;
+    cursor: not-allowed;
 
-            transform: none;
+    transform: none;
 
-        }
+}
 
-        .error-box {
+.error-box {
 
-            display: none;
+    display: none;
 
-            margin-top: 15px;
+    margin-top: 15px;
 
-            padding: 12px;
+    padding: 12px;
 
-            border-radius: 10px;
+    border-radius: 10px;
 
-            color: #ff6666;
+    color: #ff6666;
 
-            background:
-                rgba(255,0,0,.08);
+    background:
+        rgba(255,0,0,.08);
 
-            border:
-                1px solid
-                rgba(255,0,0,.18);
+    border:
+        1px solid
+        rgba(255,0,0,.18);
 
-            text-align: center;
+    text-align: center;
 
-            font-size: 13px;
+    font-size: 13px;
 
-        }
+}
 
-        .back-button {
+.success-box {
 
-            display: block;
+    display: none;
 
-            text-align: center;
+    margin-top: 15px;
 
-            margin-top: 18px;
+    padding: 12px;
 
-            color: #888;
+    border-radius: 10px;
 
-            text-decoration: none;
+    color: #35e68a;
 
-            font-size: 13px;
+    background:
+        rgba(0,255,136,.08);
 
-        }
+    border:
+        1px solid
+        rgba(0,255,136,.18);
 
-        .back-button:hover {
+    text-align: center;
 
-            color: #4da6ff;
+    font-size: 13px;
 
-        }
+}
 
-        .security-note {
+.back-button {
 
-            margin-top: 22px;
+    display: block;
 
-            padding-top: 15px;
+    text-align: center;
 
-            border-top:
-                1px solid
-                rgba(255,255,255,.08);
+    margin-top: 18px;
 
-            text-align: center;
+    color: #888;
 
-            color: #666;
+    text-decoration: none;
 
-            font-size: 11px;
+    font-size: 13px;
 
-        }
+}
 
-    </style>
+.back-button:hover {
+
+    color: #4da6ff;
+
+}
+
+.security-note {
+
+    margin-top: 22px;
+
+    padding-top: 15px;
+
+    border-top:
+        1px solid
+        rgba(255,255,255,.08);
+
+    text-align: center;
+
+    color: #666;
+
+    font-size: 11px;
+
+}
+
+</style>
 
 </head>
 
 
 <body>
 
-    <div class="overlay"></div>
+<div class="overlay"></div>
 
 
-    <div class="login-container">
+<div class="login-container">
 
 
-        <div class="login-logo">
+    <div class="login-logo">
 
-            <img
-                src="badge.png"
-                alt="LSPD"
-            >
-
-            <h1>
-                👮 Vanguard LSPD
-            </h1>
-
-            <p>
-                Command Center
-            </p>
-
-        </div>
-
-
-        <form
-            id="loginForm"
+        <img
+            src="badge.png"
+            alt="LSPD"
         >
 
+        <h1>
+            👮 Vanguard LSPD
+        </h1>
 
-            <div class="form-group">
-
-                <label for="username">
-                    نام کاربری
-                </label>
-
-                <input
-                    id="username"
-                    name="username"
-                    type="text"
-                    autocomplete="username"
-                    placeholder="Username"
-                    required
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label for="password">
-                    رمز عبور
-                </label>
-
-                <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    autocomplete="current-password"
-                    placeholder="Password"
-                    required
-                >
-
-            </div>
-
-
-            <button
-                id="loginButton"
-                class="login-button"
-                type="submit"
-            >
-                🔐 ورود به پنل فرماندهی
-            </button>
-
-
-        </form>
-
-
-        <div
-            id="errorBox"
-            class="error-box"
-        ></div>
-
-
-        <a
-            href="index.html"
-            class="back-button"
-        >
-            ← بازگشت به صفحه اصلی
-        </a>
-
-
-        <div class="security-note">
-
-            🔒 دسترسی این بخش فقط برای کاربران مجاز است.
-
-        </div>
-
+        <p>
+            Command Center
+        </p>
 
     </div>
 
 
+    <form id="loginForm">
+
+
+        <div class="form-group">
+
+            <label for="username">
+                نام کاربری
+            </label>
+
+            <input
+                id="username"
+                name="username"
+                type="text"
+                autocomplete="username"
+                placeholder="Username"
+                required
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="password">
+                رمز عبور
+            </label>
+
+            <input
+                id="password"
+                name="password"
+                type="password"
+                autocomplete="current-password"
+                placeholder="Password"
+                required
+            >
+
+        </div>
+
+
+        <button
+            id="loginButton"
+            class="login-button"
+            type="submit"
+        >
+            🔐 ورود به پنل فرماندهی
+        </button>
+
+
+    </form>
+
+
+    <div
+        id="errorBox"
+        class="error-box"
+    ></div>
+
+
+    <div
+        id="successBox"
+        class="success-box"
+    ></div>
+
+
+    <a
+        href="index.html"
+        class="back-button"
+    >
+        ← بازگشت به صفحه اصلی
+    </a>
+
+
+    <div class="security-note">
+
+        🔒 دسترسی این بخش فقط برای کاربران مجاز است.
+
+    </div>
+
+
+</div>
+
+
 <script>
 
-
-/* =========================================
-   API
-========================================= */
+/* =========================================================
+   CONFIG
+========================================================= */
 
 const API_URL =
     "https://lspd-site-11.onrender.com";
 
 
-/* =========================================
-   Elements
-========================================= */
+/*
+   بسیار مهم:
+
+   این همان کلیدی است که command.html
+   هم باید استفاده کند.
+*/
+
+const TOKEN_KEY =
+    "lspdCommandToken";
+
+
+const USER_KEY =
+    "lspdCommander";
+
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
 
 const loginForm =
     document.getElementById(
@@ -413,11 +456,20 @@ const errorBox =
     );
 
 
-/* =========================================
-   Error
-========================================= */
+const successBox =
+    document.getElementById(
+        "successBox"
+    );
+
+
+/* =========================================================
+   UI
+========================================================= */
 
 function showError(message) {
+
+    successBox.style.display =
+        "none";
 
     errorBox.innerText =
         message ||
@@ -429,7 +481,22 @@ function showError(message) {
 }
 
 
-function hideError() {
+function showSuccess(message) {
+
+    errorBox.style.display =
+        "none";
+
+    successBox.innerText =
+        message ||
+        "ورود موفق بود";
+
+    successBox.style.display =
+        "block";
+
+}
+
+
+function hideMessages() {
 
     errorBox.innerText =
         "";
@@ -437,117 +504,55 @@ function hideError() {
     errorBox.style.display =
         "none";
 
-}
+    successBox.innerText =
+        "";
 
-
-/* =========================================
-   Check Existing Login
-========================================= */
-
-async function checkExistingLogin() {
-
-    const token =
-        localStorage.getItem(
-            "lspdCommandToken"
-        );
-
-
-    if (!token) {
-
-        return;
-
-    }
-
-
-    try {
-
-        const response =
-            await fetch(
-                API_URL +
-                "/auth/me",
-                {
-
-                    method: "GET",
-
-                    headers: {
-
-                        "Authorization":
-                            "Bearer " +
-                            token
-
-                    },
-
-                    cache:
-                        "no-store"
-
-                }
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Token expired"
-            );
-
-        }
-
-
-        const data =
-            await response.json();
-
-
-        if (
-            !data.success ||
-            !data.user
-        ) {
-
-            throw new Error(
-                "Invalid session"
-            );
-
-        }
-
-
-        /*
-        ذخیره مجدد اطلاعات کاربر
-        */
-
-        saveUserData(
-            data.user
-        );
-
-
-        /*
-        ورود قبلی معتبر است
-        */
-
-        window.location.href =
-            "command.html";
-
-
-    } catch (error) {
-
-        /*
-        Token نامعتبر یا منقضی شده
-        */
-
-        localStorage.removeItem(
-            "lspdCommandToken"
-        );
-
-        localStorage.removeItem(
-            "lspdCommander"
-        );
-
-    }
+    successBox.style.display =
+        "none";
 
 }
 
 
-/* =========================================
-   Save User
-========================================= */
+/* =========================================================
+   CLEAR OLD SESSION
+========================================================= */
+
+function clearCommandSession() {
+
+    localStorage.removeItem(
+        TOKEN_KEY
+    );
+
+    localStorage.removeItem(
+        USER_KEY
+    );
+
+    localStorage.removeItem(
+        "lspdAdmin"
+    );
+
+    localStorage.removeItem(
+        "lspdAdminUser"
+    );
+
+    localStorage.removeItem(
+        "lspdAdminName"
+    );
+
+    localStorage.removeItem(
+        "lspdAdminRank"
+    );
+
+    localStorage.removeItem(
+        "lspdIsOwner"
+    );
+
+}
+
+
+/* =========================================================
+   SAVE USER
+========================================================= */
 
 function saveUserData(user) {
 
@@ -558,46 +563,51 @@ function saveUserData(user) {
     }
 
 
+    const normalizedUser = {
+
+        username:
+            user.username || "",
+
+        name:
+            user.name || "",
+
+        rank:
+            user.rank || "",
+
+        role:
+            user.role || "command",
+
+        isOwner:
+            user.isOwner === true ||
+            user.role === "owner"
+
+    };
+
+
     /*
-    اطلاعات کامل
+    اطلاعات اصلی
     */
 
     localStorage.setItem(
 
-        "lspdCommander",
+        USER_KEY,
 
-        JSON.stringify({
-
-            username:
-                user.username || "",
-
-            name:
-                user.name || "",
-
-            rank:
-                user.rank || "",
-
-            role:
-                user.role || "command",
-
-            isOwner:
-                user.isOwner === true
-
-        })
+        JSON.stringify(
+            normalizedUser
+        )
 
     );
 
 
     /*
     Legacy keys
-    برای سازگاری با نسخه‌های قبلی
     */
 
     localStorage.setItem(
 
         "lspdAdminUser",
 
-        user.username || ""
+        normalizedUser.username
 
     );
 
@@ -606,7 +616,7 @@ function saveUserData(user) {
 
         "lspdAdminName",
 
-        user.name || ""
+        normalizedUser.name
 
     );
 
@@ -615,7 +625,7 @@ function saveUserData(user) {
 
         "lspdAdminRank",
 
-        user.rank || ""
+        normalizedUser.rank
 
     );
 
@@ -630,12 +640,11 @@ function saveUserData(user) {
 
 
     /*
-    مشخص کردن Owner
+    Owner
     */
 
     if (
-        user.role === "owner" ||
-        user.isOwner === true
+        normalizedUser.isOwner
     ) {
 
         localStorage.setItem(
@@ -654,18 +663,156 @@ function saveUserData(user) {
 }
 
 
-/* =========================================
-   Login
-========================================= */
+/* =========================================================
+   SAVE TOKEN
+========================================================= */
+
+function saveToken(token) {
+
+    if (!token) {
+
+        throw new Error(
+            "توکن از سرور دریافت نشد."
+        );
+
+    }
+
+
+    /*
+    فقط یک کلید اصلی برای Token
+    */
+
+    localStorage.setItem(
+        TOKEN_KEY,
+        String(token)
+    );
+
+}
+
+
+/* =========================================================
+   CHECK SESSION
+========================================================= */
+
+async function checkExistingLogin() {
+
+    const token =
+        localStorage.getItem(
+            TOKEN_KEY
+        );
+
+
+    if (!token) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+
+                API_URL +
+                "/auth/me",
+
+                {
+
+                    method: "GET",
+
+                    headers: {
+
+                        "Authorization":
+                            "Bearer " +
+                            token,
+
+                        "Accept":
+                            "application/json"
+
+                    },
+
+                    cache:
+                        "no-store"
+
+                }
+
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "جلسه قبلی معتبر نیست."
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !data ||
+            !data.success ||
+            !data.user
+        ) {
+
+            throw new Error(
+                "اطلاعات کاربر معتبر نیست."
+            );
+
+        }
+
+
+        /*
+        ذخیره اطلاعات جدید
+        */
+
+        saveUserData(
+            data.user
+        );
+
+
+        /*
+        ورود قبلی معتبر است
+        */
+
+        window.location.replace(
+            "command.html"
+        );
+
+
+    } catch (error) {
+
+        console.warn(
+            "Existing session invalid:",
+            error
+        );
+
+
+        clearCommandSession();
+
+    }
+
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
 
 loginForm.addEventListener(
+
     "submit",
+
     async function(event) {
 
         event.preventDefault();
 
 
-        hideError();
+        hideMessages();
 
 
         const username =
@@ -700,10 +847,6 @@ loginForm.addEventListener(
         }
 
 
-        /*
-        جلوگیری از چند بار کلیک
-        */
-
         loginButton.disabled =
             true;
 
@@ -712,6 +855,10 @@ loginForm.addEventListener(
 
 
         try {
+
+            /*
+            درخواست Login
+            */
 
             const response =
                 await fetch(
@@ -726,6 +873,9 @@ loginForm.addEventListener(
                         headers: {
 
                             "Content-Type":
+                                "application/json",
+
+                            "Accept":
                                 "application/json"
 
                         },
@@ -737,11 +887,14 @@ loginForm.addEventListener(
 
                                 password
 
-                            })
+                            }),
 
-                        }
+                        cache:
+                            "no-store"
 
-                    );
+                    }
+
+                );
 
 
             let data = null;
@@ -758,6 +911,10 @@ loginForm.addEventListener(
 
             }
 
+
+            /*
+            Login ناموفق
+            */
 
             if (
                 !response.ok ||
@@ -776,34 +933,40 @@ loginForm.addEventListener(
 
 
             /*
-            Token واقعی که server.js
-            ساخته است
+            بررسی Token
             */
 
-            if (!data.token) {
+            if (
+                !data.token ||
+                typeof data.token !==
+                "string"
+            ) {
 
                 throw new Error(
-                    "توکن ورود از سرور دریافت نشد."
+                    "سرور توکن ورود ارسال نکرد."
                 );
 
             }
 
 
             /*
-            ذخیره Token
+            پاک کردن Session قبلی
             */
 
-            localStorage.setItem(
+            clearCommandSession();
 
-                "lspdCommandToken",
 
+            /*
+            ذخیره Token جدید
+            */
+
+            saveToken(
                 data.token
-
             );
 
 
             /*
-            ذخیره اطلاعات کاربر
+            ذخیره User
             */
 
             saveUserData(
@@ -812,15 +975,103 @@ loginForm.addEventListener(
 
 
             /*
-            ورود موفق
+            تست فوری Token
             */
+
+            const verifyResponse =
+                await fetch(
+
+                    API_URL +
+                    "/auth/me",
+
+                    {
+
+                        method: "GET",
+
+                        headers: {
+
+                            "Authorization":
+                                "Bearer " +
+                                data.token,
+
+                            "Accept":
+                                "application/json"
+
+                        },
+
+                        cache:
+                            "no-store"
+
+                    }
+
+                );
+
+
+            if (
+                !verifyResponse.ok
+            ) {
+
+                clearCommandSession();
+
+                throw new Error(
+                    "ورود انجام شد اما Token معتبر نیست."
+                );
+
+            }
+
+
+            const verifyData =
+                await verifyResponse.json();
+
+
+            if (
+                !verifyData.success
+            ) {
+
+                clearCommandSession();
+
+                throw new Error(
+                    "احراز هویت سرور ناموفق بود."
+                );
+
+            }
+
+
+            /*
+            ذخیره نهایی اطلاعات تأییدشده
+            */
+
+            saveUserData(
+                verifyData.user
+            );
+
+
+            showSuccess(
+                "✅ ورود موفق بود. در حال انتقال..."
+            );
+
 
             loginButton.innerText =
                 "✅ ورود موفق";
 
 
-            window.location.href =
-                "command.html";
+            /*
+            انتقال
+            */
+
+            setTimeout(
+
+                function() {
+
+                    window.location.replace(
+                        "command.html"
+                    );
+
+                },
+
+                300
+
+            );
 
 
         } catch (error) {
@@ -846,15 +1097,15 @@ loginForm.addEventListener(
         }
 
     }
+
 );
 
 
-/* =========================================
-   Start
-========================================= */
+/* =========================================================
+   START
+========================================================= */
 
 checkExistingLogin();
-
 
 </script>
 
