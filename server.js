@@ -1,6 +1,7 @@
 // ===================================
 // Vanguard LSPD System
 // MongoDB Ticket + Tracking + Chat Server
+// CLOSED TICKETS SUPPORT
 // ===================================
 
 const express = require("express");
@@ -12,7 +13,6 @@ const {
 } = require("mongodb");
 
 const app = express();
-
 
 // ===================================
 // MIDDLEWARE
@@ -33,7 +33,6 @@ app.use(express.urlencoded({
 
 app.use(express.static(__dirname));
 
-
 // ===================================
 // HOME
 // ===================================
@@ -41,17 +40,13 @@ app.use(express.static(__dirname));
 app.get("/", (req, res) => {
 
     res.sendFile(
-        path.join(
-            __dirname,
-            "index.html"
-        )
+        path.join(__dirname, "index.html")
     );
 
 });
 
-
 // ===================================
-// HEALTH CHECK
+// HEALTH
 // ===================================
 
 app.get("/health", (req, res) => {
@@ -63,7 +58,6 @@ app.get("/health", (req, res) => {
     });
 
 });
-
 
 // ===================================
 // MONGODB
@@ -89,7 +83,6 @@ let database;
 let tickets;
 let messagesCollection;
 
-
 // ===================================
 // HELPERS
 // ===================================
@@ -101,7 +94,6 @@ function text(value) {
     ).trim();
 
 }
-
 
 function safeObjectId(id) {
 
@@ -117,7 +109,6 @@ function safeObjectId(id) {
     return new ObjectId(id);
 
 }
-
 
 function normalizeRequestType(type) {
 
@@ -144,87 +135,29 @@ function normalizeRequestType(type) {
 
 }
 
-
 function normalizeStatus(status) {
 
     const value =
-        text(status).toLowerCase();
+        text(status);
 
-    const statuses = {
-
-        pending:
-            "Pending",
-
-        accepted:
-            "Accepted",
-
-        rejected:
-            "Rejected",
-
-        closed:
-            "Closed",
-
-        close:
-            "Closed"
-
-    };
-
-    return (
-        statuses[value] ||
-        "Pending"
-    );
-
-}
-
-
-function getExamScore(body) {
-
-    const possibleValues = [
-
-        body?.score,
-
-        body?.examScore,
-
-        body?.testScore,
-
-        body?.examResult,
-
-        body?.grade
-
+    const allowed = [
+        "Pending",
+        "Accepted",
+        "Rejected",
+        "Closed"
     ];
 
-
-    for (
-        const value of possibleValues
+    if (
+        allowed.includes(value)
     ) {
 
-        if (
-            value !== undefined &&
-            value !== null &&
-            text(value) !== ""
-        ) {
-
-            const number =
-                Number(value);
-
-
-            if (
-                Number.isFinite(number)
-            ) {
-
-                return number;
-
-            }
-
-        }
+        return value;
 
     }
 
-
-    return null;
+    return "Pending";
 
 }
-
 
 // ===================================
 // START SERVER
@@ -234,32 +167,24 @@ async function startServer() {
 
     try {
 
-        // ===================================
-        // CONNECT MONGODB
-        // ===================================
-
         await client.connect();
 
         console.log(
             "🍃 MongoDB Connected ✅"
         );
 
-
         database =
             client.db("LSPD");
-
 
         tickets =
             database.collection(
                 "tickets"
             );
 
-
         messagesCollection =
             database.collection(
                 "messages"
             );
-
 
         // ===================================
         // INDEXES
@@ -271,23 +196,18 @@ async function startServer() {
                 createdAt: -1
             });
 
-
             await tickets.createIndex({
-                status: 1,
-                updatedAt: -1
+                status: 1
             });
-
 
             await tickets.createIndex({
                 closedAt: -1
             });
 
-
             await messagesCollection.createIndex({
                 ticketId: 1,
                 createdAt: 1
             });
-
 
             console.log(
                 "📊 MongoDB Indexes Ready ✅"
@@ -302,67 +222,6 @@ async function startServer() {
 
         }
 
-
-        // ==========================================================
-        // GET CLOSED TICKETS
-        // مهم برای بخش تیکت‌های بسته‌شده در Command Center
-        // GET /tickets/closed
-        // ==========================================================
-
-        app.get(
-            "/tickets/closed",
-            async (req, res) => {
-
-                try {
-
-                    const data =
-                        await tickets
-                            .find({
-                                status:
-                                    "Closed"
-                            })
-                            .sort({
-                                closedAt: -1,
-                                updatedAt: -1,
-                                createdAt: -1
-                            })
-                            .toArray();
-
-
-                    res.json({
-
-                        success:
-                            true,
-
-                        tickets:
-                            data
-
-                    });
-
-                } catch (error) {
-
-                    console.error(
-                        "GET /tickets/closed Error:",
-                        error
-                    );
-
-
-                    res.status(500).json({
-
-                        success:
-                            false,
-
-                        message:
-                            "خطا در دریافت تیکت‌های بسته‌شده"
-
-                    });
-
-                }
-
-            }
-        );
-
-
         // ==========================================================
         // GET ALL TICKETS
         // ==========================================================
@@ -373,42 +232,13 @@ async function startServer() {
 
                 try {
 
-                    const statusQuery =
-                        text(
-                            req.query?.status
-                        );
-
-
-                    let filter = {};
-
-
-                    /*
-                     * امکان فیلتر مستقیم از API
-                     *
-                     * /tickets?status=Closed
-                     * /tickets?status=Pending
-                     */
-
-                    if (
-                        statusQuery
-                    ) {
-
-                        filter.status =
-                            normalizeStatus(
-                                statusQuery
-                            );
-
-                    }
-
-
                     const data =
                         await tickets
-                            .find(filter)
+                            .find({})
                             .sort({
                                 createdAt: -1
                             })
                             .toArray();
-
 
                     res.json(data);
 
@@ -419,11 +249,9 @@ async function startServer() {
                         error
                     );
 
-
                     res.status(500).json({
 
-                        success:
-                            false,
+                        success: false,
 
                         message:
                             "خطا در دریافت درخواست‌ها"
@@ -435,11 +263,8 @@ async function startServer() {
             }
         );
 
-
         // ==========================================================
         // GET SINGLE TICKET
-        // مهم برای tracking.html
-        // GET /tickets/:id
         // ==========================================================
 
         app.get(
@@ -453,13 +278,11 @@ async function startServer() {
                             req.params.id
                         );
 
-
                     if (!id) {
 
                         return res.status(400).json({
 
-                            success:
-                                false,
+                            success: false,
 
                             message:
                                 "کد پیگیری نامعتبر است"
@@ -468,20 +291,16 @@ async function startServer() {
 
                     }
 
-
                     const ticket =
                         await tickets.findOne({
-                            _id:
-                                id
+                            _id: id
                         });
-
 
                     if (!ticket) {
 
                         return res.status(404).json({
 
-                            success:
-                                false,
+                            success: false,
 
                             message:
                                 "تیکت پیدا نشد"
@@ -489,7 +308,6 @@ async function startServer() {
                         });
 
                     }
-
 
                     res.json(ticket);
 
@@ -500,11 +318,9 @@ async function startServer() {
                         error
                     );
 
-
                     res.status(500).json({
 
-                        success:
-                            false,
+                        success: false,
 
                         message:
                             "خطا در دریافت تیکت"
@@ -516,10 +332,8 @@ async function startServer() {
             }
         );
 
-
         // ==========================================================
         // CREATE NEW TICKET
-        // POST /tickets
         // ==========================================================
 
         app.post(
@@ -531,50 +345,21 @@ async function startServer() {
                     const body =
                         req.body || {};
 
-
                     const requestType =
                         normalizeRequestType(
-
                             body.requestType ||
                             body.type ||
                             "membership"
-
                         );
-
-
-                    // ===================================
-                    // EXAM SCORE
-                    // ===================================
-
-                    const examScore =
-                        getExamScore(
-                            body
-                        );
-
-
-                    // ===================================
-                    // CREATE TICKET
-                    // ===================================
 
                     const ticket = {
 
-                        // -----------------------------------
-                        // Request
-                        // -----------------------------------
-
-                        requestType:
-                            requestType,
-
-
-                        // -----------------------------------
-                        // Common Information
-                        // -----------------------------------
+                        requestType,
 
                         ocName:
                             text(
                                 body.ocName
                             ),
-
 
                         icName:
                             text(
@@ -582,19 +367,16 @@ async function startServer() {
                                 body.name
                             ),
 
-
                         name:
                             text(
                                 body.icName ||
                                 body.name
                             ),
 
-
                         oocName:
                             text(
                                 body.oocName
                             ),
-
 
                         discord:
                             text(
@@ -602,97 +384,71 @@ async function startServer() {
                                 body.discordId
                             ),
 
-
                         discordId:
                             text(
                                 body.discordId ||
                                 body.discord
                             ),
 
-
                         steamHex:
                             text(
                                 body.steamHex
                             ),
-
 
                         cmx:
                             text(
                                 body.cmx
                             ),
 
-
                         age:
                             text(
                                 body.age
                             ),
-
-
-                        // -----------------------------------
-                        // Membership
-                        // -----------------------------------
 
                         experience:
                             text(
                                 body.experience
                             ),
 
-
                         reason:
                             text(
                                 body.reason
                             ),
-
-
-                        // -----------------------------------
-                        // Division
-                        // -----------------------------------
 
                         currentDivision:
                             text(
                                 body.currentDivision
                             ),
 
-
                         requestedDivision:
                             text(
                                 body.requestedDivision
                             ),
-
 
                         reasonForRequest:
                             text(
                                 body.reasonForRequest
                             ),
 
-
                         previousDivisionExperience:
                             text(
                                 body.previousDivisionExperience
                             ),
-
 
                         additionalInformation:
                             text(
                                 body.additionalInformation
                             ),
 
-
-                        // -----------------------------------
-                        // Resignation
-                        // -----------------------------------
-
                         rank:
                             text(
                                 body.rank
                             ),
 
-
                         callSign:
                             text(
                                 body.callSign
                             ),
-
 
                         resignationReason:
                             text(
@@ -700,85 +456,39 @@ async function startServer() {
                                 body.reason
                             ),
 
-
-                        // -----------------------------------
-                        // Rank Up
-                        // -----------------------------------
-
                         requestRank:
                             text(
                                 body.requestRank
                             ),
-
 
                         currentRankTimeplay:
                             text(
                                 body.currentRankTimeplay
                             ),
 
-
                         note:
                             text(
                                 body.note
                             ),
 
-
-                        // -----------------------------------
-                        // Exam
-                        // -----------------------------------
-
                         score:
-                            examScore,
-
-
-                        /*
-                         * برای هماهنگی با فرم‌های مختلف
-                         * همین امتیاز در examScore هم نگه داشته می‌شود.
-                         */
-
-                        examScore:
-                            examScore,
-
-
-                        // -----------------------------------
-                        // Status
-                        // -----------------------------------
+                            body.score !== undefined &&
+                            body.score !== null &&
+                            text(body.score) !== ""
+                                ? Number(body.score)
+                                : null,
 
                         status:
                             "Pending",
 
-
-                        // -----------------------------------
-                        // Reply
-                        // -----------------------------------
-
                         reply:
                             "در انتظار پاسخ فرماندهی",
-
-
-                        // -----------------------------------
-                        // Closed Information
-                        // -----------------------------------
 
                         closedAt:
                             null,
 
-
                         closedBy:
                             null,
-
-
-                        closedByUsername:
-                            "",
-
-
-                        closedByRank:
-                            "",
-
-
-                        // -----------------------------------
-                        // Dates
-                        // -----------------------------------
 
                         createdAt:
                             new Date(),
@@ -788,39 +498,24 @@ async function startServer() {
 
                     };
 
-
-                    // ===================================
-                    // INSERT
-                    // ===================================
-
                     const result =
                         await tickets.insertOne(
                             ticket
                         );
 
-
                     const ticketId =
                         result.insertedId.toString();
-
 
                     console.log(
                         "🎫 New Ticket:",
                         ticketId,
                         "| Type:",
-                        requestType,
-                        "| Score:",
-                        examScore
+                        requestType
                     );
-
-
-                    // ===================================
-                    // RESPONSE
-                    // ===================================
 
                     res.status(201).json({
 
-                        success:
-                            true,
+                        success: true,
 
                         id:
                             ticketId,
@@ -840,11 +535,9 @@ async function startServer() {
                         error
                     );
 
-
                     res.status(500).json({
 
-                        success:
-                            false,
+                        success: false,
 
                         message:
                             "خطا در ثبت درخواست"
@@ -856,16 +549,9 @@ async function startServer() {
             }
         );
 
-
         // ==========================================================
         // UPDATE TICKET
         // PUT /tickets/:id
-        //
-        // وضعیت‌های مجاز:
-        // Pending
-        // Accepted
-        // Rejected
-        // Closed
         // ==========================================================
 
         app.put(
@@ -879,13 +565,11 @@ async function startServer() {
                             req.params.id
                         );
 
-
                     if (!id) {
 
                         return res.status(400).json({
 
-                            success:
-                                false,
+                            success: false,
 
                             message:
                                 "شناسه تیکت نامعتبر است"
@@ -894,181 +578,87 @@ async function startServer() {
 
                     }
 
-
-                    const body =
-                        req.body || {};
-
-
                     const status =
                         normalizeStatus(
-                            body.status
+                            req.body?.status
                         );
-
 
                     const reply =
                         text(
-                            body.reply
+                            req.body?.reply
                         );
-
-
-                    // ===================================
-                    // COMMANDER INFO
-                    // ===================================
 
                     const commanderName =
                         text(
-                            body.commanderName ||
-                            body.name
+                            req.body?.commanderName
                         );
-
-
-                    const commanderUsername =
-                        text(
-                            body.commanderUsername ||
-                            body.username
-                        );
-
 
                     const commanderRank =
                         text(
-                            body.commanderRank ||
-                            body.rank
+                            req.body?.commanderRank
                         );
 
-
-                    // ===================================
-                    // GET CURRENT TICKET
-                    // ===================================
-
-                    const currentTicket =
-                        await tickets.findOne({
-
-                            _id:
-                                id
-
-                        });
-
-
-                    if (!currentTicket) {
-
-                        return res.status(404).json({
-
-                            success:
-                                false,
-
-                            message:
-                                "تیکت پیدا نشد"
-
-                        });
-
-                    }
-
-
-                    // ===================================
-                    // UPDATE DATA
-                    // ===================================
+                    const commanderUsername =
+                        text(
+                            req.body?.commanderUsername
+                        );
 
                     const updateData = {
 
-                        status:
-                            status,
+                        status,
 
-                        reply:
-                            reply,
+                        reply,
 
                         updatedAt:
                             new Date()
 
                     };
 
-
                     // ===================================
                     // CLOSE TICKET
                     // ===================================
 
-                    if (
-                        status === "Closed"
-                    ) {
-
-                        /*
-                         * اگر برای اولین بار بسته می‌شود،
-                         * اطلاعات بسته‌کننده ثبت می‌شود.
-                         */
+                    if (status === "Closed") {
 
                         updateData.closedAt =
-                            currentTicket.closedAt ||
                             new Date();
-
 
                         updateData.closedBy = {
 
                             name:
-                                commanderName ||
-                                "فرماندهی",
-
-                            username:
-                                commanderUsername ||
-                                "",
+                                commanderName,
 
                             rank:
-                                commanderRank ||
-                                ""
+                                commanderRank,
+
+                            username:
+                                commanderUsername
 
                         };
 
-
-                        updateData.closedByUsername =
-                            commanderUsername ||
-                            "";
-
-
-                        updateData.closedByRank =
-                            commanderRank ||
-                            "";
-
                     }
-
 
                     // ===================================
                     // REOPEN TICKET
                     // ===================================
 
-                    else {
-
-                        /*
-                         * اگر فرمانده تیکت بسته‌شده را
-                         * دوباره Pending / Accepted / Rejected کند،
-                         * اطلاعات بسته‌شدن پاک می‌شود.
-                         */
+                    if (
+                        status !== "Closed"
+                    ) {
 
                         updateData.closedAt =
                             null;
 
-
                         updateData.closedBy =
                             null;
 
-
-                        updateData.closedByUsername =
-                            "";
-
-
-                        updateData.closedByRank =
-                            "";
-
                     }
-
-
-                    // ===================================
-                    // UPDATE
-                    // ===================================
 
                     const result =
                         await tickets.updateOne(
 
                             {
-                                _id:
-                                    id
+                                _id: id
                             },
 
                             {
@@ -1078,15 +668,13 @@ async function startServer() {
 
                         );
 
-
                     if (
                         result.matchedCount === 0
                     ) {
 
                         return res.status(404).json({
 
-                            success:
-                                false,
+                            success: false,
 
                             message:
                                 "تیکت پیدا نشد"
@@ -1095,47 +683,14 @@ async function startServer() {
 
                     }
 
-
-                    console.log(
-
-                        "📝 Ticket Updated:",
-
-                        id.toString(),
-
-                        "| Status:",
-
-                        status,
-
-                        "| Commander:",
-
-                        commanderUsername ||
-                        commanderName ||
-                        "Unknown"
-
-                    );
-
-
                     res.json({
 
-                        success:
-                            true,
-
-                        status:
-                            status,
-
-                        closed:
-                            status === "Closed",
+                        success: true,
 
                         message:
                             status === "Closed"
-
-                            ?
-
-                            "تیکت با موفقیت بسته شد."
-
-                            :
-
-                            "تیکت با موفقیت بروزرسانی شد."
+                                ? "تیکت با موفقیت بسته شد."
+                                : "تیکت با موفقیت بروزرسانی شد."
 
                     });
 
@@ -1146,11 +701,9 @@ async function startServer() {
                         error
                     );
 
-
                     res.status(500).json({
 
-                        success:
-                            false,
+                        success: false,
 
                         message:
                             "خطا در بروزرسانی تیکت"
@@ -1162,10 +715,8 @@ async function startServer() {
             }
         );
 
-
         // ==========================================================
         // GET TICKET MESSAGES
-        // GET /tickets/:id/messages
         // ==========================================================
 
         app.get(
@@ -1179,13 +730,11 @@ async function startServer() {
                             req.params.id
                         );
 
-
                     if (!id) {
 
                         return res.status(400).json({
 
-                            success:
-                                false,
+                            success: false,
 
                             message:
                                 "شناسه تیکت نامعتبر است"
@@ -1194,26 +743,16 @@ async function startServer() {
 
                     }
 
-
-                    // -----------------------------------
-                    // Check Ticket
-                    // -----------------------------------
-
                     const ticket =
                         await tickets.findOne({
-
-                            _id:
-                                id
-
+                            _id: id
                         });
-
 
                     if (!ticket) {
 
                         return res.status(404).json({
 
-                            success:
-                                false,
+                            success: false,
 
                             message:
                                 "تیکت پیدا نشد"
@@ -1221,11 +760,6 @@ async function startServer() {
                         });
 
                     }
-
-
-                    // -----------------------------------
-                    // Get Messages
-                    // -----------------------------------
 
                     const messages =
                         await messagesCollection
@@ -1236,13 +770,9 @@ async function startServer() {
 
                             })
                             .sort({
-
-                                createdAt:
-                                    1
-
+                                createdAt: 1
                             })
                             .toArray();
-
 
                     res.json(
                         messages
@@ -1251,15 +781,13 @@ async function startServer() {
                 } catch (error) {
 
                     console.error(
-                        "GET /tickets/:id/messages Error:",
+                        "GET messages Error:",
                         error
                     );
 
-
                     res.status(500).json({
 
-                        success:
-                            false,
+                        success: false,
 
                         message:
                             "خطا در دریافت پیام‌ها"
@@ -1271,10 +799,8 @@ async function startServer() {
             }
         );
 
-
         // ==========================================================
         // SEND TICKET MESSAGE
-        // POST /tickets/:id/messages
         // ==========================================================
 
         app.post(
@@ -1288,13 +814,11 @@ async function startServer() {
                             req.params.id
                         );
 
-
                     if (!id) {
 
                         return res.status(400).json({
 
-                            success:
-                                false,
+                            success: false,
 
                             message:
                                 "شناسه تیکت نامعتبر است"
@@ -1303,26 +827,16 @@ async function startServer() {
 
                     }
 
-
-                    // -----------------------------------
-                    // Check Ticket
-                    // -----------------------------------
-
                     const ticket =
                         await tickets.findOne({
-
-                            _id:
-                                id
-
+                            _id: id
                         });
-
 
                     if (!ticket) {
 
                         return res.status(404).json({
 
-                            success:
-                                false,
+                            success: false,
 
                             message:
                                 "تیکت پیدا نشد"
@@ -1331,23 +845,16 @@ async function startServer() {
 
                     }
 
-
-                    // -----------------------------------
-                    // Message
-                    // -----------------------------------
-
                     const message =
                         text(
                             req.body?.message
                         );
 
-
                     if (!message) {
 
                         return res.status(400).json({
 
-                            success:
-                                false,
+                            success: false,
 
                             message:
                                 "پیام نمی‌تواند خالی باشد"
@@ -1356,15 +863,13 @@ async function startServer() {
 
                     }
 
-
                     if (
                         message.length > 2000
                     ) {
 
                         return res.status(400).json({
 
-                            success:
-                                false,
+                            success: false,
 
                             message:
                                 "پیام نمی‌تواند بیشتر از ۲۰۰۰ کاراکتر باشد"
@@ -1373,16 +878,10 @@ async function startServer() {
 
                     }
 
-
-                    // -----------------------------------
-                    // Sender
-                    // -----------------------------------
-
                     let sender =
                         text(
                             req.body?.sender
                         ).toLowerCase();
-
 
                     if (
                         sender !== "command" &&
@@ -1394,109 +893,59 @@ async function startServer() {
 
                     }
 
-
-                    // -----------------------------------
-                    // Command Info
-                    // -----------------------------------
-
                     const commanderName =
                         text(
                             req.body?.commanderName
                         );
-
 
                     const commanderRank =
                         text(
                             req.body?.commanderRank
                         );
 
-
                     const commanderUsername =
                         text(
                             req.body?.commanderUsername
                         );
-
-
-                    // -----------------------------------
-                    // Create Message
-                    // -----------------------------------
 
                     const newMessage = {
 
                         ticketId:
                             id.toString(),
 
-                        sender:
-                            sender,
+                        sender,
 
-                        message:
-                            message,
+                        message,
 
                         commanderName:
                             sender === "command"
-
-                                ?
-
-                                commanderName
-
-                                :
-
-                                "",
+                                ? commanderName
+                                : "",
 
                         commanderRank:
                             sender === "command"
-
-                                ?
-
-                                commanderRank
-
-                                :
-
-                                "",
+                                ? commanderRank
+                                : "",
 
                         commanderUsername:
                             sender === "command"
-
-                                ?
-
-                                commanderUsername
-
-                                :
-
-                                "",
+                                ? commanderUsername
+                                : "",
 
                         senderName:
                             sender === "command"
-
-                                ?
-
-                                commanderName ||
-                                "فرماندهی"
-
-                                :
-
-                                "متقاضی",
+                                ? commanderName || "فرماندهی"
+                                : "متقاضی",
 
                         senderRank:
                             sender === "command"
-
-                                ?
-
-                                commanderRank
-
-                                :
-
-                                "",
+                                ? commanderRank
+                                : "",
 
                         createdAt:
                             new Date()
 
                     };
-
-
-                    // -----------------------------------
-                    // Insert
-                    // -----------------------------------
 
                     const result =
                         await messagesCollection
@@ -1504,28 +953,9 @@ async function startServer() {
                                 newMessage
                             );
 
-
-                    console.log(
-
-                        "💬 New Message:",
-
-                        result.insertedId.toString(),
-
-                        "| Ticket:",
-
-                        id.toString(),
-
-                        "| Sender:",
-
-                        sender
-
-                    );
-
-
                     res.status(201).json({
 
-                        success:
-                            true,
+                        success: true,
 
                         id:
                             result.insertedId.toString(),
@@ -1538,15 +968,13 @@ async function startServer() {
                 } catch (error) {
 
                     console.error(
-                        "POST /tickets/:id/messages Error:",
+                        "POST messages Error:",
                         error
                     );
 
-
                     res.status(500).json({
 
-                        success:
-                            false,
+                        success: false,
 
                         message:
                             "خطا در ارسال پیام"
@@ -1558,10 +986,8 @@ async function startServer() {
             }
         );
 
-
         // ==========================================================
         // DELETE TICKET
-        // DELETE /tickets/:id
         // ==========================================================
 
         app.delete(
@@ -1575,13 +1001,11 @@ async function startServer() {
                             req.params.id
                         );
 
-
                     if (!id) {
 
                         return res.status(400).json({
 
-                            success:
-                                false,
+                            success: false,
 
                             message:
                                 "شناسه تیکت نامعتبر است"
@@ -1590,19 +1014,10 @@ async function startServer() {
 
                     }
 
-
-                    // -----------------------------------
-                    // Delete Ticket
-                    // -----------------------------------
-
                     const result =
                         await tickets.deleteOne({
-
-                            _id:
-                                id
-
+                            _id: id
                         });
-
 
                     if (
                         result.deletedCount === 0
@@ -1610,8 +1025,7 @@ async function startServer() {
 
                         return res.status(404).json({
 
-                            success:
-                                false,
+                            success: false,
 
                             message:
                                 "تیکت پیدا نشد"
@@ -1620,11 +1034,6 @@ async function startServer() {
 
                     }
 
-
-                    // -----------------------------------
-                    // Delete Chat
-                    // -----------------------------------
-
                     await messagesCollection.deleteMany({
 
                         ticketId:
@@ -1632,11 +1041,9 @@ async function startServer() {
 
                     });
 
-
                     res.json({
 
-                        success:
-                            true,
+                        success: true,
 
                         message:
                             "تیکت با موفقیت حذف شد."
@@ -1646,15 +1053,13 @@ async function startServer() {
                 } catch (error) {
 
                     console.error(
-                        "DELETE /tickets/:id Error:",
+                        "DELETE Ticket Error:",
                         error
                     );
 
-
                     res.status(500).json({
 
-                        success:
-                            false,
+                        success: false,
 
                         message:
                             "خطا در حذف تیکت"
@@ -1665,7 +1070,6 @@ async function startServer() {
 
             }
         );
-
 
         // ==========================================================
         // 404 API
@@ -1680,8 +1084,7 @@ async function startServer() {
 
                     return res.status(404).json({
 
-                        success:
-                            false,
+                        success: false,
 
                         message:
                             "مسیر API پیدا نشد"
@@ -1695,14 +1098,12 @@ async function startServer() {
             }
         );
 
-
         // ==========================================================
         // START SERVER
         // ==========================================================
 
         const PORT =
             process.env.PORT || 3000;
-
 
         app.listen(
             PORT,
@@ -1737,11 +1138,7 @@ async function startServer() {
                 );
 
                 console.log(
-                    "🔒 Closed Tickets API: Enabled"
-                );
-
-                console.log(
-                    "📚 Exam Score API: Enabled"
+                    "🔒 Closed Tickets: Enabled"
                 );
 
                 console.log(
@@ -1750,7 +1147,6 @@ async function startServer() {
 
             }
         );
-
 
     } catch (error) {
 
@@ -1764,10 +1160,5 @@ async function startServer() {
     }
 
 }
-
-
-// ===================================
-// RUN
-// ===================================
 
 startServer();
