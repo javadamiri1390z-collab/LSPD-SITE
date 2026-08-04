@@ -4,233 +4,104 @@
 <head>
 
 <meta charset="UTF-8">
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Vanguard LSPD | Command Login</title>
+<title>Vanguard LSPD | Login</title>
 
 <link rel="stylesheet" href="style.css">
 
 <style>
 
-/* =====================================
-   COMMAND LOGIN
-===================================== */
-
 .login-card {
-
     width: 460px;
     max-width: 94%;
-
     padding: 45px 40px;
-
     text-align: center;
 
     background:
         linear-gradient(
             145deg,
-            rgba(8, 18, 32, .92),
-            rgba(0, 0, 0, .78)
+            rgba(8,18,32,.92),
+            rgba(0,0,0,.78)
         );
 
     backdrop-filter: blur(22px);
 
-    border:
-        1px solid rgba(77, 166, 255, .28);
-
+    border: 1px solid rgba(77,166,255,.28);
     border-radius: 28px;
 
     box-shadow:
-        0 25px 70px rgba(0, 0, 0, .55),
-        0 0 45px rgba(0, 110, 255, .18);
-
-    position: relative;
-
-    overflow: hidden;
-
+        0 25px 70px rgba(0,0,0,.55),
+        0 0 45px rgba(0,110,255,.18);
 }
-
-
-/* نور بالای کارت */
-
-.login-card::before {
-
-    content: "";
-
-    position: absolute;
-
-    top: 0;
-    left: 12%;
-    right: 12%;
-
-    height: 2px;
-
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            #168cff,
-            #66c7ff,
-            #168cff,
-            transparent
-        );
-
-    box-shadow:
-        0 0 18px #168cff;
-
-}
-
-
-/* Badge */
 
 .login-badge {
-
     width: 125px;
     height: 125px;
-
     object-fit: contain;
-
     margin-bottom: 18px;
 
     filter:
-        drop-shadow(0 0 12px rgba(22, 140, 255, .7))
-        drop-shadow(0 0 35px rgba(22, 140, 255, .25));
-
+        drop-shadow(0 0 12px rgba(22,140,255,.7))
+        drop-shadow(0 0 35px rgba(22,140,255,.25));
 }
-
-
-/* عنوان */
 
 .login-card h1 {
-
     margin: 5px 0 8px;
-
     color: #fff;
-
     font-size: 30px;
-
-    font-weight: 800;
-
 }
-
-
-/* زیرعنوان */
 
 .login-card h3 {
-
     margin-bottom: 12px;
-
     color: #4da6ff;
-
     font-size: 16px;
-
-    letter-spacing: .5px;
-
 }
-
-
-/* توضیحات */
 
 .login-card > p {
-
     color: #9ca9b8;
-
     font-size: 14px;
-
     line-height: 1.8;
-
     margin-bottom: 25px;
-
 }
 
-
-/* Inputs */
-
 .login-card input {
-
     width: 100%;
-
     height: 54px;
-
     margin-top: 13px;
-
     padding: 0 17px;
 
     border-radius: 13px;
+    border: 1px solid rgba(255,255,255,.12);
 
-    border:
-        1px solid rgba(255,255,255,.12);
-
-    background:
-        rgba(255,255,255,.055);
-
+    background: rgba(255,255,255,.055);
     color: #fff;
 
     outline: none;
-
     font-family: inherit;
-
     font-size: 14px;
-
-    text-align: right;
-
-    direction: rtl;
-
-    transition:
-        border-color .25s ease,
-        background .25s ease,
-        box-shadow .25s ease,
-        transform .25s ease;
-
 }
-
-
-/* Placeholder */
-
-.login-card input::placeholder {
-
-    color: #7e8996;
-
-}
-
-
-/* Focus */
 
 .login-card input:focus {
-
-    border-color:
-        rgba(22, 140, 255, .8);
-
-    background:
-        rgba(22, 140, 255, .08);
+    border-color: rgba(22,140,255,.8);
 
     box-shadow:
-        0 0 0 3px rgba(22, 140, 255, .08),
-        0 0 20px rgba(22, 140, 255, .12);
-
-    transform:
-        translateY(-1px);
-
+        0 0 0 3px rgba(22,140,255,.08),
+        0 0 20px rgba(22,140,255,.12);
 }
 
-
-/* Login Button */
-
 .login-button {
-
     width: 100%;
-
     height: 54px;
-
     margin-top: 22px;
 
+    border: none;
     border-radius: 13px;
 
     font-size: 15px;
-
     font-weight: bold;
+
+    color: white;
 
     background:
         linear-gradient(
@@ -239,136 +110,60 @@
             #0055cc
         );
 
-    box-shadow:
-        0 8px 25px rgba(0, 110, 255, .25);
-
-    transition:
-        transform .25s ease,
-        box-shadow .25s ease,
-        filter .25s ease;
-
+    cursor: pointer;
 }
 
-
-/* Button Hover */
-
-.login-button:hover {
-
-    transform:
-        translateY(-2px);
-
-    filter:
-        brightness(1.08);
-
-    box-shadow:
-        0 12px 32px rgba(0, 110, 255, .38);
-
+.login-button:disabled {
+    opacity: .6;
+    cursor: not-allowed;
 }
-
-
-/* Button Active */
-
-.login-button:active {
-
-    transform:
-        translateY(0);
-
-}
-
-
-/* Login Result */
 
 #loginResult {
-
     min-height: 25px;
-
     margin-top: 15px;
-
 }
-
 
 #loginResult p {
-
     margin: 0;
-
     padding: 11px;
-
     border-radius: 10px;
-
-    background:
-        rgba(255, 40, 40, .08);
-
-    border:
-        1px solid rgba(255, 70, 70, .18);
-
-    color: #ff7070 !important;
-
     font-size: 13px;
-
 }
 
+.login-error {
+    background: rgba(255,40,40,.08);
+    border: 1px solid rgba(255,70,70,.18);
+    color: #ff7070;
+}
 
-/* Back link */
+.login-success {
+    background: rgba(0,255,130,.08);
+    border: 1px solid rgba(0,255,130,.18);
+    color: #45e996;
+}
 
 .back-link {
-
     display: inline-block;
-
     margin-top: 20px;
-
     color: #8fa0b3;
-
     text-decoration: none;
-
     font-size: 13px;
-
-    transition:
-        color .2s ease;
-
 }
 
-
-.back-link:hover {
-
-    color: #4da6ff;
-
-}
-
-
-/* =====================================
-   MOBILE
-===================================== */
-
-@media (max-width: 600px) {
+@media(max-width:600px) {
 
     .login-card {
-
         padding: 35px 22px;
-
         border-radius: 22px;
-
     }
-
 
     .login-badge {
-
         width: 105px;
         height: 105px;
-
     }
-
 
     .login-card h1 {
-
         font-size: 25px;
-
-    }
-
-
-    .login-card h3 {
-
-        font-size: 14px;
-
     }
 
 }
@@ -377,15 +172,9 @@
 
 </head>
 
-
 <body class="command-page">
 
 <div class="overlay"></div>
-
-
-<!-- =====================================
-     NAVBAR
-===================================== -->
 
 <header class="navbar">
 
@@ -395,19 +184,15 @@
         alt="Vanguard LSPD Badge"
     >
 
-
     <div class="nav-title">
 
-        <h2>
-            Vanguard LSPD
-        </h2>
+        <h2>Vanguard LSPD</h2>
 
         <span>
-            Command Access
+            Member Access
         </span>
 
     </div>
-
 
     <a
         href="index.html"
@@ -419,14 +204,9 @@
 </header>
 
 
-<!-- =====================================
-     LOGIN
-===================================== -->
-
 <main class="hero">
 
     <div class="login-card">
-
 
         <img
             src="badge.png"
@@ -434,20 +214,16 @@
             alt="LSPD Badge"
         >
 
-
         <h1>
-            ورود فرماندهی
+            ورود به LSPD
         </h1>
 
-
         <h3>
-            LSPD Command Center
+            Vanguard LSPD
         </h3>
 
-
         <p>
-            فقط اعضای مجاز LSPD اجازه دسترسی به
-            مرکز فرماندهی را دارند.
+            با حساب اختصاصی خود وارد سامانه شوید.
         </p>
 
 
@@ -469,10 +245,11 @@
 
         <button
             type="button"
+            id="loginButton"
             class="btn primary login-button"
-            onclick="loginCommand()"
+            onclick="loginUser()"
         >
-            🔐 ورود به پنل فرماندهی
+            🔐 ورود
         </button>
 
 
@@ -486,116 +263,220 @@
             ← بازگشت به لابی
         </a>
 
-
     </div>
 
 </main>
 
 
-<script src="script.js"></script>
-
-
 <script>
 
-/* =====================================
-   LOGIN
-===================================== */
+const API_URL =
+    "https://lspd-site-11.onrender.com";
 
-function loginCommand() {
 
-    const user =
+async function loginUser() {
+
+    const username =
         document
         .getElementById("username")
         .value
         .trim();
 
-
-    const pass =
+    const password =
         document
         .getElementById("password")
         .value;
 
-
     const result =
-        document.getElementById(
-            "loginResult"
-        );
+        document.getElementById("loginResult");
+
+    const button =
+        document.getElementById("loginButton");
 
 
-    if (!user || !pass) {
+    result.innerHTML = "";
+
+
+    if (!username || !password) {
 
         result.innerHTML = `
-
-            <p>
-                ⚠️ لطفاً نام کاربری و رمز عبور را وارد کنید.
+            <p class="login-error">
+                ⚠️ نام کاربری و رمز عبور را وارد کنید.
             </p>
-
         `;
 
         return;
-
     }
 
 
-    /*
-     * اطلاعات ورود فعلی پروژه
-     */
+    button.disabled = true;
 
-    if (
-        user === "LSPD" &&
-        pass === "LSPD00078"
-    ) {
+    button.innerText =
+        "⏳ در حال بررسی...";
 
-        localStorage.setItem(
-            "lspdAdmin",
-            "true"
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL + "/auth/login",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        username,
+                        password
+                    })
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.message ||
+                "نام کاربری یا رمز عبور اشتباه است."
+            );
+
+        }
+
+
+        /*
+         * پاسخ Backend باید شامل:
+         *
+         * token
+         * user
+         *
+         * باشد.
+         */
+
+
+        if (!data.token || !data.user) {
+
+            throw new Error(
+                "پاسخ نامعتبر از سرور دریافت شد."
+            );
+
+        }
+
+
+        sessionStorage.setItem(
+            "lspdToken",
+            data.token
         );
 
 
-        window.location.href =
-            "admin.html";
+        sessionStorage.setItem(
+            "lspdUser",
+            JSON.stringify(data.user)
+        );
 
 
-        return;
+        result.innerHTML = `
+            <p class="login-success">
+                ✅ ورود موفق بود. در حال انتقال...
+            </p>
+        `;
+
+
+        /*
+         * انتقال بر اساس Role
+         */
+
+
+        const role =
+            String(
+                data.user.role || ""
+            ).toLowerCase();
+
+
+        const commandRoles = [
+            "chief",
+            "assistant_chief",
+            "deputy_chief",
+            "commander"
+        ];
+
+
+        if (
+            commandRoles.includes(role)
+        ) {
+
+            window.location.href =
+                "admin.html";
+
+        } else {
+
+            window.location.href =
+                "officer.html";
+
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            "Login Error:",
+            error
+        );
+
+
+        result.innerHTML = `
+            <p class="login-error">
+                ❌ ${escapeHTML(error.message)}
+            </p>
+        `;
+
+
+        document
+            .getElementById("password")
+            .value = "";
+
+
+    } finally {
+
+        button.disabled = false;
+
+        button.innerText =
+            "🔐 ورود";
 
     }
-
-
-    result.innerHTML = `
-
-        <p>
-            ❌ نام کاربری یا رمز عبور اشتباه است.
-        </p>
-
-    `;
-
-
-    /*
-     * پاک کردن رمز اشتباه
-     */
-
-    document
-        .getElementById("password")
-        .value = "";
 
 }
 
 
-/* =====================================
-   ENTER
-===================================== */
+function escapeHTML(value) {
+
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
 
 document
-    .getElementById("password")
+    .getElementById("username")
     .addEventListener(
         "keydown",
-        function(event) {
+        event => {
 
             if (
                 event.key === "Enter"
             ) {
 
-                loginCommand();
+                loginUser();
 
             }
 
@@ -604,16 +485,16 @@ document
 
 
 document
-    .getElementById("username")
+    .getElementById("password")
     .addEventListener(
         "keydown",
-        function(event) {
+        event => {
 
             if (
                 event.key === "Enter"
             ) {
 
-                loginCommand();
+                loginUser();
 
             }
 
@@ -621,7 +502,6 @@ document
     );
 
 </script>
-
 
 </body>
 
