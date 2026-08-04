@@ -2,23 +2,14 @@
 <html lang="fa" dir="rtl">
 
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Vanguard LSPD | Command Center</title>
 
-<link
-    rel="stylesheet"
-    href="style.css"
->
+<link rel="stylesheet" href="style.css">
 
 <style>
-
 * {
     box-sizing: border-box;
 }
@@ -34,7 +25,7 @@ body.command-page {
 }
 
 .command-header {
-    background: rgba(5,10,18,.78);
+    background: rgba(5, 10, 18, .78);
     border: 1px solid rgba(77,166,255,.25);
     border-radius: 22px;
     padding: 25px;
@@ -84,18 +75,6 @@ body.command-page {
     font-size: 13px;
 }
 
-.owner-badge {
-    display: inline-block;
-    margin-top: 7px;
-    margin-right: 5px;
-    padding: 5px 12px;
-    border-radius: 20px;
-    background: rgba(255,180,0,.15);
-    border: 1px solid rgba(255,180,0,.35);
-    color: #ffc34d;
-    font-size: 13px;
-}
-
 .logout-btn {
     border: 1px solid rgba(255,255,255,.15);
     background: rgba(255,255,255,.07);
@@ -116,7 +95,7 @@ body.command-page {
 }
 
 .panel {
-    background: rgba(5,10,18,.78);
+    background: rgba(5, 10, 18, .78);
     border: 1px solid rgba(255,255,255,.12);
     border-radius: 22px;
     padding: 22px;
@@ -289,24 +268,6 @@ body.command-page {
     outline: none;
 }
 
-.action-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.action-buttons .btn {
-    flex: 1;
-}
-
-.owner-only {
-    display: none;
-}
-
-.owner-only.visible {
-    display: block;
-}
-
 .refresh-info {
     color: #777;
     font-size: 12px;
@@ -315,13 +276,13 @@ body.command-page {
 }
 
 .error-box {
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 12px;
     background: rgba(255,0,0,.08);
     border: 1px solid rgba(255,0,0,.2);
     color: #ff7777;
-    padding: 12px;
-    border-radius: 10px;
-    margin-bottom: 15px;
-    display: none;
+    text-align: center;
 }
 
 @media(max-width:850px) {
@@ -336,16 +297,13 @@ body.command-page {
     }
 
 }
-
 </style>
 
 </head>
 
-
 <body class="command-page">
 
 <div class="overlay"></div>
-
 
 <header class="navbar">
 
@@ -377,7 +335,6 @@ body.command-page {
 
 <div class="command-wrapper">
 
-
 <div class="command-header">
 
     <div class="command-header-inner">
@@ -406,18 +363,9 @@ body.command-page {
                     —
                 </span>
 
-                <span
-                    id="ownerBadge"
-                    class="owner-badge"
-                    style="display:none;"
-                >
-                    👑 OWNER
-                </span>
-
             </div>
 
         </div>
-
 
         <button
             class="logout-btn"
@@ -432,8 +380,8 @@ body.command-page {
 
 
 <div
-    id="errorBox"
-    class="error-box"
+    id="globalError"
+    style="display:none;"
 ></div>
 
 
@@ -466,9 +414,7 @@ body.command-page {
 
 <section class="panel ticket-detail">
 
-    <div
-        id="ticketDetail"
-    >
+    <div id="ticketDetail">
 
         <div class="empty">
 
@@ -497,7 +443,7 @@ body.command-page {
 <script>
 
 /* ============================================================
-   CONFIG
+   API
 ============================================================ */
 
 const API_URL =
@@ -505,7 +451,7 @@ const API_URL =
 
 
 /* ============================================================
-   GLOBAL
+   STATE
 ============================================================ */
 
 let tickets = [];
@@ -514,24 +460,19 @@ let selectedTicketId = null;
 
 
 /* ============================================================
-   AUTH TOKEN
+   TOKEN
 ============================================================ */
 
 function getToken() {
 
     return (
-        localStorage.getItem("lspdCommandToken") ||
-        localStorage.getItem("lspdAdminToken") ||
-        localStorage.getItem("lspdToken") ||
-        ""
+        localStorage.getItem(
+            "lspdCommandToken"
+        ) || ""
     ).trim();
 
 }
 
-
-/* ============================================================
-   AUTH HEADERS
-============================================================ */
 
 function authHeaders(extra = {}) {
 
@@ -539,233 +480,23 @@ function authHeaders(extra = {}) {
         getToken();
 
 
-    const headers = {
-
-        ...extra
-
-    };
-
-
-    if (token) {
-
-        headers["Authorization"] =
-            "Bearer " + token;
-
-    }
-
-
-    return headers;
-
-}
-
-
-/* ============================================================
-   AUTHENTICATED FETCH
-============================================================ */
-
-async function apiFetch(
-    url,
-    options = {}
-) {
-
-    const finalOptions = {
-
-        ...options,
-
-        headers:
-            authHeaders(
-                options.headers || {}
-            ),
-
-        cache:
-            options.cache ||
-            "no-store"
-
-    };
-
-
-    const response =
-        await fetch(
-            url,
-            finalOptions
-        );
-
-
-    /*
-    اگر Token منقضی یا نامعتبر شده باشد
-    */
-
-    if (
-        response.status === 401
-    ) {
-
-        localStorage.removeItem(
-            "lspdCommandToken"
-        );
-
-        localStorage.removeItem(
-            "lspdCommander"
-        );
-
-        localStorage.removeItem(
-            "lspdAdmin"
-        );
-
-        localStorage.removeItem(
-            "lspdAdminUser"
-        );
-
-        localStorage.removeItem(
-            "lspdAdminName"
-        );
-
-        localStorage.removeItem(
-            "lspdAdminRank"
-        );
-
-        localStorage.removeItem(
-            "lspdIsOwner"
-        );
-
-
-        throw new Error(
-            "جلسه ورود منقضی یا نامعتبر است. دوباره وارد شوید."
-        );
-
-    }
-
-
-    return response;
-
-}
-
-
-/* ============================================================
-   GET COMMANDER
-============================================================ */
-
-function getCommander() {
-
-    try {
-
-        const saved =
-            localStorage.getItem(
-                "lspdCommander"
-            );
-
-
-        if (saved) {
-
-            const user =
-                JSON.parse(saved);
-
-
-            if (
-                user &&
-                user.username
-            ) {
-
-                return user;
-
-            }
-
-        }
-
-    } catch (error) {
-
-        console.error(
-            "Commander Parse Error:",
-            error
-        );
-
-    }
-
-
     return {
 
-        username:
-            localStorage.getItem(
-                "lspdAdminUser"
-            ) || "LSPD",
+        ...extra,
 
-        name:
-            localStorage.getItem(
-                "lspdAdminName"
-            ) || "فرمانده LSPD",
-
-        rank:
-            localStorage.getItem(
-                "lspdAdminRank"
-            ) || "Command",
-
-        role:
-            "command",
-
-        isOwner:
-            false
+        "Authorization":
+            "Bearer " + token
 
     };
 
 }
 
 
-let commander =
-    getCommander();
-
-
 /* ============================================================
-   DISPLAY COMMANDER
+   CHECK LOGIN
 ============================================================ */
 
-function displayCommander() {
-
-    const nameElement =
-        document.getElementById(
-            "commanderName"
-        );
-
-
-    const rankElement =
-        document.getElementById(
-            "commanderRank"
-        );
-
-
-    const ownerBadge =
-        document.getElementById(
-            "ownerBadge"
-        );
-
-
-    nameElement.innerText =
-        commander.name ||
-        commander.username ||
-        "فرمانده LSPD";
-
-
-    rankElement.innerText =
-        commander.rank ||
-        "Command";
-
-
-    if (
-        commander.role === "owner" ||
-        commander.isOwner === true
-    ) {
-
-        ownerBadge.style.display =
-            "inline-block";
-
-    }
-
-}
-
-
-/* ============================================================
-   VERIFY SESSION
-============================================================ */
-
-async function verifySession() {
+async function checkAuthentication() {
 
     const token =
         getToken();
@@ -785,20 +516,25 @@ async function verifySession() {
 
         const response =
             await fetch(
+
                 API_URL +
                 "/auth/me",
+
                 {
 
-                    method:
-                        "GET",
+                    method: "GET",
 
-                    headers:
-                        authHeaders(),
+                    headers: {
 
-                    cache:
-                        "no-store"
+                        "Authorization":
+                            "Bearer " + token
+
+                    },
+
+                    cache: "no-store"
 
                 }
+
             );
 
 
@@ -806,8 +542,17 @@ async function verifySession() {
             response.status === 401
         ) {
 
+            logoutCommand();
+
+            return false;
+
+        }
+
+
+        if (!response.ok) {
+
             throw new Error(
-                "401"
+                "Authentication failed"
             );
 
         }
@@ -818,51 +563,25 @@ async function verifySession() {
 
 
         if (
-            !response.ok ||
             !data.success ||
             !data.user
         ) {
 
-            throw new Error(
-                data.message ||
-                "Session invalid"
-            );
+            logoutCommand();
+
+            return false;
 
         }
 
 
-        commander =
-            data.user;
-
-
-        localStorage.setItem(
-
-            "lspdCommander",
-
-            JSON.stringify(
-                data.user
-            )
-
+        saveCommander(
+            data.user
         );
 
 
-        localStorage.setItem(
-            "lspdAdminUser",
-            data.user.username || ""
+        displayCommander(
+            data.user
         );
-
-        localStorage.setItem(
-            "lspdAdminName",
-            data.user.name || ""
-        );
-
-        localStorage.setItem(
-            "lspdAdminRank",
-            data.user.rank || ""
-        );
-
-
-        displayCommander();
 
 
         return true;
@@ -871,22 +590,14 @@ async function verifySession() {
     } catch (error) {
 
         console.error(
-            "SESSION ERROR:",
+            "AUTH CHECK ERROR:",
             error
         );
 
 
-        localStorage.removeItem(
-            "lspdCommandToken"
+        showGlobalError(
+            "ارتباط با سرور برای احراز هویت ناموفق بود."
         );
-
-        localStorage.removeItem(
-            "lspdCommander"
-        );
-
-
-        window.location.href =
-            "command-login.html";
 
 
         return false;
@@ -897,20 +608,156 @@ async function verifySession() {
 
 
 /* ============================================================
-   ERROR BOX
+   SAVE COMMANDER
 ============================================================ */
 
-function showError(message) {
+function saveCommander(user) {
 
-    const box =
+    if (!user) {
+
+        return;
+
+    }
+
+
+    localStorage.setItem(
+
+        "lspdCommander",
+
+        JSON.stringify({
+
+            username:
+                user.username || "",
+
+            name:
+                user.name || "",
+
+            rank:
+                user.rank || "",
+
+            role:
+                user.role || "command",
+
+            isOwner:
+                user.isOwner === true
+
+        })
+
+    );
+
+
+    localStorage.setItem(
+
+        "lspdAdminUser",
+
+        user.username || ""
+
+    );
+
+
+    localStorage.setItem(
+
+        "lspdAdminName",
+
+        user.name || ""
+
+    );
+
+
+    localStorage.setItem(
+
+        "lspdAdminRank",
+
+        user.rank || ""
+
+    );
+
+
+    localStorage.setItem(
+        "lspdAdmin",
+        "true"
+    );
+
+
+    if (
+        user.role === "owner" ||
+        user.isOwner === true
+    ) {
+
+        localStorage.setItem(
+            "lspdIsOwner",
+            "true"
+        );
+
+    }
+
+}
+
+
+/* ============================================================
+   DISPLAY COMMANDER
+============================================================ */
+
+function displayCommander(user) {
+
+    const nameElement =
         document.getElementById(
-            "errorBox"
+            "commanderName"
         );
 
 
+    const rankElement =
+        document.getElementById(
+            "commanderRank"
+        );
+
+
+    if (nameElement) {
+
+        nameElement.innerText =
+            user.name ||
+            user.username ||
+            "فرمانده LSPD";
+
+    }
+
+
+    if (rankElement) {
+
+        rankElement.innerText =
+            user.rank ||
+            "Command";
+
+    }
+
+}
+
+
+/* ============================================================
+   GLOBAL ERROR
+============================================================ */
+
+function showGlobalError(message) {
+
+    const box =
+        document.getElementById(
+            "globalError"
+        );
+
+
+    if (!box) {
+
+        return;
+
+    }
+
+
+    box.className =
+        "error-box";
+
+
     box.innerText =
-        message ||
-        "خطایی رخ داد.";
+        message;
 
 
     box.style.display =
@@ -919,16 +766,19 @@ function showError(message) {
 }
 
 
-function hideError() {
+function hideGlobalError() {
 
     const box =
         document.getElementById(
-            "errorBox"
+            "globalError"
         );
 
 
-    box.innerText =
-        "";
+    if (!box) {
+
+        return;
+
+    }
 
 
     box.style.display =
@@ -943,9 +793,7 @@ function hideError() {
 
 function escapeHTML(value) {
 
-    return String(
-        value ?? ""
-    )
+    return String(value ?? "")
 
         .replace(
             /&/g,
@@ -1021,9 +869,7 @@ function statusHTML(status) {
 
         return `
 
-            <span
-                class="status accepted"
-            >
+            <span class="status accepted">
                 🟢 تایید شده
             </span>
 
@@ -1038,9 +884,7 @@ function statusHTML(status) {
 
         return `
 
-            <span
-                class="status rejected"
-            >
+            <span class="status rejected">
                 🔴 رد شده
             </span>
 
@@ -1051,9 +895,7 @@ function statusHTML(status) {
 
     return `
 
-        <span
-            class="status pending"
-        >
+        <span class="status pending">
             🟡 در انتظار بررسی
         </span>
 
@@ -1064,40 +906,78 @@ function statusHTML(status) {
 
 /* ============================================================
    LOAD TICKETS
+   مهم:
+   Authorization header اضافه شده
 ============================================================ */
 
 async function loadTickets() {
 
-    const box =
-        document.getElementById(
-            "ticketList"
-        );
+    const token =
+        getToken();
+
+
+    if (!token) {
+
+        window.location.href =
+            "command-login.html";
+
+        return;
+
+    }
 
 
     try {
 
-        hideError();
+        hideGlobalError();
 
-
-        /*
-        مهم:
-        اینجا Authorization ارسال می‌شود.
-        */
 
         const response =
-            await apiFetch(
+            await fetch(
 
                 API_URL +
                 "/tickets",
 
                 {
 
-                    method:
-                        "GET"
+                    method: "GET",
+
+                    headers: {
+
+                        "Authorization":
+                            "Bearer " +
+                            token
+
+                    },
+
+                    cache: "no-store"
 
                 }
 
             );
+
+
+        /*
+        Token invalid
+        */
+
+        if (
+            response.status === 401
+        ) {
+
+            localStorage.removeItem(
+                "lspdCommandToken"
+            );
+
+            localStorage.removeItem(
+                "lspdCommander"
+            );
+
+            window.location.href =
+                "command-login.html";
+
+            return;
+
+        }
 
 
         let data = null;
@@ -1115,14 +995,12 @@ async function loadTickets() {
         }
 
 
-        if (
-            !response.ok
-        ) {
+        if (!response.ok) {
 
             throw new Error(
 
                 data?.message ||
-                "خطا در دریافت درخواست‌ها"
+                `HTTP ${response.status}`
 
             );
 
@@ -1138,21 +1016,18 @@ async function loadTickets() {
         renderTickets();
 
 
-        if (
-            selectedTicketId
-        ) {
+        if (selectedTicketId) {
 
             const selected =
                 tickets.find(
 
                     ticket =>
-
-                    String(
-                        ticket._id
-                    ) ===
-                    String(
-                        selectedTicketId
-                    )
+                        String(
+                            ticket._id
+                        ) ===
+                        String(
+                            selectedTicketId
+                        )
 
                 );
 
@@ -1176,35 +1051,27 @@ async function loadTickets() {
         );
 
 
-        box.innerHTML = `
+        document
+            .getElementById(
+                "ticketList"
+            )
+            .innerHTML = `
 
-            <div class="empty">
+                <div class="empty">
 
-                ❌ دریافت درخواست‌ها ناموفق بود.
+                    ❌ دریافت درخواست‌ها ناموفق بود.
 
-                <br><br>
+                    <br><br>
 
-                <small>
+                    <small>
+                        ${escapeHTML(
+                            error.message
+                        )}
+                    </small>
 
-                    ${escapeHTML(
-                        error.message ||
-                        "Unknown error"
-                    )}
+                </div>
 
-                </small>
-
-                <br><br>
-
-                <button
-                    class="btn primary"
-                    onclick="loadTickets()"
-                >
-                    🔄 تلاش دوباره
-                </button>
-
-            </div>
-
-        `;
+            `;
 
     }
 
@@ -1223,9 +1090,7 @@ function renderTickets() {
         );
 
 
-    if (
-        !tickets.length
-    ) {
+    if (!tickets.length) {
 
         box.innerHTML = `
 
@@ -1245,91 +1110,86 @@ function renderTickets() {
     box.innerHTML =
 
         tickets
-        .map(ticket => {
 
-            const id =
-                String(
-                    ticket._id
-                );
+            .map(ticket => {
 
-
-            const name =
-                ticket.icName ||
-                ticket.name ||
-                ticket.ocName ||
-                "بدون نام";
+                const id =
+                    String(
+                        ticket._id
+                    );
 
 
-            const active =
-                String(
-                    selectedTicketId
-                ) === id
-                ? "active"
-                : "";
+                const name =
+                    ticket.icName ||
+                    ticket.name ||
+                    ticket.ocName ||
+                    "بدون نام";
 
 
-            return `
+                const active =
 
-                <div
-                    class="ticket-item ${active}"
-                    onclick="selectTicket('${escapeHTML(id)}')"
-                >
+                    String(
+                        selectedTicketId
+                    ) === id
 
-                    <h3>
+                    ? "active"
 
-                        ${escapeHTML(name)}
-
-                    </h3>
+                    : "";
 
 
-                    <small>
+                return `
 
-                        ${requestType(
-                            ticket.requestType
+                    <div
+                        class="ticket-item ${active}"
+                        onclick="selectTicket('${escapeHTML(id)}')"
+                    >
+
+                        <h3>
+                            ${escapeHTML(name)}
+                        </h3>
+
+                        <small>
+                            ${requestType(
+                                ticket.requestType
+                            )}
+                        </small>
+
+                        <br>
+
+                        ${statusHTML(
+                            ticket.status
                         )}
 
-                    </small>
+                        <br>
 
+                        <small>
 
-                    <br>
-
-
-                    ${statusHTML(
-                        ticket.status
-                    )}
-
-
-                    <br>
-
-
-                    <small>
-
-                        ${
-                            ticket.createdAt
-
-                            ?
-
-                            new Date(
+                            ${
                                 ticket.createdAt
-                            )
-                            .toLocaleString(
-                                "fa-IR"
-                            )
 
-                            :
+                                ?
 
-                            ""
-                        }
+                                new Date(
+                                    ticket.createdAt
+                                ).toLocaleString(
+                                    "fa-IR"
+                                )
 
-                    </small>
+                                :
 
-                </div>
+                                ""
 
-            `;
+                            }
 
-        })
+                        </small>
 
-        .join("");
+                    </div>
+
+                `;
+
+            })
+
+            .join("");
 
 }
 
@@ -1348,11 +1208,8 @@ async function selectTicket(id) {
         tickets.find(
 
             t =>
-
-            String(
-                t._id
-            ) ===
-            String(id)
+                String(t._id) ===
+                String(id)
 
         );
 
@@ -1365,7 +1222,6 @@ async function selectTicket(id) {
 
 
     renderTickets();
-
 
     renderTicketDetail(
         ticket
@@ -1400,9 +1256,7 @@ function renderTicketDetail(ticket) {
 
         <div class="detail-row">
 
-            <b>
-                کد پیگیری:
-            </b>
+            <b>کد پیگیری:</b>
 
             <br>
 
@@ -1415,9 +1269,7 @@ function renderTicketDetail(ticket) {
 
         <div class="detail-row">
 
-            <b>
-                نوع درخواست:
-            </b>
+            <b>نوع درخواست:</b>
 
             <br>
 
@@ -1430,9 +1282,7 @@ function renderTicketDetail(ticket) {
 
         <div class="detail-row">
 
-            <b>
-                IC Name:
-            </b>
+            <b>IC Name:</b>
 
             <br>
 
@@ -1447,9 +1297,7 @@ function renderTicketDetail(ticket) {
 
         <div class="detail-row">
 
-            <b>
-                OC Name:
-            </b>
+            <b>OC Name:</b>
 
             <br>
 
@@ -1463,9 +1311,7 @@ function renderTicketDetail(ticket) {
 
         <div class="detail-row">
 
-            <b>
-                Discord:
-            </b>
+            <b>Discord:</b>
 
             <br>
 
@@ -1480,9 +1326,7 @@ function renderTicketDetail(ticket) {
 
         <div class="detail-row">
 
-            <b>
-                Steam Hex:
-            </b>
+            <b>Steam Hex:</b>
 
             <br>
 
@@ -1496,25 +1340,7 @@ function renderTicketDetail(ticket) {
 
         <div class="detail-row">
 
-            <b>
-                CMX:
-            </b>
-
-            <br>
-
-            ${escapeHTML(
-                ticket.cmx ||
-                "—"
-            )}
-
-        </div>
-
-
-        <div class="detail-row">
-
-            <b>
-                سن:
-            </b>
+            <b>سن:</b>
 
             <br>
 
@@ -1524,6 +1350,52 @@ function renderTicketDetail(ticket) {
             )}
 
         </div>
+
+
+        <div class="detail-row">
+
+            <b>وضعیت فعلی:</b>
+
+            <br>
+
+            ${statusHTML(
+                ticket.status
+            )}
+
+        </div>
+
+
+        ${
+            ticket.score !== null &&
+            ticket.score !== undefined
+
+            ?
+
+            `
+
+            <div class="detail-row">
+
+                <b>
+                    📚 نمره آزمون:
+                </b>
+
+                <br>
+
+                ${escapeHTML(
+                    ticket.score
+                )}
+
+                از 20
+
+            </div>
+
+            `
+
+            :
+
+            ""
+
+        }
 
 
         ${
@@ -1552,6 +1424,7 @@ function renderTicketDetail(ticket) {
             :
 
             ""
+
         }
 
 
@@ -1581,174 +1454,9 @@ function renderTicketDetail(ticket) {
             :
 
             ""
+
         }
 
-
-        ${
-            ticket.currentDivision
-
-            ?
-
-            `
-
-            <div class="detail-row">
-
-                <b>
-                    دیویژن فعلی:
-                </b>
-
-                <br>
-
-                ${escapeHTML(
-                    ticket.currentDivision
-                )}
-
-            </div>
-
-            `
-
-            :
-
-            ""
-        }
-
-
-        ${
-            ticket.requestedDivision
-
-            ?
-
-            `
-
-            <div class="detail-row">
-
-                <b>
-                    دیویژن درخواستی:
-                </b>
-
-                <br>
-
-                ${escapeHTML(
-                    ticket.requestedDivision
-                )}
-
-            </div>
-
-            `
-
-            :
-
-            ""
-        }
-
-
-        ${
-            ticket.requestRank
-
-            ?
-
-            `
-
-            <div class="detail-row">
-
-                <b>
-                    رنک درخواستی:
-                </b>
-
-                <br>
-
-                ${escapeHTML(
-                    ticket.requestRank
-                )}
-
-            </div>
-
-            `
-
-            :
-
-            ""
-        }
-
-
-        ${
-            ticket.resignationReason
-
-            ?
-
-            `
-
-            <div class="detail-row">
-
-                <b>
-                    دلیل استعفا:
-                </b>
-
-                <br>
-
-                ${escapeHTML(
-                    ticket.resignationReason
-                )}
-
-            </div>
-
-            `
-
-            :
-
-            ""
-        }
-
-
-        ${
-            ticket.score !== null &&
-            ticket.score !== undefined
-
-            ?
-
-            `
-
-            <div class="detail-row">
-
-                <b>
-                    📚 نمره آزمون:
-                </b>
-
-                <br>
-
-                ${escapeHTML(
-                    ticket.score
-                )}
-                از 20
-
-            </div>
-
-            `
-
-            :
-
-            ""
-        }
-
-
-        <div class="detail-row">
-
-            <b>
-                وضعیت فعلی:
-            </b>
-
-            <br>
-
-            ${statusHTML(
-                ticket.status
-            )}
-
-        </div>
-
-
-        <!-- =====================================
-             REPLY
-        ====================================== -->
 
         <div class="reply-box">
 
@@ -1765,7 +1473,8 @@ function renderTicketDetail(ticket) {
                 <option
                     value="Pending"
                     ${
-                        ticket.status === "Pending"
+                        ticket.status ===
+                        "Pending"
                         ? "selected"
                         : ""
                     }
@@ -1777,7 +1486,8 @@ function renderTicketDetail(ticket) {
                 <option
                     value="Accepted"
                     ${
-                        ticket.status === "Accepted"
+                        ticket.status ===
+                        "Accepted"
                         ? "selected"
                         : ""
                     }
@@ -1789,7 +1499,8 @@ function renderTicketDetail(ticket) {
                 <option
                     value="Rejected"
                     ${
-                        ticket.status === "Rejected"
+                        ticket.status ===
+                        "Rejected"
                         ? "selected"
                         : ""
                     }
@@ -1804,13 +1515,20 @@ function renderTicketDetail(ticket) {
                 id="replyInput"
                 placeholder="پاسخ خود را برای متقاضی بنویسید..."
             >${
+                ticket.reply ===
+                "در انتظار پاسخ فرماندهی"
+
+                ?
+
+                ""
+
+                :
+
                 escapeHTML(
-                    ticket.reply ===
-                    "در انتظار پاسخ فرماندهی"
-                    ? ""
-                    : ticket.reply ||
+                    ticket.reply ||
                     ""
                 )
+
             }</textarea>
 
 
@@ -1825,10 +1543,6 @@ function renderTicketDetail(ticket) {
         </div>
 
 
-        <!-- =====================================
-             CHAT
-        ====================================== -->
-
         <div class="chat-box">
 
             <h2>
@@ -1842,9 +1556,7 @@ function renderTicketDetail(ticket) {
             >
 
                 <div class="empty">
-
                     ⏳ در حال دریافت پیام‌ها...
-
                 </div>
 
             </div>
@@ -1869,28 +1581,31 @@ function renderTicketDetail(ticket) {
 
     `;
 
-
-    /*
-    بعد از ساخت HTML،
-    پیام‌ها را دوباره دریافت می‌کنیم.
-    */
-
-    loadMessages(
-        ticket._id
-    );
-
 }
 
 
 /* ============================================================
    UPDATE TICKET
+   Authorization اضافه شده
 ============================================================ */
 
 async function updateTicket() {
 
-    if (
-        !selectedTicketId
-    ) {
+    if (!selectedTicketId) {
+
+        return;
+
+    }
+
+
+    const token =
+        getToken();
+
+
+    if (!token) {
+
+        window.location.href =
+            "command-login.html";
 
         return;
 
@@ -1909,28 +1624,22 @@ async function updateTicket() {
         );
 
 
-    if (
-        !statusElement ||
-        !replyElement
-    ) {
-
-        return;
-
-    }
-
-
     const status =
-        statusElement.value;
+        statusElement
+        ? statusElement.value
+        : "Pending";
 
 
     const reply =
-        replyElement.value.trim();
+        replyElement
+        ? replyElement.value.trim()
+        : "";
 
 
     try {
 
         const response =
-            await apiFetch(
+            await fetch(
 
                 API_URL +
                 "/tickets/" +
@@ -1940,17 +1649,21 @@ async function updateTicket() {
 
                 {
 
-                    method:
-                        "PUT",
+                    method: "PUT",
 
                     headers: {
 
                         "Content-Type":
-                            "application/json"
+                            "application/json",
+
+                        "Authorization":
+                            "Bearer " +
+                            token
 
                     },
 
                     body:
+
                         JSON.stringify({
 
                             status,
@@ -1964,19 +1677,41 @@ async function updateTicket() {
             );
 
 
-        const data =
-            await response.json();
+        if (
+            response.status === 401
+        ) {
+
+            logoutCommand();
+
+            return;
+
+        }
+
+
+        let data = null;
+
+
+        try {
+
+            data =
+                await response.json();
+
+        } catch {
+
+            data = null;
+
+        }
 
 
         if (
             !response.ok ||
-            !data.success
+            !data?.success
         ) {
 
             throw new Error(
 
-                data.message ||
-                "خطا در ثبت پاسخ"
+                data?.message ||
+                `HTTP ${response.status}`
 
             );
 
@@ -1991,30 +1726,6 @@ async function updateTicket() {
         await loadTickets();
 
 
-        const selected =
-            tickets.find(
-
-                t =>
-
-                String(
-                    t._id
-                ) ===
-                String(
-                    selectedTicketId
-                )
-
-            );
-
-
-        if (selected) {
-
-            renderTicketDetail(
-                selected
-            );
-
-        }
-
-
     } catch (error) {
 
         console.error(
@@ -2024,11 +1735,10 @@ async function updateTicket() {
 
 
         alert(
-            "❌ " +
-            (
-                error.message ||
-                "ثبت پاسخ انجام نشد."
-            )
+
+            "❌ ثبت پاسخ انجام نشد.\n\n" +
+            error.message
+
         );
 
     }
@@ -2057,51 +1767,66 @@ async function loadMessages(id) {
 
     try {
 
-        /*
-        این endpoint در server.js فعلی Public است،
-        پس Authorization اجباری نیست.
-        */
-
         const response =
             await fetch(
 
                 API_URL +
                 "/tickets/" +
-                encodeURIComponent(
-                    id
-                ) +
+                encodeURIComponent(id) +
                 "/messages",
 
                 {
 
-                    method:
-                        "GET",
+                    method: "GET",
 
-                    cache:
-                        "no-store"
+                    cache: "no-store"
 
                 }
 
             );
 
 
-        const messages =
-            await response.json();
+        if (
+            response.status === 404
+        ) {
+
+            box.innerHTML = `
+
+                <div class="empty">
+                    ❌ تیکت پیدا نشد.
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        let messages = [];
+
+
+        try {
+
+            messages =
+                await response.json();
+
+        } catch {
+
+            messages = [];
+
+        }
 
 
         if (
-            !Array.isArray(
-                messages
-            ) ||
+            !Array.isArray(messages) ||
             messages.length === 0
         ) {
 
             box.innerHTML = `
 
                 <div class="empty">
-
                     هنوز پیامی ثبت نشده است.
-
                 </div>
 
             `;
@@ -2115,124 +1840,124 @@ async function loadMessages(id) {
 
             messages
 
-            .map(message => {
+                .map(message => {
 
-                const isCommand =
-                    message.sender ===
-                    "command";
-
-
-                /*
-                server.js این فیلدها را ذخیره می‌کند:
-                senderName
-                senderRank
-                senderUsername
-                */
-
-                const senderName =
-                    isCommand
-
-                    ?
-
-                    (
-                        message.senderName ||
-                        "فرماندهی"
-                    )
-
-                    :
-
-                    (
-                        message.senderName ||
-                        "👤 متقاضی"
-                    );
+                    const isCommand =
+                        message.sender ===
+                        "command";
 
 
-                const rank =
-                    isCommand &&
-                    message.senderRank
+                    const senderName =
 
-                    ?
+                        isCommand
 
-                    ` - ${escapeHTML(
-                        message.senderRank
-                    )}`
+                        ?
 
-                    :
+                        (
+                            message.senderName ||
+                            message.commanderName ||
+                            "فرماندهی"
+                        )
 
-                    "";
+                        :
+
+                        (
+                            message.senderName ||
+                            "👤 متقاضی"
+                        );
 
 
-                return `
+                    const rank =
 
-                    <div
-                        class="
-                            message
-                            ${
-                                isCommand
-                                ? "command"
-                                : "applicant"
-                            }
-                        "
-                    >
+                        isCommand &&
+                        (
+                            message.senderRank ||
+                            message.commanderRank
+                        )
+
+                        ?
+
+                        ` - ${escapeHTML(
+                            message.senderRank ||
+                            message.commanderRank
+                        )}`
+
+                        :
+
+                        "";
+
+
+                    return `
 
                         <div
-                            class="message-name"
+                            class="
+                                message
+                                ${
+                                    isCommand
+                                    ? "command"
+                                    : "applicant"
+                                }
+                            "
                         >
 
-                            ${
-                                isCommand
-                                ? "👮 "
-                                : ""
-                            }
+                            <div
+                                class="message-name"
+                            >
 
-                            ${escapeHTML(
-                                senderName
-                            )}
+                                ${
+                                    isCommand
+                                    ? "👮 "
+                                    : ""
+                                }
 
-                            ${rank}
+                                ${escapeHTML(
+                                    senderName
+                                )}
 
-                        </div>
+                                ${rank}
 
-
-                        <div>
-
-                            ${escapeHTML(
-                                message.message
-                            )}
-
-                        </div>
+                            </div>
 
 
-                        <small
-                            class="message-time"
-                        >
+                            <div>
 
-                            ${
-                                message.createdAt
+                                ${escapeHTML(
+                                    message.message
+                                )}
 
-                                ?
+                            </div>
 
-                                new Date(
+
+                            <small
+                                class="message-time"
+                            >
+
+                                ${
                                     message.createdAt
-                                )
-                                .toLocaleString(
-                                    "fa-IR"
-                                )
 
-                                :
+                                    ?
 
-                                ""
-                            }
+                                    new Date(
+                                        message.createdAt
+                                    ).toLocaleString(
+                                        "fa-IR"
+                                    )
 
-                        </small>
+                                    :
 
-                    </div>
+                                    ""
 
-                `;
+                                }
 
-            })
+                            </small>
 
-            .join("");
+                        </div>
+
+                    `;
+
+                })
+
+                .join("");
 
 
         box.scrollTop =
@@ -2264,13 +1989,26 @@ async function loadMessages(id) {
 
 /* ============================================================
    SEND COMMAND MESSAGE
+   Authorization اضافه شده
 ============================================================ */
 
 async function sendCommandMessage() {
 
-    if (
-        !selectedTicketId
-    ) {
+    if (!selectedTicketId) {
+
+        return;
+
+    }
+
+
+    const token =
+        getToken();
+
+
+    if (!token) {
+
+        window.location.href =
+            "command-login.html";
 
         return;
 
@@ -2303,14 +2041,8 @@ async function sendCommandMessage() {
 
     try {
 
-        /*
-        مهم:
-        این درخواست هم Authorization دارد.
-        server.js خودش sender را از Token تشخیص می‌دهد.
-        */
-
         const response =
-            await apiFetch(
+            await fetch(
 
                 API_URL +
                 "/tickets/" +
@@ -2321,17 +2053,21 @@ async function sendCommandMessage() {
 
                 {
 
-                    method:
-                        "POST",
+                    method: "POST",
 
                     headers: {
 
                         "Content-Type":
-                            "application/json"
+                            "application/json",
+
+                        "Authorization":
+                            "Bearer " +
+                            token
 
                     },
 
                     body:
+
                         JSON.stringify({
 
                             message
@@ -2343,27 +2079,48 @@ async function sendCommandMessage() {
             );
 
 
-        const data =
-            await response.json();
+        if (
+            response.status === 401
+        ) {
+
+            logoutCommand();
+
+            return;
+
+        }
+
+
+        let data = null;
+
+
+        try {
+
+            data =
+                await response.json();
+
+        } catch {
+
+            data = null;
+
+        }
 
 
         if (
             !response.ok ||
-            !data.success
+            !data?.success
         ) {
 
             throw new Error(
 
-                data.message ||
-                "خطا در ارسال پیام"
+                data?.message ||
+                `HTTP ${response.status}`
 
             );
 
         }
 
 
-        input.value =
-            "";
+        input.value = "";
 
 
         await loadMessages(
@@ -2384,11 +2141,8 @@ async function sendCommandMessage() {
 
         alert(
 
-            "❌ " +
-            (
-                error.message ||
-                "ارسال پیام انجام نشد."
-            )
+            "❌ ارسال پیام انجام نشد.\n\n" +
+            error.message
 
         );
 
@@ -2439,19 +2193,16 @@ function logoutCommand() {
 
 
 /* ============================================================
-   START
+   INITIALIZE
 ============================================================ */
 
-async function startCommandPanel() {
+async function initializeCommandPanel() {
 
-    displayCommander();
-
-
-    const valid =
-        await verifySession();
+    const authenticated =
+        await checkAuthentication();
 
 
-    if (!valid) {
+    if (!authenticated) {
 
         return;
 
@@ -2460,36 +2211,41 @@ async function startCommandPanel() {
 
     await loadTickets();
 
-}
 
+    /*
+    Refresh tickets
+    */
 
-/* ============================================================
-   AUTO REFRESH
-============================================================ */
+    setInterval(
 
-setInterval(
-
-    async function() {
-
-        /*
-        اگر Token حذف شده،
-        کاری انجام نده.
-        */
-
-        if (!getToken()) {
-
-            return;
-
-        }
-
-
-        try {
-
-            await loadTickets();
-
+        async function() {
 
             if (
-                selectedTicketId
+                getToken()
+            ) {
+
+                await loadTickets();
+
+            }
+
+        },
+
+        5000
+
+    );
+
+
+    /*
+    Refresh chat
+    */
+
+    setInterval(
+
+        async function() {
+
+            if (
+                selectedTicketId &&
+                getToken()
             ) {
 
                 await loadMessages(
@@ -2498,30 +2254,22 @@ setInterval(
 
             }
 
-        } catch (error) {
+        },
 
-            console.error(
-                "AUTO REFRESH ERROR:",
-                error
-            );
+        3000
 
-        }
+    );
 
-    },
-
-    5000
-
-);
+}
 
 
 /* ============================================================
-   RUN
+   START
 ============================================================ */
 
-startCommandPanel();
+initializeCommandPanel();
 
 </script>
 
 </body>
-
 </html>
