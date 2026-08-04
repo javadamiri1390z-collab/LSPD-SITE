@@ -65,7 +65,7 @@ body.command-page {
 
 .command-user h1 {
     color: #4da6ff;
-    margin-bottom: 5px;
+    margin: 0 0 5px;
 }
 
 .command-user p {
@@ -73,27 +73,26 @@ body.command-page {
     margin: 0;
 }
 
-.rank-badge {
-    display: inline-block;
-    margin-top: 7px;
-    padding: 5px 12px;
-    border-radius: 20px;
-    background: rgba(0,110,255,.18);
-    border: 1px solid rgba(77,166,255,.3);
-    color: #6db6ff;
-    font-size: 13px;
-}
-
+.rank-badge,
 .owner-badge {
     display: inline-block;
     margin-top: 7px;
-    margin-right: 5px;
     padding: 5px 12px;
     border-radius: 20px;
+    font-size: 13px;
+}
+
+.rank-badge {
+    background: rgba(0,110,255,.18);
+    border: 1px solid rgba(77,166,255,.3);
+    color: #6db6ff;
+}
+
+.owner-badge {
+    margin-right: 5px;
     background: rgba(255,180,0,.15);
     border: 1px solid rgba(255,180,0,.35);
     color: #ffc34d;
-    font-size: 13px;
 }
 
 .logout-btn {
@@ -103,6 +102,7 @@ body.command-page {
     padding: 11px 18px;
     border-radius: 10px;
     cursor: pointer;
+    font-family: inherit;
 }
 
 .logout-btn:hover {
@@ -125,7 +125,7 @@ body.command-page {
 
 .panel h2 {
     color: #4da6ff;
-    margin-bottom: 18px;
+    margin: 0 0 18px;
 }
 
 .ticket-list {
@@ -154,7 +154,7 @@ body.command-page {
 }
 
 .ticket-item h3 {
-    margin-bottom: 8px;
+    margin: 0 0 8px;
 }
 
 .ticket-item small {
@@ -197,6 +197,7 @@ body.command-page {
 .detail-row {
     padding: 11px 0;
     border-bottom: 1px solid rgba(255,255,255,.07);
+    line-height: 1.8;
 }
 
 .detail-row b {
@@ -207,9 +208,10 @@ body.command-page {
     margin-top: 20px;
 }
 
-.reply-box textarea {
+.reply-box textarea,
+.chat-input {
     width: 100%;
-    min-height: 120px;
+    min-height: 110px;
     resize: vertical;
     padding: 14px;
     background: #050a11;
@@ -220,7 +222,8 @@ body.command-page {
     font-family: inherit;
 }
 
-.reply-box textarea:focus {
+.reply-box textarea:focus,
+.chat-input:focus {
     border-color: #168cff;
     box-shadow: 0 0 10px rgba(22,140,255,.2);
 }
@@ -233,6 +236,7 @@ body.command-page {
     color: white;
     border: 1px solid rgba(255,255,255,.15);
     border-radius: 10px;
+    font-family: inherit;
 }
 
 .chat-box {
@@ -277,19 +281,6 @@ body.command-page {
     font-size: 11px;
 }
 
-.chat-input {
-    width: 100%;
-    min-height: 90px;
-    padding: 12px;
-    resize: vertical;
-    background: #050a11;
-    color: white;
-    border: 1px solid rgba(255,255,255,.15);
-    border-radius: 10px;
-    outline: none;
-    font-family: inherit;
-}
-
 .error-box {
     background: rgba(255,0,0,.08);
     border: 1px solid rgba(255,0,0,.2);
@@ -331,6 +322,30 @@ body.command-page {
     word-break: break-all;
 }
 
+.command-loading {
+    color: #888;
+    text-align: center;
+    padding: 30px;
+}
+
+.btn {
+    border: none;
+    border-radius: 10px;
+    padding: 12px 16px;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.btn.primary {
+    background: linear-gradient(135deg,#168cff,#0066cc);
+    color: white;
+}
+
+.btn:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
 @media(max-width:850px) {
 
     .command-grid {
@@ -348,9 +363,11 @@ body.command-page {
 
 </head>
 
+
 <body class="command-page">
 
 <div class="overlay"></div>
+
 
 <header class="navbar">
 
@@ -377,9 +394,11 @@ body.command-page {
 
 </header>
 
+
 <main>
 
 <div class="command-wrapper">
+
 
 <div class="command-header">
 
@@ -421,8 +440,10 @@ body.command-page {
 
         </div>
 
+
         <button
             class="logout-btn"
+            type="button"
             onclick="logoutCommand()"
         >
             خروج
@@ -432,17 +453,21 @@ body.command-page {
 
 </div>
 
+
 <div
     id="errorBox"
     class="error-box"
 ></div>
+
 
 <div
     id="successBox"
     class="success-box"
 ></div>
 
+
 <div class="command-grid">
+
 
 <section class="panel">
 
@@ -455,8 +480,8 @@ body.command-page {
         class="ticket-list"
     >
 
-        <div class="empty">
-            ⏳ در حال بررسی دسترسی و دریافت تیکت‌ها...
+        <div class="command-loading">
+            ⏳ در حال بررسی دسترسی...
         </div>
 
     </div>
@@ -466,6 +491,7 @@ body.command-page {
     </div>
 
 </section>
+
 
 <section class="panel ticket-detail">
 
@@ -487,11 +513,13 @@ body.command-page {
 
 </section>
 
+
 </div>
 
 </div>
 
 </main>
+
 
 <script>
 
@@ -501,6 +529,14 @@ body.command-page {
 
 const API_URL =
     "https://lspd-site-11.onrender.com";
+
+
+const TOKEN_KEY =
+    "lspdCommandToken";
+
+
+const USER_KEY =
+    "lspdCommander";
 
 
 /* ============================================================
@@ -517,62 +553,48 @@ let isLoadingTickets = false;
 
 let isLoadingMessages = false;
 
+let sessionInvalid = false;
+
 
 /* ============================================================
-   STORAGE KEYS
+   ELEMENTS
 ============================================================ */
 
-const TOKEN_KEYS = [
+const ticketList =
+    document.getElementById(
+        "ticketList"
+    );
 
-    "lspdCommandToken",
-
-    "lspdAdminToken",
-
-    "lspdToken",
-
-    "lspdAuthToken",
-
-    "lspdAuth",
-
-    "authToken",
-
-    "token"
-
-];
+const ticketDetail =
+    document.getElementById(
+        "ticketDetail"
+    );
 
 
 /* ============================================================
-   GET TOKEN
+   TOKEN STORAGE
 ============================================================ */
 
 function getToken() {
 
-    for (
-        const key of TOKEN_KEYS
+    const token =
+        localStorage.getItem(
+            TOKEN_KEY
+        );
+
+    if (
+        !token ||
+        !String(token).trim()
     ) {
 
-        const value =
-            localStorage.getItem(key);
-
-        if (
-            value &&
-            String(value).trim()
-        ) {
-
-            return String(value).trim();
-
-        }
+        return "";
 
     }
 
-    return "";
+    return String(token).trim();
 
 }
 
-
-/* ============================================================
-   SAVE TOKEN
-============================================================ */
 
 function saveToken(token) {
 
@@ -581,34 +603,99 @@ function saveToken(token) {
         !String(token).trim()
     ) {
 
+        return false;
+
+    }
+
+    localStorage.setItem(
+        TOKEN_KEY,
+        String(token).trim()
+    );
+
+    return true;
+
+}
+
+
+/* ============================================================
+   CLEAR ALL COMMAND SESSION
+============================================================ */
+
+function clearCommandSession() {
+
+    const keys = [
+
+        "lspdCommandToken",
+
+        "lspdAdminToken",
+
+        "lspdToken",
+
+        "lspdAuthToken",
+
+        "lspdAuth",
+
+        "authToken",
+
+        "token",
+
+        "lspdCommander",
+
+        "lspdAdmin",
+
+        "lspdAdminUser",
+
+        "lspdAdminName",
+
+        "lspdAdminRank",
+
+        "lspdIsOwner"
+
+    ];
+
+    keys.forEach(
+        key => {
+
+            localStorage.removeItem(
+                key
+            );
+
+        }
+    );
+
+}
+
+
+/* ============================================================
+   REDIRECT LOGIN
+============================================================ */
+
+function redirectToLogin(message) {
+
+    if (sessionInvalid) {
+
         return;
 
     }
 
-    const cleanToken =
-        String(token).trim();
+    sessionInvalid = true;
 
-    /*
-     * کلید اصلی
-     */
+    clearCommandSession();
 
-    localStorage.setItem(
-        "lspdCommandToken",
-        cleanToken
+    showError(
+        message ||
+        "نشست فرماندهی منقضی یا نامعتبر است. لطفاً دوباره وارد شوید."
     );
 
-    /*
-     * کلیدهای سازگاری
-     */
+    setTimeout(
+        () => {
 
-    localStorage.setItem(
-        "lspdAdminToken",
-        cleanToken
-    );
+            window.location.replace(
+                "command-login.html"
+            );
 
-    localStorage.setItem(
-        "lspdToken",
-        cleanToken
+        },
+        700
     );
 
 }
@@ -618,10 +705,9 @@ function saveToken(token) {
    AUTH HEADERS
 ============================================================ */
 
-function authHeaders(extra = {}) {
-
-    const token =
-        getToken();
+function authHeaders(
+    extra = {}
+) {
 
     const headers = {
 
@@ -629,17 +715,16 @@ function authHeaders(extra = {}) {
 
     };
 
-    if (token) {
+    const token =
+        getToken();
 
-        /*
-         * روش اصلی
-         */
+    if (token) {
 
         headers["Authorization"] =
             "Bearer " + token;
 
         /*
-         * سازگاری با server.js
+         * هماهنگ با server.js
          */
 
         headers["X-Admin-Token"] =
@@ -675,22 +760,21 @@ async function apiFetch(
 
     };
 
-    const response =
-        await fetch(
-            url,
-            finalOptions
-        );
-
-    return response;
+    return fetch(
+        url,
+        finalOptions
+    );
 
 }
 
 
 /* ============================================================
-   JSON RESPONSE
+   READ JSON
 ============================================================ */
 
-async function readJSON(response) {
+async function readJSON(
+    response
+) {
 
     try {
 
@@ -706,10 +790,12 @@ async function readJSON(response) {
 
 
 /* ============================================================
-   SHOW ERROR
+   ERROR
 ============================================================ */
 
-function showError(message) {
+function showError(
+    message
+) {
 
     const box =
         document.getElementById(
@@ -720,21 +806,15 @@ function showError(message) {
         return;
     }
 
-    box.innerHTML =
-        escapeHTML(
-            message ||
-            "خطایی رخ داد."
-        );
+    box.innerText =
+        message ||
+        "خطایی رخ داد.";
 
     box.style.display =
         "block";
 
 }
 
-
-/* ============================================================
-   HIDE ERROR
-============================================================ */
 
 function hideError() {
 
@@ -747,7 +827,7 @@ function hideError() {
         return;
     }
 
-    box.innerHTML =
+    box.innerText =
         "";
 
     box.style.display =
@@ -760,7 +840,9 @@ function hideError() {
    SUCCESS
 ============================================================ */
 
-function showSuccess(message) {
+function showSuccess(
+    message
+) {
 
     const box =
         document.getElementById(
@@ -772,7 +854,8 @@ function showSuccess(message) {
     }
 
     box.innerText =
-        message || "انجام شد.";
+        message ||
+        "انجام شد.";
 
     box.style.display =
         "block";
@@ -791,10 +874,12 @@ function showSuccess(message) {
 
 
 /* ============================================================
-   ESCAPE HTML
+   ESCAPE
 ============================================================ */
 
-function escapeHTML(value) {
+function escapeHTML(
+    value
+) {
 
     return String(
         value ?? ""
@@ -829,7 +914,7 @@ function escapeHTML(value) {
 
 
 /* ============================================================
-   GET COMMANDER FROM STORAGE
+   STORED USER
 ============================================================ */
 
 function getStoredCommander() {
@@ -838,13 +923,15 @@ function getStoredCommander() {
 
         const saved =
             localStorage.getItem(
-                "lspdCommander"
+                USER_KEY
             );
 
         if (saved) {
 
             const parsed =
-                JSON.parse(saved);
+                JSON.parse(
+                    saved
+                );
 
             if (
                 parsed &&
@@ -866,12 +953,13 @@ function getStoredCommander() {
 
     }
 
+
     return {
 
         username:
             localStorage.getItem(
                 "lspdAdminUser"
-            ) || "LSPD",
+            ) || "",
 
         name:
             localStorage.getItem(
@@ -902,6 +990,14 @@ function getStoredCommander() {
 
 function displayCommander() {
 
+    if (!commander) {
+
+        commander =
+            getStoredCommander();
+
+    }
+
+
     const nameElement =
         document.getElementById(
             "commanderName"
@@ -917,30 +1013,38 @@ function displayCommander() {
             "ownerBadge"
         );
 
-    if (!commander) {
 
-        commander =
-            getStoredCommander();
+    if (nameElement) {
+
+        nameElement.innerText =
+            commander.name ||
+            commander.username ||
+            "فرمانده LSPD";
 
     }
 
-    nameElement.innerText =
-        commander.name ||
-        commander.username ||
-        "فرمانده LSPD";
 
-    rankElement.innerText =
-        commander.rank ||
-        "Command";
+    if (rankElement) {
 
-    const owner =
-        commander.role === "owner" ||
-        commander.isOwner === true;
+        rankElement.innerText =
+            commander.rank ||
+            "Command";
 
-    ownerBadge.style.display =
-        owner
-        ? "inline-block"
-        : "none";
+    }
+
+
+    if (ownerBadge) {
+
+        const isOwner =
+            commander.role === "owner" ||
+            commander.isOwner === true;
+
+        ownerBadge.style.display =
+            isOwner
+            ? "inline-block"
+            : "none";
+
+    }
 
 }
 
@@ -954,25 +1058,17 @@ async function verifySession() {
     const token =
         getToken();
 
+
     if (!token) {
 
-        showError(
-            "توکن ورود پیدا نشد. ابتدا از صفحه ورود فرماندهی وارد شوید."
-        );
-
-        setTimeout(
-            () => {
-
-                window.location.href =
-                    "command-login.html";
-
-            },
-            1500
+        redirectToLogin(
+            "توکن ورود پیدا نشد. ابتدا وارد پنل فرماندهی شوید."
         );
 
         return false;
 
     }
+
 
     try {
 
@@ -991,61 +1087,83 @@ async function verifySession() {
 
             );
 
+
         const data =
             await readJSON(
                 response
             );
 
+
         if (
             response.status === 401
         ) {
 
-            throw new Error(
-                "توکن ورود معتبر نیست یا سرور توکن را قبول نکرده است."
+            redirectToLogin(
+                "HTTP 401 — نشست ورود معتبر نیست. لطفاً دوباره وارد شوید."
             );
+
+            return false;
 
         }
 
+
+        if (
+            response.status === 403
+        ) {
+
+            redirectToLogin(
+                "این حساب اجازه ورود به پنل فرماندهی را ندارد."
+            );
+
+            return false;
+
+        }
+
+
         if (
             !response.ok ||
-            !data ||
-            !data.success ||
-            !data.user
+            !data?.success ||
+            !data?.user
         ) {
 
             throw new Error(
 
                 data?.message ||
-                "جلسه ورود معتبر نیست."
+                "احراز هویت ناموفق بود."
 
             );
 
         }
 
-        /*
-         * فقط Command و Owner
-         */
 
         if (
             data.user.role !== "command" &&
             data.user.role !== "owner"
         ) {
 
-            throw new Error(
+            redirectToLogin(
                 "این حساب دسترسی فرماندهی ندارد."
             );
 
+            return false;
+
         }
+
 
         commander =
             data.user;
 
+
         localStorage.setItem(
-            "lspdCommander",
+
+            USER_KEY,
+
             JSON.stringify(
                 data.user
             )
+
         );
+
 
         localStorage.setItem(
             "lspdAdminUser",
@@ -1069,7 +1187,9 @@ async function verifySession() {
                 : "false"
         );
 
+
         displayCommander();
+
 
         return true;
 
@@ -1082,7 +1202,7 @@ async function verifySession() {
 
         showError(
             error.message ||
-            "جلسه ورود معتبر نیست."
+            "بررسی نشست ناموفق بود."
         );
 
         return false;
@@ -1096,7 +1216,9 @@ async function verifySession() {
    REQUEST TYPE
 ============================================================ */
 
-function requestType(type) {
+function requestType(
+    type
+) {
 
     const types = {
 
@@ -1129,7 +1251,9 @@ function requestType(type) {
    STATUS
 ============================================================ */
 
-function statusHTML(status) {
+function statusHTML(
+    status
+) {
 
     if (
         status === "Accepted"
@@ -1145,6 +1269,7 @@ function statusHTML(status) {
 
     }
 
+
     if (
         status === "Rejected"
     ) {
@@ -1158,6 +1283,7 @@ function statusHTML(status) {
         `;
 
     }
+
 
     return `
 
@@ -1176,32 +1302,36 @@ function statusHTML(status) {
 
 async function loadTickets() {
 
-    if (isLoadingTickets) {
+    if (
+        isLoadingTickets ||
+        sessionInvalid
+    ) {
+
         return;
+
     }
+
 
     isLoadingTickets =
         true;
 
-    const box =
-        document.getElementById(
-            "ticketList"
-        );
 
     try {
-
-        hideError();
 
         const token =
             getToken();
 
+
         if (!token) {
 
-            throw new Error(
-                "توکن ورود موجود نیست."
+            redirectToLogin(
+                "نشست فرماندهی پیدا نشد."
             );
 
+            return;
+
         }
+
 
         const response =
             await apiFetch(
@@ -1212,36 +1342,56 @@ async function loadTickets() {
                 {
 
                     method:
-                        "GET"
+                        "GET",
+
+                    headers: {
+
+                        "Accept":
+                            "application/json"
+
+                    }
 
                 }
 
             );
+
 
         const data =
             await readJSON(
                 response
             );
 
+
+        /*
+         * 401 بسیار مهم:
+         * دیگر retry نمی‌کنیم.
+         */
+
         if (
             response.status === 401
         ) {
 
-            throw new Error(
-                "HTTP 401 — توکن فرماندهی معتبر نیست."
+            redirectToLogin(
+                "HTTP 401 — توکن فرماندهی معتبر نیست. دوباره وارد شوید."
             );
 
+            return;
+
         }
+
 
         if (
             response.status === 403
         ) {
 
-            throw new Error(
-                "HTTP 403 — حساب شما دسترسی فرماندهی ندارد."
+            showError(
+                "HTTP 403 — این حساب دسترسی فرماندهی ندارد."
             );
 
+            return;
+
         }
+
 
         if (
             !response.ok
@@ -1256,9 +1406,6 @@ async function loadTickets() {
 
         }
 
-        /*
-         * server.js فعلی آرایه مستقیم برمی‌گرداند.
-         */
 
         if (
             Array.isArray(data)
@@ -1268,10 +1415,6 @@ async function loadTickets() {
                 data;
 
         }
-
-        /*
-         * برای سازگاری بیشتر
-         */
 
         else if (
             Array.isArray(
@@ -1290,7 +1433,9 @@ async function loadTickets() {
 
         }
 
+
         renderTickets();
+
 
         if (
             selectedTicketId
@@ -1310,6 +1455,7 @@ async function loadTickets() {
 
                 );
 
+
             if (selected) {
 
                 renderTicketDetail(
@@ -1328,9 +1474,8 @@ async function loadTickets() {
             error
         );
 
-        tickets = [];
 
-        box.innerHTML = `
+        ticketList.innerHTML = `
 
             <div class="empty">
 
@@ -1351,15 +1496,19 @@ async function loadTickets() {
 
                 <button
                     class="btn primary"
+                    type="button"
                     onclick="loadTickets()"
                 >
                     🔄 تلاش دوباره
                 </button>
 
                 <div class="debug-box">
-                    API: ${escapeHTML(
-                        API_URL + "/tickets"
+
+                    ${escapeHTML(
+                        API_URL +
+                        "/tickets"
                     )}
+
                 </div>
 
             </div>
@@ -1382,14 +1531,9 @@ async function loadTickets() {
 
 function renderTickets() {
 
-    const box =
-        document.getElementById(
-            "ticketList"
-        );
-
     if (!tickets.length) {
 
-        box.innerHTML = `
+        ticketList.innerHTML = `
 
             <div class="empty">
 
@@ -1403,14 +1547,15 @@ function renderTickets() {
 
     }
 
-    box.innerHTML =
+
+    ticketList.innerHTML =
 
         tickets
         .map(ticket => {
 
             const id =
                 String(
-                    ticket._id
+                    ticket._id || ""
                 );
 
             const name =
@@ -1426,11 +1571,12 @@ function renderTickets() {
                 ? "active"
                 : "";
 
+
             return `
 
                 <div
                     class="ticket-item ${active}"
-                    onclick="selectTicket('${escapeHTML(id)}')"
+                    data-ticket-id="${escapeHTML(id)}"
                 >
 
                     <h3>
@@ -1438,8 +1584,10 @@ function renderTickets() {
                     </h3>
 
                     <small>
-                        ${requestType(
-                            ticket.requestType
+                        ${escapeHTML(
+                            requestType(
+                                ticket.requestType
+                            )
                         )}
                     </small>
 
@@ -1479,6 +1627,33 @@ function renderTickets() {
         })
         .join("");
 
+
+    /*
+     * به جای inline onclick
+     * event listener استفاده می‌کنیم.
+     */
+
+    ticketList
+        .querySelectorAll(
+            ".ticket-item"
+        )
+        .forEach(
+            element => {
+
+                element.addEventListener(
+                    "click",
+                    () => {
+
+                        selectTicket(
+                            element.dataset.ticketId
+                        );
+
+                    }
+                );
+
+            }
+        );
+
 }
 
 
@@ -1486,10 +1661,13 @@ function renderTickets() {
    SELECT TICKET
 ============================================================ */
 
-async function selectTicket(id) {
+async function selectTicket(
+    id
+) {
 
     selectedTicketId =
         String(id);
+
 
     const ticket =
         tickets.find(
@@ -1503,11 +1681,14 @@ async function selectTicket(id) {
 
         );
 
+
     if (!ticket) {
         return;
     }
 
+
     renderTickets();
+
 
     renderTicketDetail(
         ticket,
@@ -1526,16 +1707,12 @@ function renderTicketDetail(
     loadChat = true
 ) {
 
-    const box =
-        document.getElementById(
-            "ticketDetail"
-        );
-
-    box.innerHTML = `
+    ticketDetail.innerHTML = `
 
         <h2>
             📄 جزئیات درخواست
         </h2>
+
 
         <div class="detail-row">
 
@@ -1551,6 +1728,7 @@ function renderTicketDetail(
 
         </div>
 
+
         <div class="detail-row">
 
             <b>
@@ -1559,11 +1737,14 @@ function renderTicketDetail(
 
             <br>
 
-            ${requestType(
-                ticket.requestType
+            ${escapeHTML(
+                requestType(
+                    ticket.requestType
+                )
             )}
 
         </div>
+
 
         <div class="detail-row">
 
@@ -1581,6 +1762,7 @@ function renderTicketDetail(
 
         </div>
 
+
         <div class="detail-row">
 
             <b>
@@ -1595,6 +1777,7 @@ function renderTicketDetail(
             )}
 
         </div>
+
 
         <div class="detail-row">
 
@@ -1612,6 +1795,7 @@ function renderTicketDetail(
 
         </div>
 
+
         <div class="detail-row">
 
             <b>
@@ -1626,6 +1810,7 @@ function renderTicketDetail(
             )}
 
         </div>
+
 
         <div class="detail-row">
 
@@ -1642,6 +1827,7 @@ function renderTicketDetail(
 
         </div>
 
+
         <div class="detail-row">
 
             <b>
@@ -1656,6 +1842,7 @@ function renderTicketDetail(
             )}
 
         </div>
+
 
         ${
             ticket.experience
@@ -1686,6 +1873,7 @@ function renderTicketDetail(
 
         }
 
+
         ${
             ticket.reason
 
@@ -1714,6 +1902,7 @@ function renderTicketDetail(
             ""
 
         }
+
 
         ${
             ticket.currentDivision
@@ -1744,6 +1933,7 @@ function renderTicketDetail(
 
         }
 
+
         ${
             ticket.requestedDivision
 
@@ -1772,6 +1962,7 @@ function renderTicketDetail(
             ""
 
         }
+
 
         ${
             ticket.requestRank
@@ -1802,6 +1993,7 @@ function renderTicketDetail(
 
         }
 
+
         ${
             ticket.resignationReason
 
@@ -1830,6 +2022,7 @@ function renderTicketDetail(
             ""
 
         }
+
 
         ${
             ticket.score !== null &&
@@ -1863,6 +2056,7 @@ function renderTicketDetail(
 
         }
 
+
         <div class="detail-row">
 
             <b>
@@ -1877,11 +2071,13 @@ function renderTicketDetail(
 
         </div>
 
+
         <div class="reply-box">
 
             <h2>
                 ✍️ پاسخ فرماندهی
             </h2>
+
 
             <select
                 id="statusSelect"
@@ -1899,6 +2095,7 @@ function renderTicketDetail(
                     🟡 در انتظار بررسی
                 </option>
 
+
                 <option
                     value="Accepted"
                     ${
@@ -1909,6 +2106,7 @@ function renderTicketDetail(
                 >
                     🟢 تایید شده
                 </option>
+
 
                 <option
                     value="Rejected"
@@ -1923,6 +2121,7 @@ function renderTicketDetail(
 
             </select>
 
+
             <textarea
                 id="replyInput"
                 placeholder="پاسخ خود را برای متقاضی بنویسید..."
@@ -1931,13 +2130,14 @@ function renderTicketDetail(
                     ticket.reply ===
                     "در انتظار پاسخ فرماندهی"
                     ? ""
-                    : ticket.reply ||
-                    ""
+                    : ticket.reply || ""
                 )
             }</textarea>
 
+
             <button
                 class="btn primary"
+                type="button"
                 style="width:100%;margin-top:10px;"
                 onclick="updateTicket()"
             >
@@ -1946,11 +2146,13 @@ function renderTicketDetail(
 
         </div>
 
+
         <div class="chat-box">
 
             <h2>
                 💬 گفتگوی مستقیم
             </h2>
+
 
             <div
                 id="messages"
@@ -1963,14 +2165,17 @@ function renderTicketDetail(
 
             </div>
 
+
             <textarea
                 id="chatInput"
                 class="chat-input"
                 placeholder="پیام خود را برای متقاضی بنویسید..."
             ></textarea>
 
+
             <button
                 class="btn primary"
+                type="button"
                 style="width:100%;margin-top:8px;"
                 onclick="sendCommandMessage()"
             >
@@ -1980,6 +2185,7 @@ function renderTicketDetail(
         </div>
 
     `;
+
 
     if (loadChat) {
 
@@ -1998,9 +2204,15 @@ function renderTicketDetail(
 
 async function updateTicket() {
 
-    if (!selectedTicketId) {
+    if (
+        !selectedTicketId ||
+        sessionInvalid
+    ) {
+
         return;
+
     }
+
 
     const statusElement =
         document.getElementById(
@@ -2012,18 +2224,23 @@ async function updateTicket() {
             "replyInput"
         );
 
+
     if (
         !statusElement ||
         !replyElement
     ) {
+
         return;
+
     }
+
 
     const status =
         statusElement.value;
 
     const reply =
         replyElement.value.trim();
+
 
     try {
 
@@ -2044,6 +2261,9 @@ async function updateTicket() {
                     headers: {
 
                         "Content-Type":
+                            "application/json",
+
+                        "Accept":
                             "application/json"
 
                     },
@@ -2061,20 +2281,25 @@ async function updateTicket() {
 
             );
 
+
         const data =
             await readJSON(
                 response
             );
 
+
         if (
             response.status === 401
         ) {
 
-            throw new Error(
-                "HTTP 401 — نشست فرماندهی معتبر نیست."
+            redirectToLogin(
+                "HTTP 401 — نشست فرماندهی منقضی شده است."
             );
 
+            return;
+
         }
+
 
         if (
             response.status === 403
@@ -2085,6 +2310,7 @@ async function updateTicket() {
             );
 
         }
+
 
         if (
             !response.ok ||
@@ -2100,11 +2326,14 @@ async function updateTicket() {
 
         }
 
+
         showSuccess(
             "✅ پاسخ با موفقیت ثبت شد."
         );
 
+
         await loadTickets();
+
 
         const selected =
             tickets.find(
@@ -2119,6 +2348,7 @@ async function updateTicket() {
                 )
 
             );
+
 
         if (selected) {
 
@@ -2150,19 +2380,30 @@ async function updateTicket() {
    LOAD MESSAGES
 ============================================================ */
 
-async function loadMessages(id) {
+async function loadMessages(
+    id
+) {
 
-    if (isLoadingMessages) {
+    if (
+        isLoadingMessages ||
+        !id ||
+        sessionInvalid
+    ) {
+
         return;
+
     }
+
 
     isLoadingMessages =
         true;
+
 
     const box =
         document.getElementById(
             "messages"
         );
+
 
     if (!box) {
 
@@ -2173,11 +2414,12 @@ async function loadMessages(id) {
 
     }
 
+
     try {
 
         /*
-         * در server.js فعلی GET پیام‌ها Public است.
-         * بنابراین نیاز به Authorization ندارد.
+         * GET /tickets/:id/messages
+         * در server.js فعلی Public است.
          */
 
         const response =
@@ -2195,6 +2437,13 @@ async function loadMessages(id) {
                     method:
                         "GET",
 
+                    headers: {
+
+                        "Accept":
+                            "application/json"
+
+                    },
+
                     cache:
                         "no-store"
 
@@ -2202,10 +2451,12 @@ async function loadMessages(id) {
 
             );
 
+
         const data =
             await readJSON(
                 response
             );
+
 
         if (
             !response.ok
@@ -2220,10 +2471,16 @@ async function loadMessages(id) {
 
         }
 
+
         const messages =
             Array.isArray(data)
             ? data
+            : Array.isArray(
+                data?.messages
+            )
+            ? data.messages
             : [];
+
 
         if (
             messages.length === 0
@@ -2243,138 +2500,133 @@ async function loadMessages(id) {
 
         }
 
+
         box.innerHTML =
 
             messages
-            .map(message => {
+            .map(
+                message => {
 
-                const isCommand =
-                    message.sender ===
-                    "command";
+                    const isCommand =
+                        message.sender ===
+                        "command";
 
-                /*
-                 * server.js فعلی:
-                 *
-                 * commanderName
-                 * commanderRank
-                 * commanderUsername
-                 *
-                 * همچنین برای سازگاری
-                 * senderName و senderRank
-                 * نیز پشتیبانی می‌شود.
-                 */
 
-                const senderName =
-                    isCommand
+                    const senderName =
+                        isCommand
 
-                    ?
+                        ?
 
-                    (
-                        message.commanderName ||
-                        message.senderName ||
-                        "فرماندهی"
-                    )
+                        (
+                            message.commanderName ||
+                            message.senderName ||
+                            "فرماندهی"
+                        )
 
-                    :
+                        :
 
-                    (
-                        message.senderName ||
-                        "متقاضی"
-                    );
+                        (
+                            message.senderName ||
+                            "متقاضی"
+                        );
 
-                const rank =
-                    isCommand
 
-                    &&
+                    const rank =
+                        isCommand &&
+                        (
+                            message.commanderRank ||
+                            message.senderRank
+                        )
 
-                    (
-                        message.commanderRank ||
-                        message.senderRank
-                    )
+                        ?
 
-                    ?
+                        ` - ${escapeHTML(
+                            message.commanderRank ||
+                            message.senderRank
+                        )}`
 
-                    ` - ${escapeHTML(
-                        message.commanderRank ||
-                        message.senderRank
-                    )}`
+                        :
 
-                    :
+                        "";
 
-                    "";
 
-                return `
-
-                    <div
-                        class="
-                            message
-                            ${
-                                isCommand
-                                ? "command"
-                                : "applicant"
-                            }
-                        "
-                    >
+                    return `
 
                         <div
-                            class="message-name"
+                            class="
+                                message
+                                ${
+                                    isCommand
+                                    ? "command"
+                                    : "applicant"
+                                }
+                            "
                         >
 
-                            ${
-                                isCommand
-                                ? "👮 "
-                                : "👤 "
-                            }
+                            <div
+                                class="message-name"
+                            >
 
-                            ${escapeHTML(
-                                senderName
-                            )}
+                                ${
+                                    isCommand
+                                    ? "👮 "
+                                    : "👤 "
+                                }
 
-                            ${rank}
+                                ${escapeHTML(
+                                    senderName
+                                )}
 
-                        </div>
+                                ${rank}
 
-                        <div>
+                            </div>
 
-                            ${escapeHTML(
-                                message.message
-                            )}
 
-                        </div>
+                            <div>
 
-                        <small
-                            class="message-time"
-                        >
+                                ${escapeHTML(
+                                    message.message ||
+                                    ""
+                                )}
 
-                            ${
-                                message.createdAt
+                            </div>
 
-                                ?
 
-                                new Date(
+                            <small
+                                class="message-time"
+                            >
+
+                                ${
                                     message.createdAt
-                                ).toLocaleString(
-                                    "fa-IR"
-                                )
 
-                                :
+                                    ?
 
-                                ""
+                                    new Date(
+                                        message.createdAt
+                                    ).toLocaleString(
+                                        "fa-IR"
+                                    )
 
-                            }
+                                    :
 
-                        </small>
+                                    ""
 
-                    </div>
+                                }
 
-                `;
+                            </small>
 
-            })
+                        </div>
 
+                    `;
+
+                }
+            )
             .join("");
+
 
         box.scrollTop =
             box.scrollHeight;
+
 
     } catch (error) {
 
@@ -2382,6 +2634,7 @@ async function loadMessages(id) {
             "LOAD MESSAGES ERROR:",
             error
         );
+
 
         box.innerHTML = `
 
@@ -2420,21 +2673,30 @@ async function loadMessages(id) {
 
 async function sendCommandMessage() {
 
-    if (!selectedTicketId) {
+    if (
+        !selectedTicketId ||
+        sessionInvalid
+    ) {
+
         return;
+
     }
+
 
     const input =
         document.getElementById(
             "chatInput"
         );
 
+
     if (!input) {
         return;
     }
 
+
     const message =
         input.value.trim();
+
 
     if (!message) {
 
@@ -2446,14 +2708,8 @@ async function sendCommandMessage() {
 
     }
 
-    try {
 
-        /*
-         * خیلی مهم:
-         *
-         * server.js فقط وقتی sender === command باشد
-         * توکن را به عنوان فرمانده بررسی می‌کند.
-         */
+    try {
 
         const response =
             await apiFetch(
@@ -2473,6 +2729,9 @@ async function sendCommandMessage() {
                     headers: {
 
                         "Content-Type":
+                            "application/json",
+
+                        "Accept":
                             "application/json"
 
                     },
@@ -2491,20 +2750,25 @@ async function sendCommandMessage() {
 
             );
 
+
         const data =
             await readJSON(
                 response
             );
 
+
         if (
             response.status === 401
         ) {
 
-            throw new Error(
-                "HTTP 401 — برای ارسال پیام فرماندهی، نشست ورود معتبر لازم است."
+            redirectToLogin(
+                "HTTP 401 — برای ارسال پیام، نشست فرماندهی معتبر لازم است."
             );
 
+            return;
+
         }
+
 
         if (
             response.status === 403
@@ -2515,6 +2779,7 @@ async function sendCommandMessage() {
             );
 
         }
+
 
         if (
             !response.ok ||
@@ -2530,18 +2795,23 @@ async function sendCommandMessage() {
 
         }
 
+
         input.value =
             "";
+
 
         showSuccess(
             "✅ پیام با موفقیت ارسال شد."
         );
 
+
         await loadMessages(
             selectedTicketId
         );
 
+
         await loadTickets();
+
 
     } catch (error) {
 
@@ -2566,42 +2836,11 @@ async function sendCommandMessage() {
 
 function logoutCommand() {
 
-    TOKEN_KEYS.forEach(
-        key => {
+    clearCommandSession();
 
-            localStorage.removeItem(
-                key
-            );
-
-        }
+    window.location.replace(
+        "command-login.html"
     );
-
-    localStorage.removeItem(
-        "lspdCommander"
-    );
-
-    localStorage.removeItem(
-        "lspdAdmin"
-    );
-
-    localStorage.removeItem(
-        "lspdAdminUser"
-    );
-
-    localStorage.removeItem(
-        "lspdAdminName"
-    );
-
-    localStorage.removeItem(
-        "lspdAdminRank"
-    );
-
-    localStorage.removeItem(
-        "lspdIsOwner"
-    );
-
-    window.location.href =
-        "command-login.html";
 
 }
 
@@ -2617,14 +2856,14 @@ async function startCommandPanel() {
 
     displayCommander();
 
+
     const token =
         getToken();
 
+
     if (!token) {
 
-        document.getElementById(
-            "ticketList"
-        ).innerHTML = `
+        ticketList.innerHTML = `
 
             <div class="empty">
 
@@ -2638,8 +2877,11 @@ async function startCommandPanel() {
 
                 <button
                     class="btn primary"
+                    type="button"
                     onclick="
-                        window.location.href='command-login.html'
+                        window.location.replace(
+                            'command-login.html'
+                        )
                     "
                 >
                     🔐 ورود فرماندهی
@@ -2653,35 +2895,17 @@ async function startCommandPanel() {
 
     }
 
+
     const valid =
         await verifySession();
 
+
     if (!valid) {
-
-        document.getElementById(
-            "ticketList"
-        ).innerHTML = `
-
-            <div class="empty">
-
-                ❌ احراز هویت انجام نشد.
-
-                <br><br>
-
-                <button
-                    class="btn primary"
-                    onclick="location.reload()"
-                >
-                    🔄 تلاش دوباره
-                </button>
-
-            </div>
-
-        `;
 
         return;
 
     }
+
 
     await loadTickets();
 
@@ -2696,29 +2920,31 @@ setInterval(
 
     async function() {
 
-        if (!getToken()) {
+        /*
+         * اگر Token خراب شده باشد،
+         * دیگر درخواست‌های 401 پشت سر هم نمی‌فرستیم.
+         */
+
+        if (
+            !getToken() ||
+            sessionInvalid
+        ) {
+
             return;
+
         }
 
-        try {
 
-            await loadTickets();
+        await loadTickets();
 
-            if (
+
+        if (
+            selectedTicketId &&
+            !sessionInvalid
+        ) {
+
+            await loadMessages(
                 selectedTicketId
-            ) {
-
-                await loadMessages(
-                    selectedTicketId
-                );
-
-            }
-
-        } catch (error) {
-
-            console.error(
-                "AUTO REFRESH ERROR:",
-                error
             );
 
         }
