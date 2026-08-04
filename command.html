@@ -523,25 +523,15 @@ body.command-page {
 
 <script>
 
-/* ============================================================
-   CONFIG
-============================================================ */
-
 const API_URL =
     "https://lspd-site-11.onrender.com";
-
 
 const TOKEN_KEY =
     "lspdCommandToken";
 
-
 const USER_KEY =
     "lspdCommander";
 
-
-/* ============================================================
-   GLOBAL
-============================================================ */
 
 let tickets = [];
 
@@ -556,10 +546,6 @@ let isLoadingMessages = false;
 let sessionInvalid = false;
 
 
-/* ============================================================
-   ELEMENTS
-============================================================ */
-
 const ticketList =
     document.getElementById(
         "ticketList"
@@ -570,10 +556,6 @@ const ticketDetail =
         "ticketDetail"
     );
 
-
-/* ============================================================
-   TOKEN STORAGE
-============================================================ */
 
 function getToken() {
 
@@ -596,59 +578,22 @@ function getToken() {
 }
 
 
-function saveToken(token) {
-
-    if (
-        !token ||
-        !String(token).trim()
-    ) {
-
-        return false;
-
-    }
-
-    localStorage.setItem(
-        TOKEN_KEY,
-        String(token).trim()
-    );
-
-    return true;
-
-}
-
-
-/* ============================================================
-   CLEAR ALL COMMAND SESSION
-============================================================ */
-
 function clearCommandSession() {
 
     const keys = [
 
         "lspdCommandToken",
-
         "lspdAdminToken",
-
         "lspdToken",
-
         "lspdAuthToken",
-
         "lspdAuth",
-
         "authToken",
-
         "token",
-
         "lspdCommander",
-
         "lspdAdmin",
-
         "lspdAdminUser",
-
         "lspdAdminName",
-
         "lspdAdminRank",
-
         "lspdIsOwner"
 
     ];
@@ -665,10 +610,6 @@ function clearCommandSession() {
 
 }
 
-
-/* ============================================================
-   REDIRECT LOGIN
-============================================================ */
 
 function redirectToLogin(message) {
 
@@ -701,18 +642,12 @@ function redirectToLogin(message) {
 }
 
 
-/* ============================================================
-   AUTH HEADERS
-============================================================ */
-
 function authHeaders(
     extra = {}
 ) {
 
     const headers = {
-
         ...extra
-
     };
 
     const token =
@@ -722,10 +657,6 @@ function authHeaders(
 
         headers["Authorization"] =
             "Bearer " + token;
-
-        /*
-         * هماهنگ با server.js
-         */
 
         headers["X-Admin-Token"] =
             token;
@@ -737,40 +668,28 @@ function authHeaders(
 }
 
 
-/* ============================================================
-   AUTH FETCH
-============================================================ */
-
 async function apiFetch(
     url,
     options = {}
 ) {
 
-    const finalOptions = {
-
-        ...options,
-
-        headers:
-            authHeaders(
-                options.headers || {}
-            ),
-
-        cache:
-            "no-store"
-
-    };
-
     return fetch(
         url,
-        finalOptions
+        {
+            ...options,
+
+            headers:
+                authHeaders(
+                    options.headers || {}
+                ),
+
+            cache:
+                "no-store"
+        }
     );
 
 }
 
-
-/* ============================================================
-   READ JSON
-============================================================ */
 
 async function readJSON(
     response
@@ -788,10 +707,6 @@ async function readJSON(
 
 }
 
-
-/* ============================================================
-   ERROR
-============================================================ */
 
 function showError(
     message
@@ -836,10 +751,6 @@ function hideError() {
 }
 
 
-/* ============================================================
-   SUCCESS
-============================================================ */
-
 function showSuccess(
     message
 ) {
@@ -872,10 +783,6 @@ function showSuccess(
 
 }
 
-
-/* ============================================================
-   ESCAPE
-============================================================ */
 
 function escapeHTML(
     value
@@ -912,10 +819,6 @@ function escapeHTML(
 
 }
 
-
-/* ============================================================
-   STORED USER
-============================================================ */
 
 function getStoredCommander() {
 
@@ -984,10 +887,6 @@ function getStoredCommander() {
 }
 
 
-/* ============================================================
-   DISPLAY COMMANDER
-============================================================ */
-
 function displayCommander() {
 
     if (!commander) {
@@ -996,7 +895,6 @@ function displayCommander() {
             getStoredCommander();
 
     }
-
 
     const nameElement =
         document.getElementById(
@@ -1049,15 +947,10 @@ function displayCommander() {
 }
 
 
-/* ============================================================
-   VERIFY SESSION
-============================================================ */
-
 async function verifySession() {
 
     const token =
         getToken();
-
 
     if (!token) {
 
@@ -1079,10 +972,13 @@ async function verifySession() {
                 "/auth/me",
 
                 {
-
                     method:
-                        "GET"
+                        "GET",
 
+                    headers: {
+                        "Accept":
+                            "application/json"
+                    }
                 }
 
             );
@@ -1190,8 +1086,8 @@ async function verifySession() {
 
         displayCommander();
 
-
         return true;
+
 
     } catch (error) {
 
@@ -1211,10 +1107,6 @@ async function verifySession() {
 
 }
 
-
-/* ============================================================
-   REQUEST TYPE
-============================================================ */
 
 function requestType(
     type
@@ -1247,10 +1139,6 @@ function requestType(
 }
 
 
-/* ============================================================
-   STATUS
-============================================================ */
-
 function statusHTML(
     status
 ) {
@@ -1260,11 +1148,9 @@ function statusHTML(
     ) {
 
         return `
-
             <span class="status accepted">
                 🟢 تایید شده
             </span>
-
         `;
 
     }
@@ -1275,30 +1161,22 @@ function statusHTML(
     ) {
 
         return `
-
             <span class="status rejected">
                 🔴 رد شده
             </span>
-
         `;
 
     }
 
 
     return `
-
         <span class="status pending">
             🟡 در انتظار بررسی
         </span>
-
     `;
 
 }
 
-
-/* ============================================================
-   LOAD TICKETS
-============================================================ */
 
 async function loadTickets() {
 
@@ -1340,17 +1218,13 @@ async function loadTickets() {
                 "/tickets",
 
                 {
-
                     method:
                         "GET",
 
                     headers: {
-
                         "Accept":
                             "application/json"
-
                     }
-
                 }
 
             );
@@ -1361,11 +1235,6 @@ async function loadTickets() {
                 response
             );
 
-
-        /*
-         * 401 بسیار مهم:
-         * دیگر retry نمی‌کنیم.
-         */
 
         if (
             response.status === 401
@@ -1467,6 +1336,7 @@ async function loadTickets() {
 
         }
 
+
     } catch (error) {
 
         console.error(
@@ -1484,12 +1354,10 @@ async function loadTickets() {
                 <br><br>
 
                 <small>
-
                     ${escapeHTML(
                         error.message ||
                         "Unknown error"
                     )}
-
                 </small>
 
                 <br><br>
@@ -1525,10 +1393,6 @@ async function loadTickets() {
 }
 
 
-/* ============================================================
-   RENDER TICKETS
-============================================================ */
-
 function renderTickets() {
 
     if (!tickets.length) {
@@ -1536,9 +1400,7 @@ function renderTickets() {
         ticketList.innerHTML = `
 
             <div class="empty">
-
                 📭 هیچ تیکتی وجود ندارد.
-
             </div>
 
         `;
@@ -1603,19 +1465,14 @@ function renderTickets() {
 
                         ${
                             ticket.createdAt
-
                             ?
-
                             new Date(
                                 ticket.createdAt
                             ).toLocaleString(
                                 "fa-IR"
                             )
-
                             :
-
                             ""
-
                         }
 
                     </small>
@@ -1627,11 +1484,6 @@ function renderTickets() {
         })
         .join("");
 
-
-    /*
-     * به جای inline onclick
-     * event listener استفاده می‌کنیم.
-     */
 
     ticketList
         .querySelectorAll(
@@ -1656,10 +1508,6 @@ function renderTickets() {
 
 }
 
-
-/* ============================================================
-   SELECT TICKET
-============================================================ */
 
 async function selectTicket(
     id
@@ -1697,10 +1545,6 @@ async function selectTicket(
 
 }
 
-
-/* ============================================================
-   DETAIL
-============================================================ */
 
 function renderTicketDetail(
     ticket,
@@ -1846,11 +1690,8 @@ function renderTicketDetail(
 
         ${
             ticket.experience
-
             ?
-
             `
-
             <div class="detail-row">
 
                 <b>
@@ -1864,23 +1705,16 @@ function renderTicketDetail(
                 )}
 
             </div>
-
             `
-
             :
-
             ""
-
         }
 
 
         ${
             ticket.reason
-
             ?
-
             `
-
             <div class="detail-row">
 
                 <b>
@@ -1894,23 +1728,16 @@ function renderTicketDetail(
                 )}
 
             </div>
-
             `
-
             :
-
             ""
-
         }
 
 
         ${
             ticket.currentDivision
-
             ?
-
             `
-
             <div class="detail-row">
 
                 <b>
@@ -1924,23 +1751,16 @@ function renderTicketDetail(
                 )}
 
             </div>
-
             `
-
             :
-
             ""
-
         }
 
 
         ${
             ticket.requestedDivision
-
             ?
-
             `
-
             <div class="detail-row">
 
                 <b>
@@ -1954,23 +1774,16 @@ function renderTicketDetail(
                 )}
 
             </div>
-
             `
-
             :
-
             ""
-
         }
 
 
         ${
             ticket.requestRank
-
             ?
-
             `
-
             <div class="detail-row">
 
                 <b>
@@ -1984,23 +1797,16 @@ function renderTicketDetail(
                 )}
 
             </div>
-
             `
-
             :
-
             ""
-
         }
 
 
         ${
             ticket.resignationReason
-
             ?
-
             `
-
             <div class="detail-row">
 
                 <b>
@@ -2014,24 +1820,17 @@ function renderTicketDetail(
                 )}
 
             </div>
-
             `
-
             :
-
             ""
-
         }
 
 
         ${
             ticket.score !== null &&
             ticket.score !== undefined
-
             ?
-
             `
-
             <div class="detail-row">
 
                 <b>
@@ -2047,13 +1846,9 @@ function renderTicketDetail(
                 از 20
 
             </div>
-
             `
-
             :
-
             ""
-
         }
 
 
@@ -2197,10 +1992,6 @@ function renderTicketDetail(
 
 }
 
-
-/* ============================================================
-   UPDATE TICKET
-============================================================ */
 
 async function updateTicket() {
 
@@ -2359,6 +2150,7 @@ async function updateTicket() {
 
         }
 
+
     } catch (error) {
 
         console.error(
@@ -2375,10 +2167,6 @@ async function updateTicket() {
 
 }
 
-
-/* ============================================================
-   LOAD MESSAGES
-============================================================ */
 
 async function loadMessages(
     id
@@ -2417,13 +2205,8 @@ async function loadMessages(
 
     try {
 
-        /*
-         * GET /tickets/:id/messages
-         * در server.js فعلی Public است.
-         */
-
         const response =
-            await fetch(
+            await apiFetch(
 
                 API_URL +
                 "/tickets/" +
@@ -2442,10 +2225,7 @@ async function loadMessages(
                         "Accept":
                             "application/json"
 
-                    },
-
-                    cache:
-                        "no-store"
+                    }
 
                 }
 
@@ -2456,6 +2236,30 @@ async function loadMessages(
             await readJSON(
                 response
             );
+
+
+        if (
+            response.status === 401
+        ) {
+
+            redirectToLogin(
+                "HTTP 401 — نشست فرماندهی منقضی شده است."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            response.status === 403
+        ) {
+
+            throw new Error(
+                "HTTP 403 — شما دسترسی مشاهده پیام‌ها را ندارید."
+            );
+
+        }
 
 
         if (
@@ -2489,9 +2293,7 @@ async function loadMessages(
             box.innerHTML = `
 
                 <div class="empty">
-
                     هنوز پیامی ثبت نشده است.
-
                 </div>
 
             `;
@@ -2514,17 +2316,13 @@ async function loadMessages(
 
                     const senderName =
                         isCommand
-
                         ?
-
                         (
                             message.commanderName ||
                             message.senderName ||
                             "فرماندهی"
                         )
-
                         :
-
                         (
                             message.senderName ||
                             "متقاضی"
@@ -2537,16 +2335,12 @@ async function loadMessages(
                             message.commanderRank ||
                             message.senderRank
                         )
-
                         ?
-
                         ` - ${escapeHTML(
                             message.commanderRank ||
                             message.senderRank
                         )}`
-
                         :
-
                         "";
 
 
@@ -2598,19 +2392,14 @@ async function loadMessages(
 
                                 ${
                                     message.createdAt
-
                                     ?
-
                                     new Date(
                                         message.createdAt
                                     ).toLocaleString(
                                         "fa-IR"
                                     )
-
                                     :
-
                                     ""
-
                                 }
 
                             </small>
@@ -2666,10 +2455,6 @@ async function loadMessages(
 
 }
 
-
-/* ============================================================
-   SEND COMMAND MESSAGE
-============================================================ */
 
 async function sendCommandMessage() {
 
@@ -2830,10 +2615,6 @@ async function sendCommandMessage() {
 }
 
 
-/* ============================================================
-   LOGOUT
-============================================================ */
-
 function logoutCommand() {
 
     clearCommandSession();
@@ -2844,10 +2625,6 @@ function logoutCommand() {
 
 }
 
-
-/* ============================================================
-   START
-============================================================ */
 
 async function startCommandPanel() {
 
@@ -2912,18 +2689,9 @@ async function startCommandPanel() {
 }
 
 
-/* ============================================================
-   AUTO REFRESH
-============================================================ */
-
 setInterval(
 
     async function() {
-
-        /*
-         * اگر Token خراب شده باشد،
-         * دیگر درخواست‌های 401 پشت سر هم نمی‌فرستیم.
-         */
 
         if (
             !getToken() ||
@@ -2955,10 +2723,6 @@ setInterval(
 
 );
 
-
-/* ============================================================
-   RUN
-============================================================ */
 
 startCommandPanel();
 
