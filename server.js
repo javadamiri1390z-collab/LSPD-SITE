@@ -1,6 +1,6 @@
 // ============================================================
 // VANGUARD LSPD - SERVER.JS
-// MongoDB Ticket + Authentication + Command Logs + Owner
+// MongoDB + Authentication + Command + Owner + Logs
 // ============================================================
 
 const express = require("express");
@@ -18,6 +18,11 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const MONGO_URI = process.env.MONGODB_URI;
+
+if (!MONGO_URI) {
+    console.error("❌ MONGODB_URI تنظیم نشده است.");
+    process.exit(1);
+}
 
 
 // ============================================================
@@ -55,39 +60,58 @@ const OWNER_RANK =
 
 
 // ============================================================
+// TOKEN SECRET
+// ============================================================
+
+const TOKEN_SECRET =
+    process.env.TOKEN_SECRET ||
+    crypto.randomBytes(32).toString("hex");
+
+
+// ============================================================
 // MIDDLEWARE
 // ============================================================
 
-app.use(cors());
-
 app.use(
-    express.json({
-        limit: "1mb"
+    cors({
+        origin: true,
+        credentials: false
     })
 );
 
-app.use(express.static(__dirname));
+app.use(
+    express.json({
+        limit: "2mb"
+    })
+);
+
+app.use(
+    express.urlencoded({
+        extended: true,
+        limit: "2mb"
+    })
+);
+
+
+// ============================================================
+// STATIC WEBSITE
+// ============================================================
+
+app.use(
+    express.static(__dirname)
+);
 
 
 // ============================================================
 // MONGODB
 // ============================================================
 
-if (!MONGO_URI) {
-
-    console.error(
-        "❌ MONGODB_URI در Environment Variables تنظیم نشده است."
-    );
-
-    process.exit(1);
-}
-
 const client =
     new MongoClient(MONGO_URI);
 
-let database;
-let tickets;
-let logs;
+let database = null;
+let tickets = null;
+let logs = null;
 
 
 // ============================================================
@@ -103,19 +127,6 @@ function text(value) {
 }
 
 
-function safeObjectId(id) {
-
-    if (!ObjectId.isValid(id)) {
-
-        return null;
-
-    }
-
-    return new ObjectId(id);
-
-}
-
-
 function now() {
 
     return new Date();
@@ -123,14 +134,24 @@ function now() {
 }
 
 
-// ============================================================
-// TOKEN SYSTEM
-// ============================================================
+function safeObjectId(id) {
 
-const TOKEN_SECRET =
-    process.env.TOKEN_SECRET ||
-    crypto.randomBytes(32).toString("hex");
+    if (!id) {
+        return null;
+    }
 
+    if (!ObjectId.isValid(id)) {
+        return null;
+    }
+
+    return new ObjectId(id);
+
+}
+
+
+// ============================================================
+// TOKEN CREATE
+// ============================================================
 
 function createToken(user) {
 
@@ -147,6 +168,9 @@ function createToken(user) {
 
         role:
             user.role,
+
+        isOwner:
+            user.role === "owner",
 
         issuedAt:
             Date.now()
@@ -181,14 +205,16 @@ function createToken(user) {
 }
 
 
+// ============================================================
+// TOKEN VERIFY
+// ============================================================
+
 function verifyToken(token) {
 
     try {
 
         if (!token) {
-
             return null;
-
         }
 
 
@@ -197,9 +223,7 @@ function verifyToken(token) {
 
 
         if (parts.length !== 2) {
-
             return null;
-
         }
 
 
@@ -230,10 +254,24 @@ function verifyToken(token) {
         }
 
 
+        const signatureBuffer =
+            Buffer.from(
+                signature,
+                "utf8"
+            );
+
+
+        const expectedBuffer =
+            Buffer.from(
+                expected,
+                "utf8"
+            );
+
+
         if (
             !crypto.timingSafeEqual(
-                Buffer.from(signature),
-                Buffer.from(expected)
+                signatureBuffer,
+                expectedBuffer
             )
         ) {
 
@@ -253,7 +291,7 @@ function verifyToken(token) {
             );
 
 
-        // Token validity: 24 hours
+        // Token validity = 24 hours
 
         if (
             !payload.issuedAt ||
@@ -267,9 +305,24 @@ function verifyToken(token) {
         }
 
 
+        if (
+            !payload.username ||
+            !payload.role
+        ) {
+
+            return null;
+
+        }
+
+
         return payload;
 
     } catch (error) {
+
+        console.error(
+            "Token Verify Error:",
+            error.message
+        );
 
         return null;
 
@@ -279,7 +332,7 @@ function verifyToken(token) {
 
 
 // ============================================================
-// AUTH HELPERS
+// GET TOKEN FROM REQUEST
 // ============================================================
 
 function getTokenFromRequest(req) {
@@ -290,9 +343,13 @@ function getTokenFromRequest(req) {
         );
 
 
+    // Normal Bearer token
+
     if (
         authorization &&
-        authorization.startsWith("Bearer ")
+        authorization
+            .toLowerCase()
+            .startsWith("bearer ")
     ) {
 
         return authorization
@@ -301,6 +358,8 @@ function getTokenFromRequest(req) {
 
     }
 
+
+    // Backup header
 
     const customToken =
         text(
@@ -320,7 +379,15 @@ function getTokenFromRequest(req) {
 }
 
 
-function requireAuth(req, res, next) {
+// ============================================================
+// AUTH MIDDLEWARE
+// ============================================================
+
+function requireAuth(
+    req,
+    res,
+    next
+) {
 
     const token =
         getTokenFromRequest(req);
@@ -337,14 +404,16 @@ function requireAuth(req, res, next) {
             success: false,
 
             message:
-                "دسترسی غیرمجاز. لطفاً وارد شوید."
+                "دسترسی غیرمجاز. لطفاً دوباره وارد شوید."
 
         });
 
     }
 
 
-    req.user = user;
+    req.user =
+        user;
+
 
     next();
 
@@ -352,11 +421,14 @@ function requireAuth(req, res, next) {
 
 
 // ============================================================
-// COMMAND ACCESS
-// Command + Owner
+// COMMAND + OWNER
 // ============================================================
 
-function requireCommand(req, res, next) {
+function requireCommand(
+    req,
+    res,
+    next
+) {
 
     const token =
         getTokenFromRequest(req);
@@ -373,7 +445,7 @@ function requireCommand(req, res, next) {
             success: false,
 
             message:
-                "ابتدا وارد پنل فرماندهی شوید."
+                "جلسه ورود معتبر نیست. دوباره وارد شوید."
 
         });
 
@@ -397,7 +469,9 @@ function requireCommand(req, res, next) {
     }
 
 
-    req.user = user;
+    req.user =
+        user;
+
 
     next();
 
@@ -405,10 +479,14 @@ function requireCommand(req, res, next) {
 
 
 // ============================================================
-// OWNER ACCESS
+// OWNER ONLY
 // ============================================================
 
-function requireOwner(req, res, next) {
+function requireOwner(
+    req,
+    res,
+    next
+) {
 
     const token =
         getTokenFromRequest(req);
@@ -425,7 +503,7 @@ function requireOwner(req, res, next) {
             success: false,
 
             message:
-                "ابتدا وارد شوید."
+                "جلسه ورود معتبر نیست. دوباره وارد شوید."
 
         });
 
@@ -441,14 +519,16 @@ function requireOwner(req, res, next) {
             success: false,
 
             message:
-                "این بخش فقط برای مالک سیستم قابل دسترسی است."
+                "این بخش فقط برای مالک سیستم است."
 
         });
 
     }
 
 
-    req.user = user;
+    req.user =
+        user;
+
 
     next();
 
@@ -476,7 +556,7 @@ async function createLog({
         if (!logs) {
 
             console.warn(
-                "⚠️ Logs collection هنوز آماده نیست."
+                "⚠️ Logs collection آماده نیست."
             );
 
             return;
@@ -517,7 +597,8 @@ async function createLog({
             },
 
 
-            details,
+            details:
+                details || {},
 
 
             createdAt:
@@ -526,12 +607,16 @@ async function createLog({
         };
 
 
-        await logs.insertOne(log);
+        await logs.insertOne(
+            log
+        );
 
 
         console.log(
             "📝 LOG:",
             log.action,
+            "|",
+            log.actor.username,
             "|",
             log.actor.name,
             "|",
@@ -570,6 +655,70 @@ app.get(
 
 
 // ============================================================
+// OPTIONAL HTML ROUTES
+// ============================================================
+
+app.get(
+    "/command",
+    (req, res) => {
+
+        res.sendFile(
+            path.join(
+                __dirname,
+                "command.html"
+            )
+        );
+
+    }
+);
+
+
+app.get(
+    "/command.html",
+    (req, res) => {
+
+        res.sendFile(
+            path.join(
+                __dirname,
+                "command.html"
+            )
+        );
+
+    }
+);
+
+
+app.get(
+    "/command-login",
+    (req, res) => {
+
+        res.sendFile(
+            path.join(
+                __dirname,
+                "command-login.html"
+            )
+        );
+
+    }
+);
+
+
+app.get(
+    "/command-login.html",
+    (req, res) => {
+
+        res.sendFile(
+            path.join(
+                __dirname,
+                "command-login.html"
+            )
+        );
+
+    }
+);
+
+
+// ============================================================
 // AUTH LOGIN
 // ============================================================
 
@@ -581,13 +730,13 @@ app.post(
 
             const username =
                 text(
-                    req.body.username
+                    req.body?.username
                 );
 
 
             const password =
                 text(
-                    req.body.password
+                    req.body?.password
                 );
 
 
@@ -741,7 +890,7 @@ app.post(
             });
 
 
-            res.json({
+            return res.json({
 
                 success: true,
 
@@ -762,8 +911,7 @@ app.post(
                         user.role,
 
                     isOwner:
-                        user.role ===
-                        "owner"
+                        user.role === "owner"
 
                 }
 
@@ -777,7 +925,7 @@ app.post(
             );
 
 
-            res.status(500).json({
+            return res.status(500).json({
 
                 success: false,
 
@@ -801,7 +949,7 @@ app.get(
     requireAuth,
     async (req, res) => {
 
-        res.json({
+        return res.json({
 
             success: true,
 
@@ -820,8 +968,7 @@ app.get(
                     req.user.role,
 
                 isOwner:
-                    req.user.role ===
-                    "owner"
+                    req.user.role === "owner"
 
             }
 
@@ -852,7 +999,9 @@ app.get(
                     .toArray();
 
 
-            res.json(data);
+            return res.json(
+                data
+            );
 
         } catch (error) {
 
@@ -862,7 +1011,7 @@ app.get(
             );
 
 
-            res.status(500).json({
+            return res.status(500).json({
 
                 success: false,
 
@@ -931,7 +1080,9 @@ app.get(
             }
 
 
-            res.json(ticket);
+            return res.json(
+                ticket
+            );
 
         } catch (error) {
 
@@ -941,7 +1092,7 @@ app.get(
             );
 
 
-            res.status(500).json({
+            return res.status(500).json({
 
                 success: false,
 
@@ -993,7 +1144,9 @@ app.post(
             ) {
 
                 const numberScore =
-                    Number(body.score);
+                    Number(
+                        body.score
+                    );
 
 
                 if (
@@ -1029,12 +1182,12 @@ app.post(
                 requestType,
 
 
-                // ------------------------------------------------
                 // COMMON
-                // ------------------------------------------------
 
                 ocName:
-                    text(body.ocName),
+                    text(
+                        body.ocName
+                    ),
 
                 icName:
                     text(
@@ -1061,29 +1214,35 @@ app.post(
                     ),
 
                 steamHex:
-                    text(body.steamHex),
+                    text(
+                        body.steamHex
+                    ),
 
                 cmx:
-                    text(body.cmx),
+                    text(
+                        body.cmx
+                    ),
 
                 age:
-                    text(body.age),
+                    text(
+                        body.age
+                    ),
 
 
-                // ------------------------------------------------
                 // MEMBERSHIP
-                // ------------------------------------------------
 
                 experience:
-                    text(body.experience),
+                    text(
+                        body.experience
+                    ),
 
                 reason:
-                    text(body.reason),
+                    text(
+                        body.reason
+                    ),
 
 
-                // ------------------------------------------------
                 // DIVISION
-                // ------------------------------------------------
 
                 currentDivision:
                     text(
@@ -1111,18 +1270,22 @@ app.post(
                     ),
 
 
-                // ------------------------------------------------
                 // RESIGNATION
-                // ------------------------------------------------
 
                 oocName:
-                    text(body.oocName),
+                    text(
+                        body.oocName
+                    ),
 
                 rank:
-                    text(body.rank),
+                    text(
+                        body.rank
+                    ),
 
                 callSign:
-                    text(body.callSign),
+                    text(
+                        body.callSign
+                    ),
 
                 resignationReason:
                     text(
@@ -1131,12 +1294,12 @@ app.post(
                     ),
 
 
-                // ------------------------------------------------
                 // RANKUP
-                // ------------------------------------------------
 
                 requestRank:
-                    text(body.requestRank),
+                    text(
+                        body.requestRank
+                    ),
 
                 currentRankTimeplay:
                     text(
@@ -1144,12 +1307,12 @@ app.post(
                     ),
 
                 note:
-                    text(body.note),
+                    text(
+                        body.note
+                    ),
 
 
-                // ------------------------------------------------
                 // EXAM
-                // ------------------------------------------------
 
                 score,
 
@@ -1159,32 +1322,24 @@ app.post(
                     12,
 
 
-                // ------------------------------------------------
                 // STATUS
-                // ------------------------------------------------
 
                 status:
                     "Pending",
 
 
-                // ------------------------------------------------
                 // REPLY
-                // ------------------------------------------------
 
                 reply:
                     "در انتظار پاسخ فرماندهی",
 
 
-                // ------------------------------------------------
                 // CHAT
-                // ------------------------------------------------
 
                 messages: [],
 
 
-                // ------------------------------------------------
                 // DATES
-                // ------------------------------------------------
 
                 createdAt:
                     now(),
@@ -1247,14 +1402,23 @@ app.post(
 
                     score,
 
-                    passed
+                    passed,
+
+                    icName:
+                        ticket.icName,
+
+                    ocName:
+                        ticket.ocName,
+
+                    discord:
+                        ticket.discord
 
                 }
 
             });
 
 
-            res.json({
+            return res.json({
 
                 success: true,
 
@@ -1275,7 +1439,7 @@ app.post(
             );
 
 
-            res.status(500).json({
+            return res.status(500).json({
 
                 success: false,
 
@@ -1346,24 +1510,44 @@ app.put(
 
 
             const oldStatus =
-                ticket.status;
+                ticket.status || "Pending";
 
 
             const oldReply =
-                ticket.reply;
+                ticket.reply || "";
 
 
             const status =
                 text(
-                    req.body.status
+                    req.body?.status
                 ) ||
                 "Pending";
 
 
             const reply =
                 text(
-                    req.body.reply
+                    req.body?.reply
                 );
+
+
+            if (
+                ![
+                    "Pending",
+                    "Accepted",
+                    "Rejected"
+                ].includes(status)
+            ) {
+
+                return res.status(400).json({
+
+                    success: false,
+
+                    message:
+                        "وضعیت نامعتبر است"
+
+                });
+
+            }
 
 
             const result =
@@ -1408,9 +1592,7 @@ app.put(
             }
 
 
-            // =================================================
             // STATUS LOG
-            // =================================================
 
             if (
                 oldStatus !== status
@@ -1441,9 +1623,7 @@ app.put(
             }
 
 
-            // =================================================
             // REPLY LOG
-            // =================================================
 
             if (
                 oldReply !== reply
@@ -1471,7 +1651,7 @@ app.put(
             }
 
 
-            res.json({
+            return res.json({
 
                 success: true
 
@@ -1485,7 +1665,7 @@ app.put(
             );
 
 
-            res.status(500).json({
+            return res.status(500).json({
 
                 success: false,
 
@@ -1567,7 +1747,7 @@ app.get(
             }
 
 
-            res.json(
+            return res.json(
                 ticket.messages || []
             );
 
@@ -1579,7 +1759,7 @@ app.get(
             );
 
 
-            res.status(500).json({
+            return res.status(500).json({
 
                 success: false,
 
@@ -1626,7 +1806,7 @@ app.post(
 
             const message =
                 text(
-                    req.body.message
+                    req.body?.message
                 );
 
 
@@ -1684,7 +1864,7 @@ app.post(
 
 
             // =================================================
-            // DETECT AUTHENTICATED COMMAND
+            // CHECK COMMAND TOKEN
             // =================================================
 
             const token =
@@ -1757,7 +1937,7 @@ app.post(
 
 
             // =================================================
-            // MESSAGE OBJECT
+            // MESSAGE
             // =================================================
 
             const chatMessage = {
@@ -1847,14 +2027,16 @@ app.post(
 
                 details: {
 
-                    message
+                    message,
+
+                    sender
 
                 }
 
             });
 
 
-            res.json({
+            return res.json({
 
                 success: true,
 
@@ -1871,7 +2053,7 @@ app.post(
             );
 
 
-            res.status(500).json({
+            return res.status(500).json({
 
                 success: false,
 
@@ -1918,10 +2100,6 @@ app.delete(
             }
 
 
-            // =================================================
-            // GET BEFORE DELETE
-            // =================================================
-
             const ticket =
                 await tickets.findOne({
 
@@ -1944,10 +2122,6 @@ app.delete(
 
             }
 
-
-            // =================================================
-            // DELETE
-            // =================================================
 
             const result =
                 await tickets.deleteOne({
@@ -1975,7 +2149,7 @@ app.delete(
 
 
             // =================================================
-            // DELETE LOG
+            // LOG DELETE
             // =================================================
 
             await createLog({
@@ -2000,6 +2174,9 @@ app.delete(
                     ocName:
                         ticket.ocName,
 
+                    discord:
+                        ticket.discord,
+
                     status:
                         ticket.status
 
@@ -2008,7 +2185,7 @@ app.delete(
             });
 
 
-            res.json({
+            return res.json({
 
                 success: true
 
@@ -2022,7 +2199,7 @@ app.delete(
             );
 
 
-            res.status(500).json({
+            return res.status(500).json({
 
                 success: false,
 
@@ -2049,21 +2226,19 @@ app.get(
 
         try {
 
+            const requestedLimit =
+                Number(
+                    req.query.limit
+                ) || 100;
+
+
             const limit =
                 Math.min(
-
                     Math.max(
-
-                        Number(
-                            req.query.limit
-                        ) || 100,
-
+                        requestedLimit,
                         1
-
                     ),
-
                     500
-
                 );
 
 
@@ -2077,7 +2252,7 @@ app.get(
                     .toArray();
 
 
-            res.json({
+            return res.json({
 
                 success: true,
 
@@ -2094,7 +2269,7 @@ app.get(
             );
 
 
-            res.status(500).json({
+            return res.status(500).json({
 
                 success: false,
 
@@ -2156,7 +2331,7 @@ app.get(
                     .toArray();
 
 
-            res.json({
+            return res.json({
 
                 success: true,
 
@@ -2173,7 +2348,7 @@ app.get(
             );
 
 
-            res.status(500).json({
+            return res.status(500).json({
 
                 success: false,
 
@@ -2196,7 +2371,7 @@ app.get(
     "/health",
     async (req, res) => {
 
-        res.json({
+        return res.json({
 
             success: true,
 
@@ -2206,8 +2381,78 @@ app.get(
             mongodb:
                 !!database,
 
+            auth:
+                true,
+
+            command:
+                true,
+
+            owner:
+                true,
+
+            logs:
+                true,
+
             time:
                 now()
+
+        });
+
+    }
+);
+
+
+// ============================================================
+// 404 API HANDLER
+// ============================================================
+
+app.use(
+    (req, res, next) => {
+
+        if (
+            req.path.startsWith("/api/") ||
+            req.path.startsWith("/auth/") ||
+            req.path.startsWith("/tickets") ||
+            req.path.startsWith("/logs")
+        ) {
+
+            return res.status(404).json({
+
+                success: false,
+
+                message:
+                    "مسیر API پیدا نشد."
+
+            });
+
+        }
+
+
+        next();
+
+    }
+);
+
+
+// ============================================================
+// GLOBAL ERROR HANDLER
+// ============================================================
+
+app.use(
+    (error, req, res, next) => {
+
+        console.error(
+            "GLOBAL ERROR:",
+            error
+        );
+
+
+        return res.status(500).json({
+
+            success: false,
+
+            message:
+                "خطای داخلی سرور"
 
         });
 
@@ -2300,7 +2545,7 @@ async function startServer() {
         } catch (indexError) {
 
             console.warn(
-                "⚠️ Index creation warning:",
+                "⚠️ Index warning:",
                 indexError.message
             );
 
@@ -2334,11 +2579,7 @@ async function startServer() {
                 );
 
                 console.log(
-                    "📝 Logs: Enabled"
-                );
-
-                console.log(
-                    "🔐 Auth: Enabled"
+                    "🔐 Authentication: Enabled"
                 );
 
                 console.log(
@@ -2384,59 +2625,41 @@ async function startServer() {
 // GRACEFUL SHUTDOWN
 // ============================================================
 
-process.on(
-    "SIGINT",
-    async () => {
+async function shutdown() {
 
-        console.log(
-            "🛑 Closing server..."
+    console.log(
+        "🛑 Closing server..."
+    );
+
+
+    try {
+
+        await client.close();
+
+    } catch (error) {
+
+        console.error(
+            "Shutdown Error:",
+            error
         );
 
-
-        try {
-
-            await client.close();
-
-        } catch (error) {
-
-            console.error(
-                error
-            );
-
-        }
-
-
-        process.exit(0);
-
     }
+
+
+    process.exit(0);
+
+}
+
+
+process.on(
+    "SIGINT",
+    shutdown
 );
 
 
 process.on(
     "SIGTERM",
-    async () => {
-
-        console.log(
-            "🛑 Closing server..."
-        );
-
-
-        try {
-
-            await client.close();
-
-        } catch (error) {
-
-            console.error(
-                error
-            );
-
-        }
-
-
-        process.exit(0);
-
-    }
+    shutdown
 );
 
 
