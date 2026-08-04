@@ -12,10 +12,6 @@
 
 <style>
 
-/* =========================================================
-   ADMIN PANEL - VANGUARD LSPD
-========================================================= */
-
 * {
     box-sizing: border-box;
 }
@@ -32,21 +28,14 @@ body.command-page {
     position: sticky;
     top: 0;
     z-index: 1000;
-
     width: 100%;
-
     padding: 14px 35px;
-
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     background: rgba(3, 8, 15, 0.88);
-
     backdrop-filter: blur(20px);
-
     border-bottom: 1px solid rgba(255,255,255,.10);
-
     box-shadow: 0 10px 40px rgba(0,0,0,.25);
 }
 
@@ -60,16 +49,12 @@ body.command-page {
     width: 52px;
     height: 52px;
     object-fit: contain;
-
-    filter:
-        drop-shadow(0 0 12px rgba(30,145,255,.75));
+    filter: drop-shadow(0 0 12px rgba(30,145,255,.75));
 }
 
 .admin-brand-text h2 {
     margin: 0;
-
     color: #4da6ff;
-
     font-size: 22px;
 }
 
@@ -86,17 +71,11 @@ body.command-page {
 
 .admin-btn {
     border: 1px solid rgba(255,255,255,.12);
-
     background: rgba(255,255,255,.06);
-
     color: white;
-
     padding: 10px 18px;
-
     border-radius: 10px;
-
     cursor: pointer;
-
     transition: .25s;
 }
 
@@ -121,7 +100,6 @@ body.command-page {
 .admin-main {
     width: 1250px;
     max-width: 94%;
-
     margin: 35px auto 70px;
 }
 
@@ -133,21 +111,17 @@ body.command-page {
     display: flex;
     justify-content: space-between;
     align-items: center;
-
     margin-bottom: 25px;
 }
 
 .admin-header h1 {
     margin: 0;
-
     font-size: 30px;
-
     color: white;
 }
 
 .admin-header p {
     margin-top: 8px;
-
     color: #8995a3;
 }
 
@@ -155,28 +129,19 @@ body.command-page {
     display: flex;
     align-items: center;
     gap: 8px;
-
     padding: 9px 14px;
-
     border-radius: 20px;
-
     background: rgba(0,255,140,.08);
-
     border: 1px solid rgba(0,255,140,.18);
-
     color: #53e89a;
-
     font-size: 13px;
 }
 
 .live-dot {
     width: 8px;
     height: 8px;
-
     border-radius: 50%;
-
     background: #00ff88;
-
     box-shadow: 0 0 10px #00ff88;
 }
 
@@ -186,54 +151,36 @@ body.command-page {
 
 .admin-stats {
     display: grid;
-
-    grid-template-columns:
-        repeat(4, 1fr);
-
+    grid-template-columns: repeat(4, 1fr);
     gap: 15px;
-
     margin-bottom: 22px;
 }
 
 .admin-stat {
     position: relative;
-
     padding: 20px;
-
     min-height: 120px;
-
     border-radius: 17px;
-
     background:
         linear-gradient(
             145deg,
             rgba(255,255,255,.075),
             rgba(255,255,255,.025)
         );
-
     border: 1px solid rgba(255,255,255,.10);
-
     overflow: hidden;
-
-    box-shadow:
-        0 15px 35px rgba(0,0,0,.18);
+    box-shadow: 0 15px 35px rgba(0,0,0,.18);
 }
 
 .admin-stat::after {
     content: "";
-
     position: absolute;
-
     width: 100px;
     height: 100px;
-
     left: -40px;
     bottom: -50px;
-
     background: rgba(0,120,255,.12);
-
     border-radius: 50%;
-
     filter: blur(15px);
 }
 
@@ -243,19 +190,14 @@ body.command-page {
 
 .stat-number {
     display: block;
-
     margin-top: 10px;
-
     font-size: 28px;
-
     color: #4da6ff;
-
     font-weight: bold;
 }
 
 .stat-label {
     color: #9ba6b2;
-
     font-size: 13px;
 }
 
@@ -265,15 +207,10 @@ body.command-page {
 
 .control-panel {
     padding: 18px;
-
     border-radius: 18px;
-
     background: rgba(3,8,15,.72);
-
     border: 1px solid rgba(255,255,255,.10);
-
     backdrop-filter: blur(15px);
-
     margin-bottom: 20px;
 }
 
@@ -283,52 +220,34 @@ body.command-page {
 
 .search-wrapper input {
     width: 100%;
-
     padding: 15px 18px;
-
     border-radius: 12px;
-
     border: 1px solid rgba(255,255,255,.12);
-
     outline: none;
-
     background: rgba(255,255,255,.055);
-
     color: white;
-
     font-size: 14px;
 }
 
 .search-wrapper input:focus {
     border-color: rgba(50,150,255,.7);
-
-    box-shadow:
-        0 0 0 3px rgba(0,120,255,.10);
+    box-shadow: 0 0 0 3px rgba(0,120,255,.10);
 }
 
 .filter-buttons {
     display: flex;
-
     gap: 8px;
-
     flex-wrap: wrap;
-
     margin-top: 13px;
 }
 
 .filter-btn {
     border: 1px solid rgba(255,255,255,.12);
-
     background: rgba(255,255,255,.05);
-
     color: #d9e0e8;
-
     padding: 9px 15px;
-
     border-radius: 9px;
-
     cursor: pointer;
-
     transition: .2s;
 }
 
@@ -338,13 +257,9 @@ body.command-page {
 
 .filter-btn.active {
     background: #087cff;
-
     border-color: #087cff;
-
     color: white;
-
-    box-shadow:
-        0 5px 18px rgba(0,120,255,.25);
+    box-shadow: 0 5px 18px rgba(0,120,255,.25);
 }
 
 /* =========================
@@ -353,219 +268,149 @@ body.command-page {
 
 .requests-header {
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
-
     margin: 20px 0 12px;
 }
 
 .requests-header h2 {
     margin: 0;
-
     font-size: 20px;
 }
 
 .refresh-info {
     color: #758190;
-
     font-size: 12px;
 }
 
 .requests {
     display: grid;
-
-    grid-template-columns:
-        repeat(2, minmax(0,1fr));
-
+    grid-template-columns: repeat(2, minmax(0,1fr));
     gap: 15px;
 }
 
 /* =========================
-   TICKET CARD
+   TICKET
 ========================= */
 
 .ticket {
     position: relative;
-
     padding: 20px;
-
     border-radius: 17px;
-
     background:
         linear-gradient(
             145deg,
             rgba(18,25,34,.92),
             rgba(7,12,19,.92)
         );
-
     border: 1px solid rgba(255,255,255,.10);
-
-    box-shadow:
-        0 15px 35px rgba(0,0,0,.20);
-
+    box-shadow: 0 15px 35px rgba(0,0,0,.20);
     transition: .25s;
-
     overflow: hidden;
 }
 
 .ticket:hover {
     transform: translateY(-3px);
-
-    border-color:
-        rgba(55,155,255,.30);
-
-    box-shadow:
-        0 18px 45px rgba(0,0,0,.32);
-}
-
-.ticket.unread {
-    border-color:
-        rgba(0,150,255,.45);
-
-    box-shadow:
-        0 0 25px rgba(0,120,255,.10);
+    border-color: rgba(55,155,255,.30);
+    box-shadow: 0 18px 45px rgba(0,0,0,.32);
 }
 
 .ticket-top {
     display: flex;
-
     justify-content: space-between;
-
     gap: 10px;
-
     align-items: flex-start;
-
     margin-bottom: 16px;
 }
 
 .ticket-title {
     display: flex;
-
     gap: 10px;
-
     align-items: center;
 }
 
 .ticket-type-icon {
     width: 42px;
     height: 42px;
-
     display: flex;
-
     justify-content: center;
     align-items: center;
-
     border-radius: 12px;
-
     background: rgba(0,120,255,.10);
-
     border: 1px solid rgba(0,140,255,.18);
-
     font-size: 20px;
 }
 
 .ticket-title h3 {
     margin: 0;
-
     font-size: 16px;
 }
 
 .ticket-code {
     color: #718092;
-
     font-size: 11px;
-
     margin-top: 4px;
-
     direction: ltr;
-
     text-align: right;
 }
 
 .status {
     padding: 6px 10px;
-
     border-radius: 20px;
-
     font-size: 11px;
-
     white-space: nowrap;
 }
 
 .status.pending {
     background: rgba(255,180,0,.10);
-
     border: 1px solid rgba(255,180,0,.18);
-
     color: #ffc44d;
 }
 
 .status.accepted {
     background: rgba(0,255,130,.09);
-
     border: 1px solid rgba(0,255,130,.18);
-
     color: #45e996;
 }
 
 .status.rejected {
     background: rgba(255,50,50,.09);
-
     border: 1px solid rgba(255,50,50,.18);
-
     color: #ff6565;
 }
 
 .ticket-info {
     display: grid;
-
-    grid-template-columns:
-        repeat(2, 1fr);
-
+    grid-template-columns: repeat(2, 1fr);
     gap: 9px;
-
     margin-bottom: 15px;
 }
 
 .info-item {
     padding: 10px;
-
     background: rgba(255,255,255,.035);
-
     border-radius: 9px;
-
     border: 1px solid rgba(255,255,255,.055);
 }
 
 .info-item small {
     display: block;
-
     color: #738091;
-
     font-size: 10px;
-
     margin-bottom: 4px;
 }
 
 .info-item span {
     color: #e4e8ed;
-
     font-size: 12px;
-
     word-break: break-word;
 }
 
 .ticket-exam {
     padding: 12px;
-
     border-radius: 10px;
-
     background: rgba(0,120,255,.06);
-
     border: 1px solid rgba(0,120,255,.10);
-
     margin-bottom: 13px;
 }
 
@@ -575,47 +420,32 @@ body.command-page {
 
 .ticket-footer {
     display: flex;
-
     justify-content: space-between;
-
     align-items: center;
-
     gap: 10px;
-
     padding-top: 13px;
-
     border-top: 1px solid rgba(255,255,255,.07);
 }
 
 .ticket-date {
     color: #687483;
-
     font-size: 10px;
 }
 
 .ticket-actions {
     display: flex;
-
     gap: 7px;
-
     flex-wrap: wrap;
 }
 
 .action-btn {
     border: 1px solid rgba(255,255,255,.10);
-
     background: rgba(255,255,255,.06);
-
     color: white;
-
     padding: 8px 12px;
-
     border-radius: 8px;
-
     cursor: pointer;
-
     font-family: inherit;
-
     transition: .2s;
 }
 
@@ -625,20 +455,21 @@ body.command-page {
 
 .action-btn.blue {
     background: rgba(0,120,255,.15);
-
     border-color: rgba(0,140,255,.25);
 }
 
 .action-btn.green {
     background: rgba(0,200,100,.10);
-
     border-color: rgba(0,220,110,.20);
 }
 
 .action-btn.red {
     background: rgba(255,50,50,.10);
-
     border-color: rgba(255,70,70,.20);
+}
+
+.action-btn.red:hover {
+    background: rgba(255,50,50,.22);
 }
 
 /* =========================
@@ -647,23 +478,16 @@ body.command-page {
 
 .empty-box {
     grid-column: 1 / -1;
-
     padding: 50px 25px;
-
     text-align: center;
-
     border-radius: 17px;
-
     background: rgba(255,255,255,.035);
-
     border: 1px dashed rgba(255,255,255,.12);
-
     color: #7d8997;
 }
 
 .empty-icon {
     font-size: 40px;
-
     margin-bottom: 10px;
 }
 
@@ -673,21 +497,13 @@ body.command-page {
 
 .modal {
     position: fixed;
-
     inset: 0;
-
     z-index: 3000;
-
     display: none;
-
     align-items: center;
-
     justify-content: center;
-
     padding: 20px;
-
     background: rgba(0,0,0,.72);
-
     backdrop-filter: blur(8px);
 }
 
@@ -697,37 +513,25 @@ body.command-page {
 
 .modal-box {
     width: 750px;
-
     max-width: 100%;
-
     max-height: 90vh;
-
     overflow-y: auto;
-
     padding: 25px;
-
     border-radius: 20px;
-
     background:
         linear-gradient(
             145deg,
             #101821,
             #050a10
         );
-
     border: 1px solid rgba(255,255,255,.12);
-
-    box-shadow:
-        0 30px 80px rgba(0,0,0,.60);
+    box-shadow: 0 30px 80px rgba(0,0,0,.60);
 }
 
 .modal-header {
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
-
     margin-bottom: 20px;
 }
 
@@ -738,36 +542,24 @@ body.command-page {
 .close-modal {
     width: 36px;
     height: 36px;
-
     border: none;
-
     border-radius: 9px;
-
     background: rgba(255,255,255,.07);
-
     color: white;
-
     cursor: pointer;
-
     font-size: 18px;
 }
 
 .detail-grid {
     display: grid;
-
-    grid-template-columns:
-        repeat(2, 1fr);
-
+    grid-template-columns: repeat(2, 1fr);
     gap: 10px;
 }
 
 .detail {
     padding: 12px;
-
     border-radius: 10px;
-
     background: rgba(255,255,255,.04);
-
     border: 1px solid rgba(255,255,255,.06);
 }
 
@@ -777,19 +569,14 @@ body.command-page {
 
 .detail label {
     display: block;
-
     color: #718091;
-
     font-size: 11px;
-
     margin-bottom: 5px;
 }
 
 .detail div {
     color: #e7ebef;
-
     white-space: pre-wrap;
-
     line-height: 1.7;
 }
 
@@ -799,40 +586,26 @@ body.command-page {
 
 .reply-area textarea {
     width: 100%;
-
     min-height: 110px;
-
     padding: 13px;
-
     resize: vertical;
-
     border-radius: 11px;
-
     background: rgba(255,255,255,.045);
-
     border: 1px solid rgba(255,255,255,.10);
-
     color: white;
-
     outline: none;
-
     font-family: inherit;
 }
 
 .reply-area textarea:focus {
     border-color: #198cff;
-
-    box-shadow:
-        0 0 0 3px rgba(0,120,255,.10);
+    box-shadow: 0 0 0 3px rgba(0,120,255,.10);
 }
 
 .modal-buttons {
     display: flex;
-
     gap: 8px;
-
     flex-wrap: wrap;
-
     margin-top: 12px;
 }
 
@@ -842,9 +615,7 @@ body.command-page {
 
 .chat-container {
     margin-top: 20px;
-
     padding-top: 20px;
-
     border-top: 1px solid rgba(255,255,255,.08);
 }
 
@@ -854,25 +625,17 @@ body.command-page {
 
 .chat-messages {
     max-height: 280px;
-
     overflow-y: auto;
-
     padding: 10px;
-
     border-radius: 12px;
-
     background: #03070c;
-
     border: 1px solid rgba(255,255,255,.08);
 }
 
 .chat-message {
     padding: 10px 12px;
-
     border-radius: 10px;
-
     margin-bottom: 8px;
-
     background: rgba(255,255,255,.045);
 }
 
@@ -886,55 +649,38 @@ body.command-page {
 
 .chat-message strong {
     display: block;
-
     margin-bottom: 4px;
 }
 
 .chat-message p {
     white-space: pre-wrap;
-
     line-height: 1.6;
-
     margin: 0;
 }
 
 .chat-message small {
     display: block;
-
     margin-top: 5px;
-
     color: #687483;
-
     font-size: 10px;
 }
 
 .chat-send-row {
     display: flex;
-
     gap: 8px;
-
     margin-top: 8px;
 }
 
 .chat-send-row textarea {
     flex: 1;
-
     min-height: 65px;
-
     padding: 12px;
-
     border-radius: 10px;
-
     border: 1px solid rgba(255,255,255,.10);
-
     background: rgba(255,255,255,.04);
-
     color: white;
-
     font-family: inherit;
-
     resize: vertical;
-
     outline: none;
 }
 
@@ -944,35 +690,22 @@ body.command-page {
 
 .toast {
     position: fixed;
-
     left: 25px;
-
     bottom: 25px;
-
     z-index: 5000;
-
     min-width: 250px;
-
     padding: 14px 18px;
-
     border-radius: 12px;
-
     background: rgba(10,18,28,.95);
-
     border: 1px solid rgba(255,255,255,.12);
-
     box-shadow: 0 15px 40px rgba(0,0,0,.4);
-
     transform: translateY(120px);
-
     opacity: 0;
-
     transition: .3s;
 }
 
 .toast.show {
     transform: translateY(0);
-
     opacity: 1;
 }
 
@@ -991,8 +724,7 @@ body.command-page {
 @media(max-width:850px) {
 
     .admin-stats {
-        grid-template-columns:
-            repeat(2, 1fr);
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .requests {
@@ -1018,9 +750,7 @@ body.command-page {
 
     .admin-header {
         flex-direction: column;
-
         align-items: flex-start;
-
         gap: 12px;
     }
 
@@ -1042,7 +772,6 @@ body.command-page {
 
     .ticket-footer {
         flex-direction: column;
-
         align-items: flex-start;
     }
 
@@ -1056,12 +785,9 @@ body.command-page {
 
 </head>
 
-
 <body class="command-page">
 
-
 <div class="overlay"></div>
-
 
 <!-- =====================================================
      NAVBAR
@@ -1090,7 +816,6 @@ body.command-page {
 
     </div>
 
-
     <div class="admin-actions">
 
         <button
@@ -1111,13 +836,11 @@ body.command-page {
 
 </header>
 
-
 <!-- =====================================================
      MAIN
 ===================================================== -->
 
 <main class="admin-main">
-
 
     <div class="admin-header">
 
@@ -1133,7 +856,6 @@ body.command-page {
 
         </div>
 
-
         <div class="live-status">
 
             <span class="live-dot"></span>
@@ -1144,13 +866,11 @@ body.command-page {
 
     </div>
 
-
     <!-- =================================================
          STATS
     ================================================= -->
 
     <section class="admin-stats">
-
 
         <div class="admin-stat">
 
@@ -1171,7 +891,6 @@ body.command-page {
 
         </div>
 
-
         <div class="admin-stat">
 
             <span class="stat-icon">
@@ -1190,7 +909,6 @@ body.command-page {
             </span>
 
         </div>
-
 
         <div class="admin-stat">
 
@@ -1211,7 +929,6 @@ body.command-page {
 
         </div>
 
-
         <div class="admin-stat">
 
             <span class="stat-icon">
@@ -1231,16 +948,13 @@ body.command-page {
 
         </div>
 
-
     </section>
-
 
     <!-- =================================================
          CONTROL
     ================================================= -->
 
     <section class="control-panel">
-
 
         <div class="search-wrapper">
 
@@ -1252,7 +966,6 @@ body.command-page {
             >
 
         </div>
-
 
         <div class="filter-buttons">
 
@@ -1300,9 +1013,7 @@ body.command-page {
 
         </div>
 
-
     </section>
-
 
     <!-- =================================================
          REQUESTS
@@ -1323,7 +1034,6 @@ body.command-page {
 
     </div>
 
-
     <section
         id="requests"
         class="requests"
@@ -1341,9 +1051,7 @@ body.command-page {
 
     </section>
 
-
 </main>
-
 
 <!-- =====================================================
      MODAL
@@ -1354,9 +1062,7 @@ body.command-page {
     class="modal"
 >
 
-
     <div class="modal-box">
-
 
         <div class="modal-header">
 
@@ -1373,16 +1079,11 @@ body.command-page {
 
         </div>
 
-
-        <div id="modalContent">
-
-        </div>
-
+        <div id="modalContent"></div>
 
     </div>
 
 </div>
-
 
 <!-- =====================================================
      TOAST
@@ -1391,9 +1092,7 @@ body.command-page {
 <div
     id="toast"
     class="toast"
->
-</div>
-
+></div>
 
 <script>
 
@@ -1404,10 +1103,8 @@ body.command-page {
 const API_URL =
     "https://lspd-site-11.onrender.com";
 
-
 const REFRESH_INTERVAL =
     2000;
-
 
 let tickets = [];
 
@@ -1562,12 +1259,9 @@ async function loadTickets(silent = false) {
                 API_URL + "/tickets",
                 {
                     method: "GET",
-
                     cache: "no-store",
-
                     headers: {
-                        "Cache-Control":
-                            "no-cache"
+                        "Cache-Control": "no-cache"
                     }
                 }
             );
@@ -1595,11 +1289,6 @@ async function loadTickets(silent = false) {
 
         }
 
-
-        /*
-         * مرتب‌سازی:
-         * جدیدترین درخواست اول
-         */
 
         data.sort(
             (a, b) =>
@@ -1637,10 +1326,6 @@ async function loadTickets(silent = false) {
 
         renderTickets();
 
-
-        /*
-         * اگر درخواست جدید آمده باشد
-         */
 
         if (
             !firstLoad &&
@@ -1722,7 +1407,6 @@ function updateStats() {
     const total =
         tickets.length;
 
-
     const pending =
         tickets.filter(
             ticket =>
@@ -1730,51 +1414,36 @@ function updateStats() {
                 ticket.status === "Pending"
         ).length;
 
-
     const accepted =
         tickets.filter(
             ticket =>
-                ticket.status ===
-                "Accepted"
+                ticket.status === "Accepted"
         ).length;
-
 
     const rejected =
         tickets.filter(
             ticket =>
-                ticket.status ===
-                "Rejected"
+                ticket.status === "Rejected"
         ).length;
 
 
     document
-        .getElementById(
-            "totalCount"
-        )
+        .getElementById("totalCount")
         .innerText =
             total;
 
-
     document
-        .getElementById(
-            "pendingCount"
-        )
+        .getElementById("pendingCount")
         .innerText =
             pending;
 
-
     document
-        .getElementById(
-            "acceptedCount"
-        )
+        .getElementById("acceptedCount")
         .innerText =
             accepted;
 
-
     document
-        .getElementById(
-            "rejectedCount"
-        )
+        .getElementById("rejectedCount")
         .innerText =
             rejected;
 
@@ -1789,9 +1458,7 @@ function getFilteredTickets() {
 
     const search =
         document
-            .getElementById(
-                "searchInput"
-            )
+            .getElementById("searchInput")
             .value
             .trim()
             .toLowerCase();
@@ -1801,39 +1468,30 @@ function getFilteredTickets() {
         ticket => {
 
             const type =
-                ticket.requestType ||
-                "";
-
+                ticket.requestType || "";
 
             const status =
-                ticket.status ||
-                "Pending";
+                ticket.status || "Pending";
 
-
-            let matchesFilter =
-                true;
+            let matchesFilter = true;
 
 
             if (
-                activeFilter !==
-                "all"
+                activeFilter !== "all"
             ) {
 
                 if (
-                    activeFilter ===
-                    "pending"
+                    activeFilter === "pending"
                 ) {
 
                     matchesFilter =
                         !ticket.status ||
-                        ticket.status ===
-                            "Pending";
+                        ticket.status === "Pending";
 
                 } else {
 
                     matchesFilter =
-                        type ===
-                        activeFilter;
+                        type === activeFilter;
 
                 }
 
@@ -1841,50 +1499,36 @@ function getFilteredTickets() {
 
 
             if (!matchesFilter) {
-
                 return false;
-
             }
 
 
             if (!search) {
-
                 return true;
-
             }
 
 
             const searchable = [
 
                 ticket._id,
-
                 ticket.icName,
-
                 ticket.name,
-
                 ticket.oocName,
-
                 ticket.ocName,
-
                 ticket.discord,
-
                 ticket.discordId,
-
                 ticket.steamHex,
-
                 ticket.cmx,
-
                 ticket.requestType,
-
-                ticket.status
+                ticket.status,
+                ticket.score
 
             ]
             .join(" ")
             .toLowerCase();
 
 
-            return searchable
-                .includes(search);
+            return searchable.includes(search);
 
         }
     );
@@ -1935,9 +1579,7 @@ function renderTickets() {
         filtered
             .map(
                 ticket =>
-                    createTicketHTML(
-                        ticket
-                    )
+                    createTicketHTML(ticket)
             )
             .join("");
 
@@ -1996,9 +1638,9 @@ function createTicketHTML(ticket) {
 
 
     if (
-        ticket.score !==
-            undefined &&
-        ticket.score !== null
+        ticket.score !== undefined &&
+        ticket.score !== null &&
+        ticket.score !== ""
     ) {
 
         const score =
@@ -2016,7 +1658,7 @@ function createTicketHTML(ticket) {
                 📚 نمره آزمون:
 
                 <strong>
-                    ${score} / 20
+                    ${escapeHTML(score)} / 20
                 </strong>
 
                 —
@@ -2038,37 +1680,25 @@ function createTicketHTML(ticket) {
 
         <article class="ticket">
 
-
             <div class="ticket-top">
-
 
                 <div class="ticket-title">
 
-
                     <div class="ticket-type-icon">
-
                         ${type.icon}
-
                     </div>
-
 
                     <div>
 
                         <h3>
-
                             ${type.text}
-
                         </h3>
 
-
                         <div class="ticket-code">
-
                             ${id}
-
                         </div>
 
                     </div>
-
 
                 </div>
 
@@ -2076,17 +1706,13 @@ function createTicketHTML(ticket) {
                 <span
                     class="status ${status.className}"
                 >
-
                     ${status.text}
-
                 </span>
-
 
             </div>
 
 
             <div class="ticket-info">
-
 
                 <div class="info-item">
 
@@ -2139,7 +1765,6 @@ function createTicketHTML(ticket) {
 
                 </div>
 
-
             </div>
 
 
@@ -2147,7 +1772,6 @@ function createTicketHTML(ticket) {
 
 
             <div class="ticket-footer">
-
 
                 <span class="ticket-date">
 
@@ -2161,14 +1785,11 @@ function createTicketHTML(ticket) {
 
                 <div class="ticket-actions">
 
-
                     <button
                         class="action-btn blue"
                         onclick="openTicket('${id}')"
                     >
-
                         👁 مشاهده
-
                     </button>
 
 
@@ -2176,9 +1797,7 @@ function createTicketHTML(ticket) {
                         class="action-btn green"
                         onclick="changeStatus('${id}','Accepted')"
                     >
-
                         ✅ تایید
-
                     </button>
 
 
@@ -2186,17 +1805,20 @@ function createTicketHTML(ticket) {
                         class="action-btn red"
                         onclick="changeStatus('${id}','Rejected')"
                     >
-
                         ❌ رد
-
                     </button>
 
 
+                    <button
+                        class="action-btn red"
+                        onclick="deleteTicket('${id}')"
+                    >
+                        🗑️ حذف تیکت
+                    </button>
+
                 </div>
 
-
             </div>
-
 
         </article>
 
@@ -2257,6 +1879,24 @@ async function openTicket(id) {
         document.getElementById(
             "modalContent"
         );
+
+
+    const hasScore =
+        ticket.score !== undefined &&
+        ticket.score !== null &&
+        ticket.score !== "";
+
+
+    const scoreNumber =
+        hasScore
+        ? Number(ticket.score)
+        : null;
+
+
+    const scorePassed =
+        hasScore &&
+        Number.isFinite(scoreNumber) &&
+        scoreNumber >= 12;
 
 
     content.innerHTML = `
@@ -2402,25 +2042,47 @@ async function openTicket(id) {
             </div>
 
 
+            <!-- =========================
+                 EXAM SCORE
+            ========================= -->
+
             <div class="detail">
 
                 <label>
-                    نمره آزمون
+                    📚 نمره آزمون
                 </label>
 
                 <div>
 
                     ${
-                        ticket.score !==
-                        undefined &&
-                        ticket.score !==
-                        null
+                        hasScore
+                        ? `
 
-                        ? escapeHTML(
-                            ticket.score
-                        ) +
-                        " / 20"
+                            <strong style="
+                                color:#4da6ff;
+                                font-size:18px;
+                            ">
+                                ${escapeHTML(scoreNumber)} / 20
+                            </strong>
 
+                            <span style="
+                                margin-right:8px;
+                                color:${
+                                    scorePassed
+                                    ? "#35e68a"
+                                    : "#ff6565"
+                                };
+                            ">
+
+                                ${
+                                    scorePassed
+                                    ? "🟢 قبول"
+                                    : "🔴 رد"
+                                }
+
+                            </span>
+
+                        `
                         : "—"
                     }
 
@@ -2484,6 +2146,7 @@ async function openTicket(id) {
                 ✍️ پاسخ فرماندهی
             </h3>
 
+
             <textarea
                 id="replyInput"
                 placeholder="پاسخ خود را برای متقاضی بنویسید..."
@@ -2499,9 +2162,7 @@ async function openTicket(id) {
                     class="action-btn green"
                     onclick="saveTicket('${escapeHTML(id)}','Accepted')"
                 >
-
                     ✅ تایید و ارسال پاسخ
-
                 </button>
 
 
@@ -2509,9 +2170,7 @@ async function openTicket(id) {
                     class="action-btn red"
                     onclick="saveTicket('${escapeHTML(id)}','Rejected')"
                 >
-
                     ❌ رد و ارسال پاسخ
-
                 </button>
 
 
@@ -2519,11 +2178,16 @@ async function openTicket(id) {
                     class="action-btn blue"
                     onclick="saveTicket('${escapeHTML(id)}','Pending')"
                 >
-
                     ⏳ در انتظار
-
                 </button>
 
+
+                <button
+                    class="action-btn red"
+                    onclick="deleteTicket('${escapeHTML(id)}')"
+                >
+                    🗑️ حذف تیکت
+                </button>
 
             </div>
 
@@ -2541,9 +2205,7 @@ async function openTicket(id) {
                 id="adminChatMessages"
                 class="chat-messages"
             >
-
                 در حال دریافت پیام‌ها...
-
             </div>
 
 
@@ -2559,9 +2221,7 @@ async function openTicket(id) {
                     class="action-btn blue"
                     onclick="sendCommandMessage()"
                 >
-
                     📨 ارسال
-
                 </button>
 
             </div>
@@ -2663,10 +2323,6 @@ async function saveTicket(
 
     try {
 
-        /*
-         * Endpoint اصلی
-         */
-
         const response =
             await fetch(
                 API_URL +
@@ -2718,15 +2374,8 @@ async function saveTicket(
         );
 
 
-        await loadTickets(
-            true
-        );
+        await loadTickets(true);
 
-
-        /*
-         * اگر Modal باز است
-         * دوباره اطلاعات را تازه می‌کنیم
-         */
 
         if (
             selectedTicketId
@@ -2749,6 +2398,152 @@ async function saveTicket(
 
         showToast(
             "❌ بروزرسانی درخواست انجام نشد.",
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   DELETE TICKET
+========================================================= */
+
+async function deleteTicket(id) {
+
+    const ticket =
+        tickets.find(
+            item =>
+                String(item._id) ===
+                String(id)
+        );
+
+
+    if (!ticket) {
+
+        showToast(
+            "❌ تیکت پیدا نشد.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const confirmed =
+        confirm(
+            "⚠️ آیا مطمئن هستید که می‌خواهید این تیکت را حذف کنید؟\n\nاین عملیات قابل بازگشت نیست."
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+
+                API_URL +
+                "/tickets/" +
+                encodeURIComponent(id),
+
+                {
+
+                    method: "DELETE",
+
+                    headers: {
+
+                        "Accept":
+                            "application/json"
+
+                    },
+
+                    cache:
+                        "no-store"
+
+                }
+
+            );
+
+
+        let data = null;
+
+
+        try {
+
+            data =
+                await response.json();
+
+        } catch {
+
+            data = null;
+
+        }
+
+
+        if (!response.ok) {
+
+            throw new Error(
+
+                data?.message ||
+                "حذف تیکت ناموفق بود."
+
+            );
+
+        }
+
+
+        if (
+            selectedTicketId &&
+            String(selectedTicketId) ===
+            String(id)
+        ) {
+
+            closeModal();
+
+        }
+
+
+        tickets =
+            tickets.filter(
+                item =>
+                    String(item._id) !==
+                    String(id)
+            );
+
+
+        updateStats();
+
+        renderTickets();
+
+
+        showToast(
+            "🗑️ تیکت با موفقیت حذف شد.",
+            "success"
+        );
+
+
+        await loadTickets(true);
+
+
+    } catch (error) {
+
+        console.error(
+            "Delete Ticket Error:",
+            error
+        );
+
+
+        showToast(
+            "❌ حذف تیکت انجام نشد: " +
+            (error.message || ""),
             "error"
         );
 
@@ -2837,9 +2632,7 @@ async function loadAdminMessages() {
                     color:#697583;
                     text-align:center;
                 ">
-
                     هنوز پیامی وجود ندارد.
-
                 </p>
 
             `;
@@ -2882,24 +2675,20 @@ async function loadAdminMessages() {
 
 
                                 <p>
-
                                     ${
                                         escapeHTML(
                                             message.message
                                         )
                                     }
-
                                 </p>
 
 
                                 <small>
-
                                     ${
                                         formatDate(
                                             message.createdAt
                                         )
                                     }
-
                                 </small>
 
                             </div>
@@ -2933,9 +2722,7 @@ async function loadAdminMessages() {
 
 async function sendCommandMessage() {
 
-    if (
-        !selectedTicketId
-    ) {
+    if (!selectedTicketId) {
 
         return;
 
@@ -3068,19 +2855,8 @@ function startAutoRefresh() {
         setInterval(
             async () => {
 
-                /*
-                 * درخواست‌ها هر ۲ ثانیه
-                 */
+                await loadTickets(true);
 
-                await loadTickets(
-                    true
-                );
-
-
-                /*
-                 * اگر Modal باز است،
-                 * پیام‌های چت هم هر ۲ ثانیه
-                 */
 
                 if (
                     selectedTicketId
@@ -3111,9 +2887,7 @@ async function manualRefresh() {
     );
 
 
-    await loadTickets(
-        true
-    );
+    await loadTickets(true);
 
 
     if (
@@ -3132,9 +2906,7 @@ async function manualRefresh() {
 ========================================================= */
 
 document
-    .getElementById(
-        "searchInput"
-    )
+    .getElementById("searchInput")
     .addEventListener(
         "input",
         function() {
@@ -3150,9 +2922,7 @@ document
 ========================================================= */
 
 document
-    .querySelectorAll(
-        ".filter-btn"
-    )
+    .querySelectorAll(".filter-btn")
     .forEach(
         button => {
 
@@ -3167,9 +2937,7 @@ document
                         .forEach(
                             btn =>
                                 btn.classList
-                                    .remove(
-                                        "active"
-                                    )
+                                    .remove("active")
                         );
 
 
@@ -3199,8 +2967,7 @@ document.addEventListener(
     function(event) {
 
         if (
-            event.key ===
-            "Escape"
+            event.key === "Escape"
         ) {
 
             closeModal();
@@ -3216,16 +2983,13 @@ document.addEventListener(
 ========================================================= */
 
 document
-    .getElementById(
-        "ticketModal"
-    )
+    .getElementById("ticketModal")
     .addEventListener(
         "click",
         function(event) {
 
             if (
-                event.target ===
-                this
+                event.target === this
             ) {
 
                 closeModal();
@@ -3278,9 +3042,7 @@ function showToast(
             () => {
 
                 toast.classList
-                    .remove(
-                        "show"
-                    );
+                    .remove("show");
 
             },
 
@@ -3321,7 +3083,6 @@ function logout() {
 })();
 
 </script>
-
 
 </body>
 
