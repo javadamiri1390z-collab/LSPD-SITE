@@ -2,23 +2,14 @@
 <html lang="fa" dir="rtl">
 
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Vanguard LSPD | Command Center</title>
 
-<link
-    rel="stylesheet"
-    href="style.css"
->
+<link rel="stylesheet" href="style.css">
 
 <style>
-
 * {
     box-sizing: border-box;
 }
@@ -28,19 +19,19 @@ body.command-page {
 }
 
 .command-wrapper {
-    width: 1250px;
+    width: 1200px;
     max-width: 95%;
-    margin: 35px auto 60px;
+    margin: 35px auto;
 }
 
 .command-header {
-    background: rgba(5,10,18,.82);
+    background: rgba(5, 10, 18, .78);
     border: 1px solid rgba(77,166,255,.25);
     border-radius: 22px;
     padding: 25px;
     backdrop-filter: blur(18px);
     box-shadow: 0 15px 50px rgba(0,0,0,.35);
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 .command-header-inner {
@@ -84,25 +75,18 @@ body.command-page {
     font-size: 13px;
 }
 
-.owner-badge {
+.role-badge {
     display: inline-block;
     margin-right: 6px;
     padding: 5px 12px;
     border-radius: 20px;
-    background: rgba(255,185,0,.13);
-    border: 1px solid rgba(255,185,0,.3);
-    color: #ffc84d;
+    background: rgba(255,190,0,.12);
+    border: 1px solid rgba(255,190,0,.25);
+    color: #ffd166;
     font-size: 12px;
 }
 
-.header-buttons {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
-
-.logout-btn,
-.owner-log-btn {
+.logout-btn {
     border: 1px solid rgba(255,255,255,.15);
     background: rgba(255,255,255,.07);
     color: white;
@@ -112,18 +96,8 @@ body.command-page {
     font-family: inherit;
 }
 
-.owner-log-btn {
-    background: rgba(255,185,0,.09);
-    border-color: rgba(255,185,0,.25);
-    color: #ffd15c;
-}
-
 .logout-btn:hover {
     background: rgba(255,255,255,.14);
-}
-
-.owner-log-btn:hover {
-    background: rgba(255,185,0,.16);
 }
 
 .command-grid {
@@ -133,7 +107,7 @@ body.command-page {
 }
 
 .panel {
-    background: rgba(5,10,18,.82);
+    background: rgba(5, 10, 18, .78);
     border: 1px solid rgba(255,255,255,.12);
     border-radius: 22px;
     padding: 22px;
@@ -142,11 +116,12 @@ body.command-page {
 
 .panel h2 {
     color: #4da6ff;
-    margin: 0 0 18px;
+    margin-top: 0;
+    margin-bottom: 18px;
 }
 
 .ticket-list {
-    max-height: 680px;
+    max-height: 650px;
     overflow-y: auto;
 }
 
@@ -211,9 +186,20 @@ body.command-page {
     padding: 70px 20px;
 }
 
+.error-message {
+    color: #ff6666;
+    background: rgba(255,0,0,.08);
+    border: 1px solid rgba(255,0,0,.18);
+    padding: 14px;
+    border-radius: 12px;
+    margin: 15px 0;
+    text-align: center;
+}
+
 .detail-row {
     padding: 11px 0;
     border-bottom: 1px solid rgba(255,255,255,.07);
+    line-height: 1.8;
 }
 
 .detail-row b {
@@ -224,8 +210,7 @@ body.command-page {
     margin-top: 20px;
 }
 
-.reply-box textarea,
-.chat-input {
+.reply-box textarea {
     width: 100%;
     min-height: 120px;
     resize: vertical;
@@ -238,10 +223,8 @@ body.command-page {
     font-family: inherit;
 }
 
-.reply-box textarea:focus,
-.chat-input:focus {
+.reply-box textarea:focus {
     border-color: #168cff;
-    box-shadow: 0 0 10px rgba(22,140,255,.2);
 }
 
 .status-select {
@@ -297,84 +280,98 @@ body.command-page {
     font-size: 11px;
 }
 
+.chat-input {
+    width: 100%;
+    min-height: 90px;
+    padding: 12px;
+    resize: vertical;
+    background: #050a11;
+    color: white;
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 10px;
+    outline: none;
+    font-family: inherit;
+}
+
 .action-buttons {
     display: flex;
     gap: 10px;
     margin-top: 10px;
 }
 
-.action-buttons button {
+.action-buttons .btn {
     flex: 1;
-}
-
-.btn {
-    padding: 12px 15px;
-    border: 0;
-    border-radius: 10px;
-    cursor: pointer;
-    font-family: inherit;
-    color: white;
-}
-
-.btn.primary {
-    background: linear-gradient(135deg,#168cff,#0066cc);
-}
-
-.btn.danger {
-    background: linear-gradient(135deg,#d92d3b,#a90012);
-}
-
-.btn.secondary {
-    background: rgba(255,255,255,.08);
-}
-
-.btn:hover {
-    filter: brightness(1.1);
-}
-
-.owner-only {
-    display: none;
 }
 
 .owner-panel {
     margin-top: 20px;
-    display: none;
+    border: 1px solid rgba(255,190,0,.25);
 }
 
-.log-list {
-    max-height: 600px;
+.owner-panel h2 {
+    color: #ffd166;
+}
+
+.owner-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,190,0,.25);
+    background: rgba(255,190,0,.08);
+    color: #ffd166;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.owner-btn:hover {
+    background: rgba(255,190,0,.15);
+}
+
+.logs-box {
+    display: none;
+    margin-top: 15px;
+    max-height: 450px;
     overflow-y: auto;
 }
 
 .log-item {
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 10px;
     background: rgba(255,255,255,.045);
-    border: 1px solid rgba(255,255,255,.08);
-    border-radius: 14px;
-    padding: 15px;
-    margin-bottom: 10px;
+    border: 1px solid rgba(255,255,255,.07);
+    font-size: 13px;
+    line-height: 1.8;
 }
 
 .log-action {
     color: #4da6ff;
     font-weight: bold;
-    margin-bottom: 6px;
 }
 
 .log-actor {
-    color: #ddd;
-    font-size: 13px;
-}
-
-.log-details {
-    color: #999;
-    font-size: 12px;
-    margin-top: 7px;
+    color: #ffd166;
 }
 
 .log-time {
-    color: #666;
+    color: #777;
     font-size: 11px;
-    margin-top: 7px;
+}
+
+.delete-btn {
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,70,70,.3);
+    background: rgba(255,0,0,.08);
+    color: #ff6666;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.delete-btn:hover {
+    background: rgba(255,0,0,.15);
 }
 
 .refresh-info {
@@ -384,19 +381,7 @@ body.command-page {
     margin-top: 10px;
 }
 
-.auth-error {
-    color: #ff6565;
-    background: rgba(255,0,0,.08);
-    border: 1px solid rgba(255,0,0,.15);
-    border-radius: 10px;
-    padding: 12px;
-    text-align: center;
-    margin-bottom: 15px;
-    display: none;
-}
-
 @media(max-width:850px) {
-
     .command-grid {
         grid-template-columns: 1fr;
     }
@@ -405,18 +390,7 @@ body.command-page {
         flex-direction: column;
         align-items: flex-start;
     }
-
-    .header-buttons {
-        width: 100%;
-        flex-wrap: wrap;
-    }
-
-    .header-buttons button {
-        flex: 1;
-    }
-
 }
-
 </style>
 
 </head>
@@ -434,11 +408,8 @@ body.command-page {
     >
 
     <div class="nav-title">
-
         <h2>Vanguard LSPD</h2>
-
         <span>Command Center</span>
-
     </div>
 
     <a
@@ -455,7 +426,6 @@ body.command-page {
 
 <div class="command-wrapper">
 
-
 <div class="command-header">
 
     <div class="command-header-inner">
@@ -469,9 +439,7 @@ body.command-page {
 
             <div>
 
-                <h1>
-                    👮 پنل فرماندهی
-                </h1>
+                <h1>👮 پنل فرماندهی</h1>
 
                 <p id="commanderName">
                     در حال دریافت اطلاعات فرمانده...
@@ -485,46 +453,26 @@ body.command-page {
                 </span>
 
                 <span
-                    id="ownerBadge"
-                    class="owner-badge"
-                    style="display:none;"
+                    id="commanderRole"
+                    class="role-badge"
                 >
-                    👑 OWNER
+                    —
                 </span>
 
             </div>
 
         </div>
 
-
-        <div class="header-buttons">
-
-            <button
-                id="logsButton"
-                class="owner-log-btn owner-only"
-                onclick="toggleLogs()"
-            >
-                📋 لاگ‌ها
-            </button>
-
-            <button
-                class="logout-btn"
-                onclick="logoutCommand()"
-            >
-                خروج
-            </button>
-
-        </div>
+        <button
+            class="logout-btn"
+            onclick="logoutCommand()"
+        >
+            خروج
+        </button>
 
     </div>
 
 </div>
-
-
-<div
-    id="authError"
-    class="auth-error"
-></div>
 
 
 <div class="command-grid">
@@ -532,19 +480,15 @@ body.command-page {
 
 <section class="panel">
 
-    <h2>
-        📂 درخواست‌ها
-    </h2>
+    <h2>📂 درخواست‌ها</h2>
 
     <div
         id="ticketList"
         class="ticket-list"
     >
-
         <div class="empty">
             ⏳ در حال دریافت تیکت‌ها...
         </div>
-
     </div>
 
     <div class="refresh-info">
@@ -574,47 +518,34 @@ body.command-page {
 
 </section>
 
+
 </div>
 
 
+<!-- OWNER ONLY -->
+
 <section
-    id="ownerLogsPanel"
+    id="ownerPanel"
     class="panel owner-panel"
+    style="display:none;"
 >
 
-    <div
-        style="
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            gap:10px;
-            flex-wrap:wrap;
-        "
+    <h2>👑 مدیریت مالک سیستم</h2>
+
+    <button
+        class="owner-btn"
+        onclick="toggleLogs()"
     >
-
-        <h2>
-            📋 گزارش فعالیت‌ها
-        </h2>
-
-        <button
-            class="btn secondary"
-            onclick="loadLogs()"
-        >
-            🔄 بروزرسانی
-        </button>
-
-    </div>
-
+        📜 نمایش / مخفی کردن لاگ‌ها
+    </button>
 
     <div
-        id="logList"
-        class="log-list"
+        id="logsBox"
+        class="logs-box"
     >
-
         <div class="empty">
-            برای دریافت لاگ‌ها روی «لاگ‌ها» کلیک کنید.
+            ⏳ در حال دریافت لاگ‌ها...
         </div>
-
     </div>
 
 </section>
@@ -627,17 +558,17 @@ body.command-page {
 
 <script>
 
-/* =========================================
+/* =========================================================
    API
-========================================= */
+========================================================= */
 
 const API_URL =
     "https://lspd-site-11.onrender.com";
 
 
-/* =========================================
-   State
-========================================= */
+/* =========================================================
+   GLOBAL
+========================================================= */
 
 let tickets = [];
 
@@ -645,35 +576,29 @@ let selectedTicketId = null;
 
 let commander = null;
 
-let isOwner = false;
 
-let logsVisible = false;
-
-
-/* =========================================
-   Helpers
-========================================= */
-
-function escapeHTML(value) {
-
-    return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-
-}
-
+/* =========================================================
+   TOKEN
+========================================================= */
 
 function getToken() {
 
-    return localStorage.getItem(
-        "lspdCommandToken"
+    return (
+        localStorage.getItem(
+            "lspdCommandToken"
+        ) ||
+        localStorage.getItem(
+            "lspdAdminToken"
+        ) ||
+        ""
     );
 
 }
 
+
+/* =========================================================
+   AUTH HEADERS
+========================================================= */
 
 function authHeaders(extra = {}) {
 
@@ -685,113 +610,24 @@ function authHeaders(extra = {}) {
         ...extra,
 
         "Authorization":
-            "Bearer " + token
+            "Bearer " + token,
+
+        "X-Admin-Token":
+            token
 
     };
 
 }
 
 
-function showAuthError(message) {
+/* =========================================================
+   CHECK AUTH
+========================================================= */
 
-    const box =
-        document.getElementById(
-            "authError"
-        );
-
-    if (!box) return;
-
-    box.innerText =
-        message ||
-        "نشست ورود معتبر نیست.";
-
-    box.style.display =
-        "block";
-
-}
-
-
-function hideAuthError() {
-
-    const box =
-        document.getElementById(
-            "authError"
-        );
-
-    if (!box) return;
-
-    box.innerText = "";
-
-    box.style.display =
-        "none";
-
-}
-
-
-function requestType(type) {
-
-    const types = {
-
-        membership:
-            "🚔 عضویت LSPD",
-
-        division:
-            "🎖️ دیویژن",
-
-        resignation:
-            "📤 استعفا",
-
-        rankup:
-            "⬆️ Rankup"
-
-    };
-
-    return types[type] ||
-        "📄 درخواست";
-
-}
-
-
-function statusHTML(status) {
-
-    if (status === "Accepted") {
-
-        return `
-            <span class="status accepted">
-                🟢 تایید شده
-            </span>
-        `;
-
-    }
-
-    if (status === "Rejected") {
-
-        return `
-            <span class="status rejected">
-                🔴 رد شده
-            </span>
-        `;
-
-    }
-
-    return `
-        <span class="status pending">
-            🟡 در انتظار بررسی
-        </span>
-    `;
-
-}
-
-
-/* =========================================
-   Verify session
-========================================= */
-
-async function verifySession() {
+async function checkAuth() {
 
     const token =
         getToken();
-
 
     if (!token) {
 
@@ -807,41 +643,58 @@ async function verifySession() {
 
         const response =
             await fetch(
-                API_URL + "/auth/me",
+
+                API_URL +
+                "/auth/me",
+
                 {
+
                     method: "GET",
+
                     headers:
                         authHeaders(),
+
                     cache:
                         "no-store"
+
                 }
+
             );
 
 
-        let data = null;
+        if (!response.ok) {
 
+            localStorage.removeItem(
+                "lspdCommandToken"
+            );
 
-        try {
+            localStorage.removeItem(
+                "lspdAdminToken"
+            );
 
-            data =
-                await response.json();
+            localStorage.removeItem(
+                "lspdCommander"
+            );
 
-        } catch {
+            window.location.href =
+                "command-login.html";
 
-            data = null;
+            return false;
 
         }
 
 
+        const data =
+            await response.json();
+
+
         if (
-            !response.ok ||
-            !data ||
             !data.success ||
             !data.user
         ) {
 
             throw new Error(
-                "جلسه ورود معتبر نیست."
+                "Invalid user"
             );
 
         }
@@ -849,18 +702,6 @@ async function verifySession() {
 
         commander =
             data.user;
-
-
-        isOwner =
-            commander.role === "owner" ||
-            commander.isOwner === true ||
-            commander.username === "SEDJAVAD";
-
-
-        localStorage.setItem(
-            "lspdCommander",
-            JSON.stringify(commander)
-        );
 
 
         renderCommander();
@@ -876,19 +717,8 @@ async function verifySession() {
             error
         );
 
-
-        localStorage.removeItem(
-            "lspdCommandToken"
-        );
-
-        localStorage.removeItem(
-            "lspdCommander"
-        );
-
-
         window.location.href =
             "command-login.html";
-
 
         return false;
 
@@ -897,92 +727,164 @@ async function verifySession() {
 }
 
 
-/* =========================================
-   Commander UI
-========================================= */
+/* =========================================================
+   COMMANDER UI
+========================================================= */
 
 function renderCommander() {
 
     const name =
-        document.getElementById(
-            "commanderName"
-        );
+        commander.name ||
+        commander.username ||
+        "فرمانده LSPD";
+
 
     const rank =
-        document.getElementById(
+        commander.rank ||
+        "Command";
+
+
+    document
+        .getElementById(
+            "commanderName"
+        )
+        .innerText =
+            name;
+
+
+    document
+        .getElementById(
             "commanderRank"
-        );
-
-    const ownerBadge =
-        document.getElementById(
-            "ownerBadge"
-        );
-
-    const logsButton =
-        document.getElementById(
-            "logsButton"
-        );
+        )
+        .innerText =
+            rank;
 
 
-    if (name) {
-
-        name.innerText =
-            commander.name ||
-            commander.username ||
-            "فرمانده LSPD";
-
-    }
+    const role =
+        commander.role ||
+        "command";
 
 
-    if (rank) {
+    document
+        .getElementById(
+            "commanderRole"
+        )
+        .innerText =
+            role === "owner"
+            ? "👑 OWNER"
+            : "👮 COMMAND";
 
-        rank.innerText =
-            commander.rank ||
-            "Command";
 
-    }
+    if (
+        role === "owner" ||
+        commander.isOwner === true
+    ) {
 
-
-    if (isOwner) {
-
-        if (ownerBadge) {
-
-            ownerBadge.style.display =
-                "inline-block";
-
-        }
-
-        if (logsButton) {
-
-            logsButton.style.display =
-                "inline-block";
-
-        }
-
-    } else {
-
-        if (ownerBadge) {
-
-            ownerBadge.style.display =
-                "none";
-
-        }
-
-        if (logsButton) {
-
-            logsButton.style.display =
-                "none";
-
-        }
+        document
+            .getElementById(
+                "ownerPanel"
+            )
+            .style.display =
+                "block";
 
     }
 
 }
 
 
-/* =========================================
-   Tickets
-========================================= */
+/* =========================================================
+   ESCAPE
+========================================================= */
+
+function escapeHTML(value) {
+
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* =========================================================
+   REQUEST TYPE
+========================================================= */
+
+function requestType(type) {
+
+    const types = {
+
+        membership:
+            "🚔 عضویت LSPD",
+
+        division:
+            "🎖️ دیویژن",
+
+        resignation:
+            "📤 استعفا",
+
+        rankup:
+            "⬆️ Rankup",
+
+        exam:
+            "📚 آزمون"
+
+    };
+
+    return (
+        types[type] ||
+        "📄 درخواست"
+    );
+
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+function statusHTML(status) {
+
+    if (
+        status === "Accepted"
+    ) {
+
+        return `
+            <span class="status accepted">
+                🟢 تایید شده
+            </span>
+        `;
+
+    }
+
+
+    if (
+        status === "Rejected"
+    ) {
+
+        return `
+            <span class="status rejected">
+                🔴 رد شده
+            </span>
+        `;
+
+    }
+
+
+    return `
+        <span class="status pending">
+            🟡 در انتظار بررسی
+        </span>
+    `;
+
+}
+
+
+/* =========================================================
+   LOAD TICKETS
+========================================================= */
 
 async function loadTickets() {
 
@@ -990,37 +892,51 @@ async function loadTickets() {
 
         const response =
             await fetch(
-                API_URL + "/tickets",
+
+                API_URL +
+                "/tickets",
+
                 {
+
                     method: "GET",
+
                     headers:
                         authHeaders(),
+
                     cache:
                         "no-store"
+
                 }
+
             );
 
 
-        let data = null;
+        if (
+            response.status === 401
+        ) {
 
+            console.error(
+                "GET /tickets => 401"
+            );
 
-        try {
+            showTicketError(
+                "HTTP 401 — نشست فرماندهی معتبر نیست. دوباره وارد شوید."
+            );
 
-            data =
-                await response.json();
-
-        } catch {
-
-            data = null;
+            return;
 
         }
 
 
-        if (response.status === 401) {
+        if (
+            response.status === 403
+        ) {
 
-            throw new Error(
-                "HTTP 401 - دسترسی غیرمجاز. نشست ورود را دوباره ایجاد کنید."
+            showTicketError(
+                "HTTP 403 — این حساب دسترسی فرماندهی ندارد."
             );
+
+            return;
 
         }
 
@@ -1028,22 +944,22 @@ async function loadTickets() {
         if (!response.ok) {
 
             throw new Error(
-                data?.message ||
-                "خطا در دریافت تیکت‌ها"
+                "HTTP " +
+                response.status
             );
 
         }
 
 
+        const data =
+            await response.json();
+
+
         tickets =
             Array.isArray(data)
             ? data
-            : Array.isArray(data?.tickets)
-                ? data.tickets
-                : [];
+            : [];
 
-
-        hideAuthError();
 
         renderTickets();
 
@@ -1052,9 +968,15 @@ async function loadTickets() {
 
             const selected =
                 tickets.find(
-                    t =>
-                    String(t._id) ===
-                    String(selectedTicketId)
+
+                    ticket =>
+                        String(
+                            ticket._id
+                        ) ===
+                        String(
+                            selectedTicketId
+                        )
+
                 );
 
 
@@ -1063,21 +985,6 @@ async function loadTickets() {
                 renderTicketDetail(
                     selected
                 );
-
-            } else {
-
-                selectedTicketId =
-                    null;
-
-                document
-                    .getElementById(
-                        "ticketDetail"
-                    )
-                    .innerHTML = `
-                        <div class="empty">
-                            این تیکت دیگر وجود ندارد.
-                        </div>
-                    `;
 
             }
 
@@ -1091,37 +998,50 @@ async function loadTickets() {
             error
         );
 
-
-        document
-            .getElementById(
-                "ticketList"
-            )
-            .innerHTML = `
-
-                <div class="empty">
-
-                    ❌ دریافت درخواست‌ها ناموفق بود.
-
-                    <br><br>
-
-                    <small>
-                        ${escapeHTML(
-                            error.message
-                        )}
-                    </small>
-
-                </div>
-
-            `;
+        showTicketError(
+            "دریافت درخواست‌ها ناموفق بود."
+        );
 
     }
 
 }
 
 
-/* =========================================
-   Render tickets
-========================================= */
+/* =========================================================
+   TICKET ERROR
+========================================================= */
+
+function showTicketError(message) {
+
+    document
+        .getElementById(
+            "ticketList"
+        )
+        .innerHTML = `
+
+            <div class="error-message">
+
+                ❌ ${escapeHTML(message)}
+
+                <br><br>
+
+                <button
+                    class="owner-btn"
+                    onclick="loadTickets()"
+                >
+                    🔄 تلاش مجدد
+                </button>
+
+            </div>
+
+        `;
+
+}
+
+
+/* =========================================================
+   RENDER TICKETS
+========================================================= */
 
 function renderTickets() {
 
@@ -1136,9 +1056,7 @@ function renderTickets() {
         box.innerHTML = `
 
             <div class="empty">
-
                 📭 هیچ تیکتی وجود ندارد.
-
             </div>
 
         `;
@@ -1149,74 +1067,84 @@ function renderTickets() {
 
 
     box.innerHTML =
-        tickets.map(ticket => {
+        tickets
+            .map(ticket => {
 
-            const id =
-                String(ticket._id);
-
-
-            const name =
-                ticket.icName ||
-                ticket.name ||
-                ticket.ocName ||
-                "بدون نام";
+                const id =
+                    String(
+                        ticket._id
+                    );
 
 
-            const active =
-                String(selectedTicketId) === id
-                ? "active"
-                : "";
+                const name =
+                    ticket.icName ||
+                    ticket.name ||
+                    ticket.ocName ||
+                    "بدون نام";
 
 
-            return `
+                const active =
+                    String(
+                        selectedTicketId
+                    ) === id
+                    ? "active"
+                    : "";
 
-                <div
-                    class="ticket-item ${active}"
-                    onclick="selectTicket('${escapeHTML(id)}')"
-                >
 
-                    <h3>
-                        ${escapeHTML(name)}
-                    </h3>
+                return `
 
-                    <small>
-                        ${requestType(
-                            ticket.requestType
+                    <div
+                        class="ticket-item ${active}"
+                        onclick="selectTicket('${id}')"
+                    >
+
+                        <h3>
+                            ${escapeHTML(name)}
+                        </h3>
+
+                        <small>
+                            ${requestType(
+                                ticket.requestType
+                            )}
+                        </small>
+
+                        <br>
+
+                        ${statusHTML(
+                            ticket.status
                         )}
-                    </small>
 
-                    <br>
+                        <br>
 
-                    ${statusHTML(
-                        ticket.status
-                    )}
+                        <small>
 
-                    <br>
-
-                    <small>
-                        ${
-                            ticket.createdAt
-                            ? new Date(
+                            ${
                                 ticket.createdAt
-                              ).toLocaleString(
-                                "fa-IR"
-                              )
-                            : ""
-                        }
-                    </small>
+                                ?
+                                new Date(
+                                    ticket.createdAt
+                                ).toLocaleString(
+                                    "fa-IR"
+                                )
+                                :
+                                ""
+                            }
 
-                </div>
+                        </small>
 
-            `;
+                    </div>
 
-        }).join("");
+                `;
+
+            })
+            .join("");
 
 }
 
 
-/* =========================================
-   Select
-========================================= */
+/* =========================================================
+   SELECT
+========================================================= */
 
 async function selectTicket(id) {
 
@@ -1226,9 +1154,11 @@ async function selectTicket(id) {
 
     const ticket =
         tickets.find(
+
             t =>
-            String(t._id) ===
-            String(id)
+                String(t._id) ===
+                String(id)
+
         );
 
 
@@ -1241,16 +1171,21 @@ async function selectTicket(id) {
 
     renderTickets();
 
-    renderTicketDetail(ticket);
+    renderTicketDetail(
+        ticket
+    );
 
-    await loadMessages(id);
+
+    await loadMessages(
+        id
+    );
 
 }
 
 
-/* =========================================
-   Ticket detail
-========================================= */
+/* =========================================================
+   DETAIL
+========================================================= */
 
 function renderTicketDetail(ticket) {
 
@@ -1273,7 +1208,9 @@ function renderTicketDetail(ticket) {
 
             <br>
 
-            ${escapeHTML(ticket._id)}
+            ${escapeHTML(
+                ticket._id
+            )}
 
         </div>
 
@@ -1365,7 +1302,7 @@ function renderTicketDetail(ticket) {
 
         <div class="detail-row">
 
-            <b>وضعیت فعلی:</b>
+            <b>وضعیت:</b>
 
             <br>
 
@@ -1381,18 +1318,20 @@ function renderTicketDetail(ticket) {
             ticket.score !== undefined
             ?
             `
-            <div class="detail-row">
 
-                <b>📚 نمره آزمون:</b>
+                <div class="detail-row">
 
-                <br>
+                    <b>📚 نمره آزمون:</b>
 
-                ${escapeHTML(
-                    ticket.score
-                )}
-                از 20
+                    <br>
 
-            </div>
+                    ${escapeHTML(
+                        ticket.score
+                    )}
+                    از 20
+
+                </div>
+
             `
             :
             ""
@@ -1403,17 +1342,19 @@ function renderTicketDetail(ticket) {
             ticket.experience
             ?
             `
-            <div class="detail-row">
 
-                <b>تجربه:</b>
+                <div class="detail-row">
 
-                <br>
+                    <b>تجربه:</b>
 
-                ${escapeHTML(
-                    ticket.experience
-                )}
+                    <br>
 
-            </div>
+                    ${escapeHTML(
+                        ticket.experience
+                    )}
+
+                </div>
+
             `
             :
             ""
@@ -1424,17 +1365,19 @@ function renderTicketDetail(ticket) {
             ticket.reason
             ?
             `
-            <div class="detail-row">
 
-                <b>دلیل درخواست:</b>
+                <div class="detail-row">
 
-                <br>
+                    <b>دلیل درخواست:</b>
 
-                ${escapeHTML(
-                    ticket.reason
-                )}
+                    <br>
 
-            </div>
+                    ${escapeHTML(
+                        ticket.reason
+                    )}
+
+                </div>
+
             `
             :
             ""
@@ -1497,37 +1440,41 @@ function renderTicketDetail(ticket) {
                     ticket.reply ===
                     "در انتظار پاسخ فرماندهی"
                     ? ""
-                    : ticket.reply || ""
+                    :
+                    ticket.reply || ""
                 )
             }</textarea>
 
 
-            <div class="action-buttons">
+            <button
+                class="btn primary"
+                style="width:100%;margin-top:10px;"
+                onclick="updateTicket()"
+            >
+                💾 ثبت پاسخ
+            </button>
 
-                <button
-                    class="btn primary"
-                    onclick="updateTicket()"
-                >
-                    💾 ثبت پاسخ
-                </button>
 
+            ${
+                commander &&
+                (
+                    commander.role === "owner" ||
+                    commander.isOwner === true
+                )
+                ?
+                `
 
-                ${
-                    isOwner
-                    ?
-                    `
                     <button
-                        class="btn danger"
+                        class="delete-btn"
                         onclick="deleteTicket()"
                     >
-                        🗑️ حذف تیکت
+                        🗑️ حذف این تیکت
                     </button>
-                    `
-                    :
-                    ""
-                }
 
-            </div>
+                `
+                :
+                ""
+            }
 
         </div>
 
@@ -1573,9 +1520,9 @@ function renderTicketDetail(ticket) {
 }
 
 
-/* =========================================
-   Update ticket
-========================================= */
+/* =========================================================
+   UPDATE TICKET
+========================================================= */
 
 async function updateTicket() {
 
@@ -1598,8 +1545,10 @@ async function updateTicket() {
         );
 
 
-    if (!statusElement ||
-        !replyElement) {
+    if (
+        !statusElement ||
+        !replyElement
+    ) {
 
         return;
 
@@ -1631,8 +1580,10 @@ async function updateTicket() {
 
                     headers:
                         authHeaders({
+
                             "Content-Type":
                                 "application/json"
+
                         }),
 
                     body:
@@ -1649,37 +1600,32 @@ async function updateTicket() {
             );
 
 
-        let data = null;
+        const data =
+            await response.json();
 
 
-        try {
+        if (
+            response.status === 401
+        ) {
 
-            data =
-                await response.json();
-
-        } catch {
-
-            data = null;
-
-        }
-
-
-        if (response.status === 401) {
-
-            throw new Error(
-                "HTTP 401 - دسترسی شما منقضی شده است."
+            alert(
+                "❌ نشست شما منقضی شده است. دوباره وارد شوید."
             );
+
+            logoutCommand();
+
+            return;
 
         }
 
 
         if (
             !response.ok ||
-            !data?.success
+            !data.success
         ) {
 
             throw new Error(
-                data?.message ||
+                data.message ||
                 "خطا در ثبت پاسخ"
             );
 
@@ -1694,6 +1640,15 @@ async function updateTicket() {
         await loadTickets();
 
 
+        if (selectedTicketId) {
+
+            await loadMessages(
+                selectedTicketId
+            );
+
+        }
+
+
     } catch (error) {
 
         console.error(
@@ -1701,10 +1656,8 @@ async function updateTicket() {
             error
         );
 
-
         alert(
-            "❌ ثبت پاسخ انجام نشد.\n\n" +
-            error.message
+            "❌ ثبت پاسخ انجام نشد."
         );
 
     }
@@ -1712,176 +1665,9 @@ async function updateTicket() {
 }
 
 
-/* =========================================
-   Delete ticket
-   Owner only
-========================================= */
-
-async function deleteTicket() {
-
-    if (!isOwner) {
-
-        alert(
-            "⛔ فقط Owner اجازه حذف تیکت را دارد."
-        );
-
-        return;
-
-    }
-
-
-    if (!selectedTicketId) {
-
-        return;
-
-    }
-
-
-    const confirmDelete =
-        confirm(
-            "⚠️ آیا مطمئن هستید که می‌خواهید این تیکت را برای همیشه حذف کنید؟"
-        );
-
-
-    if (!confirmDelete) {
-
-        return;
-
-    }
-
-
-    try {
-
-        const response =
-            await fetch(
-
-                API_URL +
-                "/tickets/" +
-                encodeURIComponent(
-                    selectedTicketId
-                ),
-
-                {
-
-                    method: "DELETE",
-
-                    headers:
-                        authHeaders(),
-
-                    cache:
-                        "no-store"
-
-                }
-
-            );
-
-
-        let data = null;
-
-
-        try {
-
-            data =
-                await response.json();
-
-        } catch {
-
-            data = null;
-
-        }
-
-
-        if (response.status === 401) {
-
-            throw new Error(
-                "HTTP 401 - دسترسی غیرمجاز."
-            );
-
-        }
-
-
-        if (response.status === 403) {
-
-            throw new Error(
-                "⛔ فقط Owner اجازه حذف تیکت را دارد."
-            );
-
-        }
-
-
-        if (
-            !response.ok ||
-            !data?.success
-        ) {
-
-            throw new Error(
-                data?.message ||
-                "حذف تیکت انجام نشد."
-            );
-
-        }
-
-
-        alert(
-            "✅ تیکت با موفقیت حذف شد."
-        );
-
-
-        selectedTicketId =
-            null;
-
-
-        document
-            .getElementById(
-                "ticketDetail"
-            )
-            .innerHTML = `
-
-                <div class="empty">
-
-                    <h2>
-                        📄 یک تیکت را انتخاب کنید
-                    </h2>
-
-                    <p>
-                        تیکت حذف شد.
-                    </p>
-
-                </div>
-
-            `;
-
-
-        await loadTickets();
-
-        if (logsVisible) {
-
-            await loadLogs();
-
-        }
-
-
-    } catch (error) {
-
-        console.error(
-            "DELETE ERROR:",
-            error
-        );
-
-
-        alert(
-            "❌ حذف تیکت انجام نشد.\n\n" +
-            error.message
-        );
-
-    }
-
-}
-
-
-/* =========================================
-   Messages
-========================================= */
+/* =========================================================
+   LOAD MESSAGES
+========================================================= */
 
 async function loadMessages(id) {
 
@@ -1923,56 +1709,29 @@ async function loadMessages(id) {
             );
 
 
-        let data = null;
-
-
-        try {
-
-            data =
-                await response.json();
-
-        } catch {
-
-            data = null;
-
-        }
-
-
-        if (response.status === 401) {
-
-            throw new Error(
-                "HTTP 401"
-            );
-
-        }
-
-
         if (!response.ok) {
 
             throw new Error(
-                data?.message ||
-                "خطا در دریافت پیام‌ها"
+                "HTTP " +
+                response.status
             );
 
         }
 
 
         const messages =
-            Array.isArray(data)
-            ? data
-            : Array.isArray(data?.messages)
-                ? data.messages
-                : [];
+            await response.json();
 
 
-        if (!messages.length) {
+        if (
+            !Array.isArray(messages) ||
+            messages.length === 0
+        ) {
 
             box.innerHTML = `
 
                 <div class="empty">
-
                     هنوز پیامی ثبت نشده است.
-
                 </div>
 
             `;
@@ -1983,96 +1742,107 @@ async function loadMessages(id) {
 
 
         box.innerHTML =
-            messages.map(message => {
+            messages
+                .map(message => {
 
-                const isCommand =
-                    message.sender ===
-                    "command";
-
-
-                const senderName =
-                    isCommand
-                    ?
-                    (
-                        message.commanderName ||
-                        message.actor?.name ||
-                        "فرماندهی"
-                    )
-                    :
-                    "👤 متقاضی";
+                    const isCommand =
+                        message.sender ===
+                        "command";
 
 
-                const rank =
-                    isCommand &&
-                    (
-                        message.commanderRank ||
-                        message.actor?.rank
-                    )
-                    ?
-                    ` - ${escapeHTML(
-                        message.commanderRank ||
-                        message.actor?.rank
-                    )}`
-                    :
-                    "";
+                    const senderName =
+                        isCommand
+                        ?
+                        (
+                            message.senderName ||
+                            message.commanderName ||
+                            "فرماندهی"
+                        )
+                        :
+                        (
+                            message.senderName ||
+                            "👤 متقاضی"
+                        );
 
 
-                return `
+                    const rank =
+                        isCommand &&
+                        (
+                            message.senderRank ||
+                            message.commanderRank
+                        )
+                        ?
+                        ` - ${escapeHTML(
+                            message.senderRank ||
+                            message.commanderRank
+                        )}`
+                        :
+                        "";
 
-                    <div class="
-                        message
-                        ${
-                            isCommand
-                            ? "command"
-                            : "applicant"
-                        }
-                    ">
 
-                        <div class="message-name">
+                    return `
 
+                        <div class="
+                            message
                             ${
                                 isCommand
-                                ? "👮 "
-                                : ""
+                                ? "command"
+                                : "applicant"
                             }
+                        ">
 
-                            ${escapeHTML(
-                                senderName
-                            )}
+                            <div
+                                class="message-name"
+                            >
 
-                            ${rank}
+                                ${
+                                    isCommand
+                                    ? "👮 "
+                                    : ""
+                                }
 
-                        </div>
+                                ${escapeHTML(
+                                    senderName
+                                )}
+
+                                ${rank}
+
+                            </div>
 
 
-                        <div>
+                            <div>
 
-                            ${escapeHTML(
-                                message.message
-                            )}
+                                ${escapeHTML(
+                                    message.message
+                                )}
 
-                        </div>
+                            </div>
 
 
-                        <small class="message-time">
+                            <small
+                                class="message-time"
+                            >
 
-                            ${
-                                message.createdAt
-                                ? new Date(
+                                ${
                                     message.createdAt
-                                  ).toLocaleString(
-                                    "fa-IR"
-                                  )
-                                : ""
-                            }
+                                    ?
+                                    new Date(
+                                        message.createdAt
+                                    ).toLocaleString(
+                                        "fa-IR"
+                                    )
+                                    :
+                                    ""
+                                }
 
-                        </small>
+                            </small>
 
-                    </div>
+                        </div>
 
-                `;
+                    `;
 
-            }).join("");
+                })
+                .join("");
 
 
         box.scrollTop =
@@ -2086,21 +1856,10 @@ async function loadMessages(id) {
             error
         );
 
-
         box.innerHTML = `
 
             <div class="empty">
-
                 ❌ دریافت پیام‌ها ناموفق بود.
-
-                <br>
-
-                <small>
-                    ${escapeHTML(
-                        error.message
-                    )}
-                </small>
-
             </div>
 
         `;
@@ -2110,9 +1869,9 @@ async function loadMessages(id) {
 }
 
 
-/* =========================================
-   Send command message
-========================================= */
+/* =========================================================
+   SEND COMMAND MESSAGE
+========================================================= */
 
 async function sendCommandMessage() {
 
@@ -2165,8 +1924,10 @@ async function sendCommandMessage() {
 
                     headers:
                         authHeaders({
+
                             "Content-Type":
                                 "application/json"
+
                         }),
 
                     body:
@@ -2181,37 +1942,32 @@ async function sendCommandMessage() {
             );
 
 
-        let data = null;
+        const data =
+            await response.json();
 
 
-        try {
+        if (
+            response.status === 401
+        ) {
 
-            data =
-                await response.json();
-
-        } catch {
-
-            data = null;
-
-        }
-
-
-        if (response.status === 401) {
-
-            throw new Error(
-                "HTTP 401 - نشست ورود معتبر نیست."
+            alert(
+                "❌ نشست شما معتبر نیست. دوباره وارد شوید."
             );
+
+            logoutCommand();
+
+            return;
 
         }
 
 
         if (
             !response.ok ||
-            !data?.success
+            !data.success
         ) {
 
             throw new Error(
-                data?.message ||
+                data.message ||
                 "خطا در ارسال پیام"
             );
 
@@ -2236,10 +1992,168 @@ async function sendCommandMessage() {
             error
         );
 
+        alert(
+            "❌ ارسال پیام انجام نشد."
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   DELETE TICKET
+========================================================= */
+
+async function deleteTicket() {
+
+    if (!selectedTicketId) {
+
+        return;
+
+    }
+
+
+    if (
+        !commander ||
+        (
+            commander.role !== "owner" &&
+            commander.isOwner !== true
+        )
+    ) {
 
         alert(
-            "❌ ارسال پیام انجام نشد.\n\n" +
-            error.message
+            "❌ فقط Owner می‌تواند تیکت را حذف کند."
+        );
+
+        return;
+
+    }
+
+
+    const confirmed =
+        confirm(
+            "⚠️ آیا مطمئن هستید که می‌خواهید این تیکت را حذف کنید؟"
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+
+                API_URL +
+                "/tickets/" +
+                encodeURIComponent(
+                    selectedTicketId
+                ),
+
+                {
+
+                    method: "DELETE",
+
+                    headers:
+                        authHeaders()
+
+                }
+
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            response.status === 401
+        ) {
+
+            alert(
+                "❌ نشست شما معتبر نیست."
+            );
+
+            logoutCommand();
+
+            return;
+
+        }
+
+
+        if (
+            response.status === 403
+        ) {
+
+            alert(
+                "❌ فقط Owner اجازه حذف دارد."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data.message ||
+                "حذف انجام نشد"
+            );
+
+        }
+
+
+        alert(
+            "🗑️ تیکت با موفقیت حذف شد."
+        );
+
+
+        selectedTicketId =
+            null;
+
+
+        document
+            .getElementById(
+                "ticketDetail"
+            )
+            .innerHTML = `
+
+                <div class="empty">
+
+                    <h2>
+                        📄 یک تیکت را انتخاب کنید
+                    </h2>
+
+                    <p>
+                        تیکت حذف شد.
+                    </p>
+
+                </div>
+
+            `;
+
+
+        await loadTickets();
+
+
+    } catch (error) {
+
+        console.error(
+            "DELETE ERROR:",
+            error
+        );
+
+        alert(
+            "❌ حذف تیکت انجام نشد."
         );
 
     }
@@ -2247,68 +2161,49 @@ async function sendCommandMessage() {
 }
 
 
-/* =========================================
+/* =========================================================
    OWNER LOGS
-========================================= */
+========================================================= */
 
-function toggleLogs() {
-
-    if (!isOwner) {
-
-        return;
-
-    }
-
-
-    const panel =
-        document.getElementById(
-            "ownerLogsPanel"
-        );
-
-
-    if (!panel) {
-
-        return;
-
-    }
-
-
-    logsVisible =
-        !logsVisible;
-
-
-    panel.style.display =
-        logsVisible
-        ? "block"
-        : "none";
-
-
-    if (logsVisible) {
-
-        loadLogs();
-
-        panel.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
-
-    }
-
-}
-
-
-async function loadLogs() {
-
-    if (!isOwner) {
-
-        return;
-
-    }
-
+async function toggleLogs() {
 
     const box =
         document.getElementById(
-            "logList"
+            "logsBox"
+        );
+
+
+    if (
+        box.style.display ===
+        "block"
+    ) {
+
+        box.style.display =
+            "none";
+
+        return;
+
+    }
+
+
+    box.style.display =
+        "block";
+
+
+    await loadLogs();
+
+}
+
+
+/* =========================================================
+   LOAD LOGS
+========================================================= */
+
+async function loadLogs() {
+
+    const box =
+        document.getElementById(
+            "logsBox"
         );
 
 
@@ -2319,12 +2214,31 @@ async function loadLogs() {
     }
 
 
+    if (
+        !commander ||
+        (
+            commander.role !== "owner" &&
+            commander.isOwner !== true
+        )
+    ) {
+
+        box.innerHTML = `
+
+            <div class="error-message">
+                ❌ دسترسی فقط برای Owner است.
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
     box.innerHTML = `
 
         <div class="empty">
-
             ⏳ در حال دریافت لاگ‌ها...
-
         </div>
 
     `;
@@ -2336,7 +2250,7 @@ async function loadLogs() {
             await fetch(
 
                 API_URL +
-                "/logs",
+                "/logs?limit=200",
 
                 {
 
@@ -2353,43 +2267,39 @@ async function loadLogs() {
             );
 
 
-        let data = null;
-
-
-        try {
-
-            data =
-                await response.json();
-
-        } catch {
-
-            data = null;
-
-        }
-
-
-        if (response.status === 401) {
+        if (
+            response.status === 403
+        ) {
 
             throw new Error(
-                "HTTP 401 - نشست معتبر نیست."
+                "دسترسی فقط برای Owner است."
             );
 
         }
 
 
-        if (response.status === 403) {
+        if (
+            response.status === 401
+        ) {
 
-            throw new Error(
-                "⛔ این بخش فقط برای Owner قابل مشاهده است."
-            );
+            logoutCommand();
+
+            return;
 
         }
 
 
-        if (!response.ok) {
+        const data =
+            await response.json();
+
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
 
             throw new Error(
-                data?.message ||
+                data.message ||
                 "خطا در دریافت لاگ‌ها"
             );
 
@@ -2397,11 +2307,11 @@ async function loadLogs() {
 
 
         const logs =
-            Array.isArray(data)
-            ? data
-            : Array.isArray(data?.logs)
-                ? data.logs
-                : [];
+            Array.isArray(
+                data.logs
+            )
+            ? data.logs
+            : [];
 
 
         if (!logs.length) {
@@ -2409,9 +2319,7 @@ async function loadLogs() {
             box.innerHTML = `
 
                 <div class="empty">
-
                     📭 هنوز لاگی ثبت نشده است.
-
                 </div>
 
             `;
@@ -2422,148 +2330,155 @@ async function loadLogs() {
 
 
         box.innerHTML =
-            logs.map(log => {
+            logs
+                .map(log => {
 
-                const actor =
-                    log.actor || {};
-
-
-                const actorType =
-                    actor.type === "owner"
-                    ? "👑 Owner"
-                    : actor.type === "command"
-                        ? "👮 فرمانده"
-                        : "👤 کاربر";
+                    const actor =
+                        log.actor || {};
 
 
-                let details = "";
+                    const action =
+                        log.action ||
+                        "UNKNOWN";
 
 
-                try {
-
-                    details =
-                        typeof log.details ===
-                        "string"
-                        ? log.details
-                        : JSON.stringify(
-                            log.details || {}
-                        );
-
-                } catch {
-
-                    details = "";
-
-                }
+                    const details =
+                        log.details || {};
 
 
-                return `
-
-                    <div class="log-item">
-
-                        <div class="log-action">
-
-                            📝 ${escapeHTML(
-                                log.action ||
-                                "ACTION"
-                            )}
-
-                        </div>
+                    let detailsText =
+                        "";
 
 
-                        <div class="log-actor">
+                    if (
+                        details.message
+                    ) {
 
-                            ${actorType}
+                        detailsText +=
+                            `پیام: ${details.message}`;
 
-                            <br>
+                    }
 
-                            👤 نام:
 
-                            ${escapeHTML(
-                                actor.name ||
-                                actor.username ||
+                    if (
+                        details.reply
+                    ) {
+
+                        detailsText +=
+                            `پاسخ: ${details.reply}`;
+
+                    }
+
+
+                    if (
+                        details.oldStatus ||
+                        details.newStatus
+                    ) {
+
+                        detailsText +=
+                            `وضعیت: ${
+                                details.oldStatus ||
                                 "—"
-                            )}
-
-                            <br>
-
-                            🪪 Username:
-
-                            ${escapeHTML(
-                                actor.username ||
+                            } ← ${
+                                details.newStatus ||
                                 "—"
-                            )}
+                            }`;
 
-                            <br>
-
-                            🎖️ Rank:
-
-                            ${escapeHTML(
-                                actor.rank ||
-                                "—"
-                            )}
-
-                        </div>
+                    }
 
 
-                        ${
-                            log.ticketId
-                            ?
-                            `
-                            <div class="log-details">
+                    return `
+
+                        <div
+                            class="log-item"
+                        >
+
+                            <div
+                                class="log-action"
+                            >
+                                ${escapeHTML(
+                                    action
+                                )}
+                            </div>
+
+
+                            <div
+                                class="log-actor"
+                            >
+
+                                👤 نام:
+                                ${escapeHTML(
+                                    actor.name ||
+                                    actor.username ||
+                                    "System"
+                                )}
+
+                                <br>
+
+                                🪪 Username:
+                                ${escapeHTML(
+                                    actor.username ||
+                                    "System"
+                                )}
+
+                                <br>
+
+                                🎖️ Rank:
+                                ${escapeHTML(
+                                    actor.rank ||
+                                    "System"
+                                )}
+
+                                <br>
 
                                 🎫 Ticket:
-
                                 ${escapeHTML(
-                                    log.ticketId
+                                    log.ticketId ||
+                                    "—"
                                 )}
 
                             </div>
-                            `
-                            :
-                            ""
-                        }
 
-
-                        ${
-                            details
-                            ?
-                            `
-                            <div class="log-details">
-
-                                📌 جزئیات:
-
-                                ${escapeHTML(
-                                    details
-                                )}
-
-                            </div>
-                            `
-                            :
-                            ""
-                        }
-
-
-                        <div class="log-time">
-
-                            🕒
 
                             ${
-                                log.createdAt
-                                ? new Date(
-                                    log.createdAt
-                                  ).toLocaleString(
-                                    "fa-IR"
-                                  )
-                                : "—"
+                                detailsText
+                                ?
+                                `
+                                    <div>
+                                        ${escapeHTML(
+                                            detailsText
+                                        )}
+                                    </div>
+                                `
+                                :
+                                ""
                             }
+
+
+                            <div
+                                class="log-time"
+                            >
+
+                                ${
+                                    log.createdAt
+                                    ?
+                                    new Date(
+                                        log.createdAt
+                                    ).toLocaleString(
+                                        "fa-IR"
+                                    )
+                                    :
+                                    ""
+                                }
+
+                            </div>
 
                         </div>
 
-                    </div>
+                    `;
 
-                `;
-
-            }).join("");
+                })
+                .join("");
 
 
     } catch (error) {
@@ -2573,20 +2488,17 @@ async function loadLogs() {
             error
         );
 
-
         box.innerHTML = `
 
-            <div class="empty">
+            <div class="error-message">
 
                 ❌ دریافت لاگ‌ها ناموفق بود.
 
-                <br><br>
+                <br>
 
-                <small>
-                    ${escapeHTML(
-                        error.message
-                    )}
-                </small>
+                ${escapeHTML(
+                    error.message
+                )}
 
             </div>
 
@@ -2597,14 +2509,18 @@ async function loadLogs() {
 }
 
 
-/* =========================================
-   Logout
-========================================= */
+/* =========================================================
+   LOGOUT
+========================================================= */
 
 function logoutCommand() {
 
     localStorage.removeItem(
         "lspdCommandToken"
+    );
+
+    localStorage.removeItem(
+        "lspdAdminToken"
     );
 
     localStorage.removeItem(
@@ -2638,53 +2554,14 @@ function logoutCommand() {
 }
 
 
-/* =========================================
-   Auto Refresh
-========================================= */
+/* =========================================================
+   START
+========================================================= */
 
-async function refreshAll() {
-
-    if (!getToken()) {
-
-        return;
-
-    }
-
-
-    await loadTickets();
-
-
-    if (
-        selectedTicketId
-    ) {
-
-        await loadMessages(
-            selectedTicketId
-        );
-
-    }
-
-
-    if (
-        isOwner &&
-        logsVisible
-    ) {
-
-        await loadLogs();
-
-    }
-
-}
-
-
-/* =========================================
-   Start
-========================================= */
-
-(async function init() {
+async function startCommandPage() {
 
     const authenticated =
-        await verifySession();
+        await checkAuth();
 
 
     if (!authenticated) {
@@ -2696,16 +2573,50 @@ async function refreshAll() {
 
     await loadTickets();
 
+}
 
-    setInterval(
-        refreshAll,
-        5000
-    );
 
-})();
+/* =========================================================
+   AUTO REFRESH
+========================================================= */
+
+startCommandPage();
+
+
+setInterval(
+    async function() {
+
+        if (!commander) {
+
+            return;
+
+        }
+
+        await loadTickets();
+
+    },
+    5000
+);
+
+
+setInterval(
+    async function() {
+
+        if (!selectedTicketId) {
+
+            return;
+
+        }
+
+        await loadMessages(
+            selectedTicketId
+        );
+
+    },
+    3000
+);
 
 </script>
 
 </body>
-
 </html>
